@@ -57,6 +57,10 @@ public class Board {
 		return allPawns;
 	}
 	
+	public Pawn[] getActivePawns(){
+		return null;
+	}
+	
 	/**
 	 * Makes a move for a computer player based on its strategy
 	 */

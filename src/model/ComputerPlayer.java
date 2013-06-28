@@ -3,12 +3,14 @@ package model;
 public class ComputerPlayer implements Player {
 
 	private int playerNumber;
+	private int pawnsAtHome;
 	private Pawn[] pawns;
 	private Strategy strategy;
 	
 	// Constructor
 	public ComputerPlayer(int playerNumber){
 		this.playerNumber = playerNumber;
+		this.pawnsAtHome = 4;
 		
 	}
 	
@@ -38,6 +40,21 @@ public class ComputerPlayer implements Player {
 	@Override
 	public void setStrategy(Strategy strategy){
 		this.strategy = strategy;
+	}
+	
+	@Override
+	public Move getMove(){
+		return this.strategy.getNextMove(this);
+	}
+	
+	@Override
+	public int getPawnsAtHome(){
+		return this.pawnsAtHome;
+	}
+	
+	@Override
+	public void setPawnsAtHome(int pawnsAtHome){
+		this.pawnsAtHome = pawnsAtHome;
 	}
 
 }

@@ -1,6 +1,12 @@
 package controller;
+
 import java.awt.event.*;
+import java.util.Random;
+
 import model.Board;
+import model.Player;
+import model.Pawn;
+import model.HumanPlayer;
 import view.FieldTile;
 import view.ViewPanel;
 
@@ -12,6 +18,9 @@ public class Controller {
 	
 	private Board board;
 	private ViewPanel viewPanel;
+	private boolean diceRolled;
+	private boolean pawnSelected;
+	private int currentRoll;
 	private StartNewGameListener startNewGameListener;
 	private FieldTileListener fieldTileListener;
 	
@@ -27,12 +36,52 @@ public class Controller {
 		this.viewPanel=viewPanel;
 	}
 	
+	public int getCurrentRoll(){
+		return this.currentRoll;
+	}
+	
+	/**
+	 * Simulates rolling the die <br> 
+	 * Updates currentRoll using a pseudo-random number generator
+	 */
+	public void rollDie(){
+		Random rand = new Random();
+		this.currentRoll = rand.nextInt(6) + 1;
+	}
+	
 	/**
 	 * Resets the game board and begins a new game.
 	 */
 	public void startNewGame(){
 		System.out.println("Fix Me! Start a new game.");
+		
+		Player player = board.getNextPlayer();
+		if(player instanceof HumanPlayer){
+			for(;;){
+				// wait for die roll event
+				if(this.diceRolled) break;
+			}
+			board.getActivePawns();
+			for(;;){
+				// wait for pawn select event
+				if(this.pawnSelected) break;
+			}
+			//@TODO board.makeMove(pawn);
+			Pawn[] pawns = board.getPawns();
+			for(Pawn pawn: pawns){
+				//@TODO position = pawn.getPosition()
+				//viewPanel.setColorAtBoardTile(player, position);
+			}
+		} else {
+			rollDie();
+			//board.makeMove();
+			Pawn[] pawns = board.getPawns();
+			for(Pawn pawn : pawns){
+				
+			}
+		}
 	}
+	
 	
 	/**
 	 * Factory method for a StartNewGameListener object.
