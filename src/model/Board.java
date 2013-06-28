@@ -74,6 +74,8 @@ public class Board {
 	 */
 	public void makeMove(Pawn pawn){
 		
+		
+		
 	}
 	
 	
