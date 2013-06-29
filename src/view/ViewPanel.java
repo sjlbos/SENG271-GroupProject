@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import controller.Controller;
 import javax.swing.*;
+import java.awt.*;
 
 public class ViewPanel extends JPanel {
 
@@ -12,8 +13,8 @@ public class ViewPanel extends JPanel {
 	
 	public static final Color PLAYER_1_COLOR = Color.RED;
 	public static final Color PLAYER_2_COLOR = Color.BLUE;
-	public static final Color PLAYER_3_COLOR = Color.YELLOW;
-	public static final Color PLAYER_4_COLOR = Color.GREEN;
+	public static final Color PLAYER_3_COLOR = new Color(242,228,29);
+	public static final Color PLAYER_4_COLOR = new Color(33,194,52);
 	public static final Color BLANK_COLOR = Color.WHITE;
 	
 	/*===================================
@@ -31,7 +32,8 @@ public class ViewPanel extends JPanel {
 	
 	public ViewPanel(Controller controller){
 		this.setBackground(Color.WHITE);
-		this.setPreferredSize(new Dimension(ViewPanel.WIDTH,ViewPanel.HEIGHT));
+		//this.setPreferredSize(new Dimension(ViewPanel.WIDTH,ViewPanel.HEIGHT));
+		this.setLayout(new GridBagLayout());
 		
 		this.controller = controller;
 		this.boardLoop = new FieldTile[40];
@@ -43,15 +45,138 @@ public class ViewPanel extends JPanel {
 	}
 	
 	private void initializeTiles(){
+		// Initialize loop tiles
 		for(int i=0;i<40;i++){
-			FieldTile newTile = new FieldTile(Color.WHITE);
+			FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 			newTile.addActionListener(controller.getFieldTileListener());
 			this.boardLoop[i] = newTile;
+		}
+		
+		// Initialize home tiles
+		for(int i=0;i<4;i++){
+			for(int j=0;j<4;j++){
+				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
+				newTile.addActionListener(controller.getFieldTileListener());
+				this.homes[i][j]=newTile;
+			}
+		}
+		
+		// Initialize goal tiles
+		for(int i=0;i<4;i++){
+			for(int j=0;j<4;j++){
+				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
+				newTile.addActionListener(controller.getFieldTileListener());
+				this.goals[i][j]=newTile;
+			}
 		}
 	}
 	
 	private void layoutTiles(){
+		JPanel[] homePanels=getHomePanels();
 		
+		// Add the panels to their proper positions
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridheight=1;
+		gbc.gridwidth=1;
+		
+		gbc.gridx=0;
+		gbc.gridy=0;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		this.add(homePanels[0],gbc);
+		gbc.gridx=2;
+		gbc.gridy=0;
+		gbc.anchor = GridBagConstraints.NORTHEAST;
+		this.add(homePanels[1],gbc);
+		gbc.gridx=0;
+		gbc.gridy=2;
+		gbc.anchor = GridBagConstraints.SOUTHWEST;
+		this.add(homePanels[2],gbc);
+		gbc.gridx=2;
+		gbc.gridy=2;
+		gbc.anchor = GridBagConstraints.SOUTHEAST;
+		this.add(homePanels[3],gbc);
+	}
+	/*
+	private JPanel getTileStrip(FieldTile[] tiles,Color c,boolean isHorizontal){
+		
+		int numberOfTiles=tiles.length;
+		
+		// Set up dimensions
+		int panelPadding=10;
+		int tileHeight=FieldTile.HEIGHT;
+		int tileWidth=FieldTile.WIDTH;
+		int panelHeight=0;
+		int panelWidth=0;
+		
+		// Create panel
+		JPanel tileStrip = new JPanel();
+		tileStrip.setBackground(c);
+		if(isHorizontal){
+			tileStrip.setLayout(new BoxLayout(tileStrip,BoxLayout.LINE_AXIS));
+			panelHeight=2*panelPadding+tileHeight;
+			panelWidth=numberOfTiles*(tileWidth+panelPadding)+panelPadding;
+		}
+		else{
+			tileStrip.setLayout(new BoxLayout(tileStrip,BoxLayout.PAGE_AXIS));
+			panelHeight=numberOfTiles*(tileHeight+panelPadding)+panelPadding;
+			panelWidth=2*panelPadding+tileWidth;
+		}
+		Dimension d = new Dimension(panelWidth,panelHeight);
+		tileStrip.setPreferredSize(d);
+		tileStrip.setMinimumSize(d);
+		tileStrip.setMaximumSize(d);
+		tileStrip.setBackground(c);
+		
+		// Add FieldTiles to panel
+		if(isHorizontal){
+			for(int i=0;i<numberOfTiles;i++){
+				tileStrip.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
+				tileStrip.add(tiles[i]);
+			}
+			tileStrip.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
+		}
+		else{
+			for(int i=0;i<numberOfTiles;i++){
+				tileStrip.add(Box.createRigidArea(new Dimension(panelWidth,panelPadding)));
+				tileStrip.add(tiles[i]);
+			}
+			tileStrip.add(Box.createRigidArea(new Dimension(panelWidth,panelPadding)));
+		}
+		
+		return tileStrip;
+	}*/
+	
+	// Creates and lays out the home panels for all the players.
+	private JPanel[] getHomePanels(){
+		
+		// Set up dimensions
+		int tileHeight=this.boardLoop[0].getPreferredSize().height;
+		int tileWidth=this.boardLoop[0].getPreferredSize().width;
+		int panelPadding = 10;
+		int panelWidth = 5*panelPadding+4*tileWidth;
+		int panelHeight = 2*panelPadding+tileHeight;
+		
+		// Create 4 new home panels
+		JPanel[] homePanels = new JPanel[4];
+		for(int i=0; i<4;i++){
+			// Set up panel properties
+			JPanel newPanel = new JPanel();
+			newPanel.setLayout(new BoxLayout(newPanel,BoxLayout.LINE_AXIS));
+			newPanel.setPreferredSize(new Dimension(panelWidth,panelHeight));
+			newPanel.setBackground(getColorForPlayer(i+1));
+			
+			// Add the tiles to the current panel
+			for(int j=0;j<4;j++){
+				newPanel.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
+				newPanel.add(this.homes[i][j]);
+			}
+			newPanel.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
+		
+			// Add the completed panel to the array
+			homePanels[i]=newPanel;
+		}
+		
+		return homePanels;
 	}
 	
 	/*===================================

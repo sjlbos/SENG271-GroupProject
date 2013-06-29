@@ -3,7 +3,6 @@ import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.*;
 import java.util.ArrayList;
-
 import javax.swing.*;
 
 public class FieldTile extends JComponent implements MouseListener{
@@ -15,7 +14,11 @@ public class FieldTile extends JComponent implements MouseListener{
 	private static final long serialVersionUID = 1L;
 	private static final int Padding = 5;
 	private static final int Diameter = 40;
-	private static final Dimension dimension = new Dimension(2*Padding+Diameter,2*Padding+Diameter);
+	
+	public static final int HEIGHT = 2*Padding+Diameter;
+	public static final int WIDTH = 2*Padding+Diameter;
+	
+	private static final Dimension dimension = new Dimension(WIDTH,HEIGHT);
 	
 	/*===================================
 	 FIELDS
