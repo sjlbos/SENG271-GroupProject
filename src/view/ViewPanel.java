@@ -7,8 +7,8 @@ import java.awt.*;
 
 public class ViewPanel extends JPanel {
 
-	public static final int WIDTH = 500;
-	public static final int HEIGHT = 500;
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 600;
 	private static final long serialVersionUID = 1L;
 	
 	public static final Color PLAYER_1_COLOR = Color.RED;
@@ -32,16 +32,19 @@ public class ViewPanel extends JPanel {
 	
 	public ViewPanel(Controller controller){
 		this.setBackground(Color.WHITE);
-		//this.setPreferredSize(new Dimension(ViewPanel.WIDTH,ViewPanel.HEIGHT));
+		this.setPreferredSize(new Dimension(ViewPanel.WIDTH,ViewPanel.HEIGHT));
 		this.setLayout(new GridBagLayout());
 		
 		this.controller = controller;
 		this.boardLoop = new FieldTile[40];
 		this.homes = new FieldTile[4][4];
 		this.goals = new FieldTile[4][4];
-		
+	
+		DicePanel c = new DicePanel(3,45);
+		c.setDieColor(Color.PINK);
+		this.add(c);
+
 		initializeTiles();
-		layoutTiles();
 	}
 	
 	private void initializeTiles(){
@@ -71,32 +74,6 @@ public class ViewPanel extends JPanel {
 		}
 	}
 	
-	private void layoutTiles(){
-		JPanel[] homePanels=getHomePanels();
-		
-		// Add the panels to their proper positions
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridheight=1;
-		gbc.gridwidth=1;
-		
-		gbc.gridx=0;
-		gbc.gridy=0;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		this.add(homePanels[0],gbc);
-		gbc.gridx=2;
-		gbc.gridy=0;
-		gbc.anchor = GridBagConstraints.NORTHEAST;
-		this.add(homePanels[1],gbc);
-		gbc.gridx=0;
-		gbc.gridy=2;
-		gbc.anchor = GridBagConstraints.SOUTHWEST;
-		this.add(homePanels[2],gbc);
-		gbc.gridx=2;
-		gbc.gridy=2;
-		gbc.anchor = GridBagConstraints.SOUTHEAST;
-		this.add(homePanels[3],gbc);
-	}
-	/*
 	private JPanel getTileStrip(FieldTile[] tiles,Color c,boolean isHorizontal){
 		
 		int numberOfTiles=tiles.length;
@@ -144,39 +121,6 @@ public class ViewPanel extends JPanel {
 		}
 		
 		return tileStrip;
-	}*/
-	
-	// Creates and lays out the home panels for all the players.
-	private JPanel[] getHomePanels(){
-		
-		// Set up dimensions
-		int tileHeight=this.boardLoop[0].getPreferredSize().height;
-		int tileWidth=this.boardLoop[0].getPreferredSize().width;
-		int panelPadding = 10;
-		int panelWidth = 5*panelPadding+4*tileWidth;
-		int panelHeight = 2*panelPadding+tileHeight;
-		
-		// Create 4 new home panels
-		JPanel[] homePanels = new JPanel[4];
-		for(int i=0; i<4;i++){
-			// Set up panel properties
-			JPanel newPanel = new JPanel();
-			newPanel.setLayout(new BoxLayout(newPanel,BoxLayout.LINE_AXIS));
-			newPanel.setPreferredSize(new Dimension(panelWidth,panelHeight));
-			newPanel.setBackground(getColorForPlayer(i+1));
-			
-			// Add the tiles to the current panel
-			for(int j=0;j<4;j++){
-				newPanel.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
-				newPanel.add(this.homes[i][j]);
-			}
-			newPanel.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
-		
-			// Add the completed panel to the array
-			homePanels[i]=newPanel;
-		}
-		
-		return homePanels;
 	}
 	
 	/*===================================
@@ -272,8 +216,4 @@ public class ViewPanel extends JPanel {
 			tile.setColor(getColorForPlayer(player));
 		}
 	}
-	
-	/*===================================
-	 DRAWING METHODS
-	 ===================================*/
 }
