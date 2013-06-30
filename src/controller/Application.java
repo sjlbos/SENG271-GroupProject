@@ -1,10 +1,11 @@
 package controller;
 import java.awt.BorderLayout;
+import java.awt.Color;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import view.ControlPanel;
+import view.TitlePanel;
 import view.ViewPanel;
 import model.Board;
 
@@ -35,13 +36,21 @@ public class Application {
 		// Initialize the game panels
 		ViewPanel viewPanel = new ViewPanel(this.controller);
 		ControlPanel controlPanel = new ControlPanel(this.controller);
+		TitlePanel titlePanel = new TitlePanel();
 		
 		// Set up the JFrame
 		this.applicationFrame = new JFrame("Ludo");
 		this.applicationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.applicationFrame.setResizable(false);
 		
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.LINE_AXIS));
+		topPanel.add(titlePanel);
+		topPanel.add(Box.createHorizontalGlue());
+		topPanel.setBackground(Color.WHITE);
+		
 		JPanel backPanel = new JPanel(new BorderLayout());
+		backPanel.add(topPanel,BorderLayout.NORTH);
 		backPanel.add(viewPanel,BorderLayout.CENTER);
 		backPanel.add(controlPanel,BorderLayout.SOUTH);
 		
