@@ -47,7 +47,7 @@ public class Application {
 		topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.LINE_AXIS));
 		topPanel.add(titlePanel);
 		topPanel.add(Box.createHorizontalGlue());
-		topPanel.setBackground(Color.WHITE);
+		topPanel.setBackground(Color.BLACK);
 		
 		JPanel backPanel = new JPanel(new BorderLayout());
 		backPanel.add(topPanel,BorderLayout.NORTH);

@@ -15,6 +15,7 @@ public class TitlePanel extends JPanel {
 	/*===================================
  	FIELDS
  	===================================*/
+	
 	private String labelText;
 	private Color textColor;
 	private Font labelFont = new Font("Calibri",Font.BOLD,30);
@@ -22,6 +23,7 @@ public class TitlePanel extends JPanel {
 	/*===================================
 	 CONSTRUCTORS
 	 ===================================*/
+	
 	public TitlePanel(){
 		this.labelText="Player 1 Turn";
 		this.setBackground(Color.WHITE);
@@ -33,22 +35,6 @@ public class TitlePanel extends JPanel {
 	 GETTERS & SETTERS
 	 ===================================*/
 	
-	public String getLabelText() {
-		return labelText;
-	}
-
-	public void setLabelText(String labelText) {
-		this.labelText = labelText;
-	}
-
-	public Color getTextColor() {
-		return textColor;
-	}
-
-	public void setTextColor(Color textColor) {
-		this.textColor = textColor;
-	}
-	
 	public Dimension getPreferredSize(){
 		return new Dimension(TitlePanel.WIDTH,TitlePanel.HEIGHT);
 	}
@@ -59,6 +45,61 @@ public class TitlePanel extends JPanel {
 	
 	public Dimension getMinimumSize(){
 		return this.getPreferredSize();
+	}
+	
+	/**
+	 * Sets the label to display the current turn.
+	 * @param playerNumber - The player number. Must be an integer between 1 and 4. 
+	 */
+	public void setTurnForPlayerNumber(int playerNumber){
+		switch(playerNumber){
+		case 1:
+			this.textColor = ViewPanel.PLAYER_1_COLOR;
+			this.labelText = "Player 1 Turn";
+			break;
+		case 2:
+			this.textColor = ViewPanel.PLAYER_2_COLOR;
+			this.labelText = "Player 2 Turn";
+			break;
+		case 3:
+			this.textColor = ViewPanel.PLAYER_3_COLOR;
+			this.labelText = "Player 3 Turn";
+			break;
+		case 4:
+			this.textColor = ViewPanel.PLAYER_4_COLOR;
+			this.labelText = "Player 4 Turn";
+			break;
+		default:
+			System.out.println("Invalid player number passed to TitlePanel.");
+		}
+		this.repaint();
+	}
+	
+	/**
+	 * Sets the label to display a player victory.
+	 * @param playerNumber - The player number. Must be an integer between 1 and 4.
+	 */
+	public void setVictoryForPlayer(int playerNumber){
+		switch(playerNumber){
+		case 1:
+			this.textColor = ViewPanel.PLAYER_1_COLOR;
+			this.labelText = "Player 1 Wins!";
+			break;
+		case 2:
+			this.textColor = ViewPanel.PLAYER_2_COLOR;
+			this.labelText = "Player 2 Wins!";
+			break;
+		case 3:
+			this.textColor = ViewPanel.PLAYER_3_COLOR;
+			this.labelText = "Player 3 Wins!";
+			break;
+		case 4:
+			this.textColor = ViewPanel.PLAYER_4_COLOR;
+			this.labelText = "Player 4 Wins!";
+			break;
+		default:
+			System.out.println("Invalid player number passed to TitlePanel.");
+		}
 	}
 	
 	/*===================================

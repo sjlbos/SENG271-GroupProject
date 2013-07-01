@@ -8,11 +8,11 @@ import java.awt.*;
 public class ViewPanel extends JPanel {
 
 	public static final int WIDTH = 800;
-	public static final int HEIGHT = 600;
+	public static final int HEIGHT = 650;
 	private static final long serialVersionUID = 1L;
 	
 	public static final Color PLAYER_1_COLOR = Color.RED;
-	public static final Color PLAYER_2_COLOR = Color.BLUE;
+	public static final Color PLAYER_2_COLOR = new Color(53,91,242);
 	public static final Color PLAYER_3_COLOR = new Color(242,228,29);
 	public static final Color PLAYER_4_COLOR = new Color(33,194,52);
 	public static final Color BLANK_COLOR = Color.WHITE;
@@ -25,13 +25,14 @@ public class ViewPanel extends JPanel {
 	private FieldTile[] boardLoop;
 	private FieldTile[][] homes;
 	private FieldTile[][] goals;
+	private DieComponent die;
 	
 	/*===================================
 	 CONSTRUCTORS
 	 ===================================*/
 	
 	public ViewPanel(Controller controller){
-		this.setBackground(Color.WHITE);
+		this.setBackground(Color.BLACK);
 		this.setPreferredSize(new Dimension(ViewPanel.WIDTH,ViewPanel.HEIGHT));
 		this.setLayout(new GridBagLayout());
 		
@@ -39,17 +40,21 @@ public class ViewPanel extends JPanel {
 		this.boardLoop = new FieldTile[40];
 		this.homes = new FieldTile[4][4];
 		this.goals = new FieldTile[4][4];
-	
-		DicePanel c = new DicePanel(3,45);
-		c.setDieColor(Color.PINK);
-		this.add(c);
+		
+		this.die = new DieComponent(6);
+		this.die.toggleIsActive();
+		this.die.addActionListener(controller.getDiceListener());
 
 		initializeTiles();
+		layoutTileStrips();
 	}
 	
+	/**
+	 * Initializes the home, goal, and board tile arrays.
+	 */
 	private void initializeTiles(){
 		// Initialize loop tiles
-		for(int i=0;i<40;i++){
+		for(int i=0;i<boardLoop.length;i++){
 			FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 			newTile.addActionListener(controller.getFieldTileListener());
 			this.boardLoop[i] = newTile;
@@ -74,12 +79,22 @@ public class ViewPanel extends JPanel {
 		}
 	}
 	
-	private JPanel getTileStrip(FieldTile[] tiles,Color c,boolean isHorizontal){
+	/**
+	 * Creates a JPanel container for a strip of game tiles.
+	 * 
+	 * @param tiles - An array of the FieldTile objects to be added to panel.
+	 * @param startIndex - The index at which to start reading the tiles array.
+	 * @param endIndex - The index at which to stop reading the tiles array.
+	 * @param panelColor - The background color of the panel.
+	 * @param isHorizontal - Specifies whether the panel should be layed out top to bottom or left to right.
+	 * @return Returns the finished panel containing all attached field tiles.
+	 */
+	private JPanel getTileStrip(FieldTile[] tiles,int startIndex,int endIndex,Color panelColor,boolean isHorizontal){
 		
-		int numberOfTiles=tiles.length;
+		int numberOfTiles=endIndex-startIndex+1;
 		
 		// Set up dimensions
-		int panelPadding=10;
+		int panelPadding=5;
 		int tileHeight=FieldTile.HEIGHT;
 		int tileWidth=FieldTile.WIDTH;
 		int panelHeight=0;
@@ -87,7 +102,7 @@ public class ViewPanel extends JPanel {
 		
 		// Create panel
 		JPanel tileStrip = new JPanel();
-		tileStrip.setBackground(c);
+		tileStrip.setBackground(panelColor);
 		if(isHorizontal){
 			tileStrip.setLayout(new BoxLayout(tileStrip,BoxLayout.LINE_AXIS));
 			panelHeight=2*panelPadding+tileHeight;
@@ -102,31 +117,149 @@ public class ViewPanel extends JPanel {
 		tileStrip.setPreferredSize(d);
 		tileStrip.setMinimumSize(d);
 		tileStrip.setMaximumSize(d);
-		tileStrip.setBackground(c);
 		
 		// Add FieldTiles to panel
 		if(isHorizontal){
-			for(int i=0;i<numberOfTiles;i++){
+			for(int i=startIndex;i<=endIndex;i++){
 				tileStrip.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
 				tileStrip.add(tiles[i]);
 			}
 			tileStrip.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
 		}
 		else{
-			for(int i=0;i<numberOfTiles;i++){
+			for(int i=startIndex;i<=endIndex;i++){
 				tileStrip.add(Box.createRigidArea(new Dimension(panelWidth,panelPadding)));
 				tileStrip.add(tiles[i]);
 			}
 			tileStrip.add(Box.createRigidArea(new Dimension(panelWidth,panelPadding)));
 		}
-		
 		return tileStrip;
+	}
+	
+	private void layoutTileStrips(){
+		
+		// Center board components.
+		
+		JPanel p1Goal = getTileStrip(this.goals[0], 0, 3, ViewPanel.PLAYER_1_COLOR, false);
+		JPanel p2Goal = getTileStrip(this.goals[1], 0, 3, ViewPanel.PLAYER_2_COLOR, true);
+		JPanel p3Goal = getTileStrip(this.goals[2], 0, 3, ViewPanel.PLAYER_3_COLOR, false);
+		JPanel p4Goal = getTileStrip(this.goals[3], 0, 3, ViewPanel.PLAYER_4_COLOR, true);
+		
+		JPanel centerSquare = new JPanel(new GridBagLayout());
+		centerSquare.setBackground(Color.BLACK);
+		centerSquare.setPreferredSize(new Dimension(FieldTile.WIDTH+10,FieldTile.HEIGHT+10));
+		centerSquare.add(this.die);
+		
+		JPanel center = new JPanel(new GridBagLayout());
+		center.setBackground(Color.BLACK);
+		GridBagConstraints gb1 = new GridBagConstraints();
+		gb1.gridx=0;
+		gb1.gridy=0;
+		center.add(Box.createGlue(),gb1);
+		gb1.gridx=1;
+		gb1.gridy=0;
+		center.add(p3Goal,gb1);
+		gb1.gridx=2;
+		gb1.gridy=0;
+		center.add(Box.createGlue(),gb1);
+		gb1.gridx=0;
+		gb1.gridy=1;
+		center.add(p2Goal,gb1);
+		gb1.gridx=1;
+		gb1.gridy=1;
+		center.add(centerSquare,gb1);
+		gb1.gridx=2;
+		gb1.gridy=1;
+		center.add(p4Goal,gb1);
+		gb1.gridx=0;
+		gb1.gridy=2;
+		center.add(Box.createGlue(),gb1);
+		gb1.gridx=1;
+		gb1.gridy=2;
+		center.add(p1Goal,gb1);
+		gb1.gridx=2;
+		gb1.gridy=2;
+		center.add(Box.createGlue(),gb1);
+		
+		// Middle board components.
+		JPanel leftStrip = getTileStrip(this.boardLoop, 0, 10, Color.GRAY, false);
+		JPanel topStrip = getTileStrip(this.boardLoop, 11, 19, Color.GRAY, true);
+		JPanel rightStrip = getTileStrip(this.boardLoop, 20, 30, Color.GRAY, false);
+		JPanel bottomStrip = getTileStrip(this.boardLoop, 31, 39, Color.GRAY, true);
+		
+		JPanel middlePanel = new JPanel(new GridBagLayout());
+		middlePanel.setBackground(Color.BLACK);
+		GridBagConstraints gb2 = new GridBagConstraints();
+		
+		gb2.gridx = 0;
+		gb2.gridy = 0;
+		gb2.gridheight=3;
+		middlePanel.add(leftStrip, gb2);
+		gb2.gridx = 1;
+		gb2.gridy = 0;
+		gb2.gridheight = 1;
+		middlePanel.add(topStrip, gb2);
+		gb2.gridx = 2;
+		gb2.gridy = 0;
+		gb2.gridheight = 3;
+		middlePanel.add(rightStrip, gb2);
+		gb2.gridx = 1;
+		gb2.gridy = 1;
+		gb2.gridheight = 1;
+		middlePanel.add(center,gb2);
+		gb2.gridx = 1;
+		gb2.gridy = 2;
+		middlePanel.add(bottomStrip, gb2);
+		
+		// Outer board components
+		JPanel p1Home = getTileStrip(this.homes[0], 0, 3, ViewPanel.PLAYER_1_COLOR, true);
+		JPanel p2Home = getTileStrip(this.homes[1], 0, 3, ViewPanel.PLAYER_2_COLOR, false);
+		JPanel p3Home = getTileStrip(this.homes[2], 0, 3, ViewPanel.PLAYER_3_COLOR, true);
+		JPanel p4Home = getTileStrip(this.homes[3], 0, 3, ViewPanel.PLAYER_4_COLOR, false);
+		
+		JPanel outerPanel = new JPanel(new GridBagLayout());
+		outerPanel.setBackground(Color.BLACK);
+		GridBagConstraints gb3 = new GridBagConstraints();
+		
+		gb3.gridx = 0;
+		gb3.gridy = 0;
+		gb3.gridwidth = 2;
+		outerPanel.add(p3Home, gb3);
+		gb3.gridx = 0;
+		gb3.gridy = 1;
+		gb3.gridwidth = 1;
+		gb3.gridheight = 2;
+		outerPanel.add(p2Home, gb3);
+		
+		gb3.gridx = 1;
+		gb3.gridy = 1;
+		gb3.gridwidth = 1;
+		gb3.gridheight = 1;
+		outerPanel.add(middlePanel, gb3);
+		
+		gb3.gridx = 2;
+		gb3.gridy = 0;
+		gb3.gridheight = 2;
+		gb3.gridwidth = 1;
+		outerPanel.add(p4Home, gb3);
+		
+		gb3.gridx = 1;
+		gb3.gridy = 2;
+		gb3.gridwidth = 2;
+		gb3.gridheight = 1;
+		outerPanel.add(p1Home, gb3);
+			
+		this.add(outerPanel);
 	}
 	
 	/*===================================
 	 GETTERS & SETTERS
 	 ===================================*/
 	
+	/**
+	 * @param player - an integer between 1 and 4. Any other integer returns the default blank color.
+	 * @return Returns the color of that specified player.
+	 */
 	private Color getColorForPlayer(int player){
 		switch(player){
 		
@@ -215,5 +348,9 @@ public class ViewPanel extends JPanel {
 		if(tile!=null){
 			tile.setColor(getColorForPlayer(player));
 		}
+	}
+	
+	public void setDieRoll(int roll){
+		this.die.setDieRoll(roll);
 	}
 }

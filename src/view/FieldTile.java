@@ -13,7 +13,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	
 	private static final long serialVersionUID = 1L;
 	private static final int Padding = 5;
-	private static final int Diameter = 40;
+	private static final int Diameter = 30;
 	
 	public static final int HEIGHT = 2*Padding+Diameter;
 	public static final int WIDTH = 2*Padding+Diameter;
@@ -44,7 +44,7 @@ public class FieldTile extends JComponent implements MouseListener{
 		
 		this.fieldColor=Color.WHITE;
 		this.circle = new Ellipse2D.Double(Padding,Padding,Diameter,Diameter);
-		this.isActive = true;
+		this.isActive = false;
 	}
 	
 	public FieldTile(Color c){
@@ -57,14 +57,15 @@ public class FieldTile extends JComponent implements MouseListener{
 		
 		this.fieldColor = c;
 		this.circle = new Ellipse2D.Double(Padding,Padding,Diameter,Diameter);
-		this.isActive = false;
+		this.isActive = true;
 	}
 	
 	/*===================================
 	 GETTERS & SETTERS
 	 ===================================*/
-	public void setIsActive(boolean bool){
-		this.isActive=bool;
+	
+	public void toggleIsActive(){
+		this.isActive=this.isActive?false:true;
 	}
 	
 	public boolean isActive(){
@@ -110,7 +111,9 @@ public class FieldTile extends JComponent implements MouseListener{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		
+		// Get 2D graphics object and turn anti aliasing on.
 		Graphics2D g2 = (Graphics2D)g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// Fill field
 		g2.setColor(mousePressed?Color.GRAY:this.fieldColor);
@@ -135,7 +138,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	 ===================================*/
 	
 	/**
-	 * Fires an ActionEvent to all subscribers when the component is pressed.
+	 * Fires an ActionEvent to all subscribers when the component is clicked.
 	 */
 	public void mouseClicked(MouseEvent e) {
 		if(this.isActive){
@@ -147,7 +150,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	}
 
 	/**
-	 * If the mouse enters the component, the field is redrawn with a highlighted border border.<br>
+	 * If the mouse enters the component, the field is redrawn with a highlighted border.<br>
 	 * An ActionEvent is also fired to all subscribers.
 	 */
 	public void mouseEntered(MouseEvent e) {

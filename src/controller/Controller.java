@@ -23,6 +23,7 @@ public class Controller {
 	private int currentRoll;
 	private StartNewGameListener startNewGameListener;
 	private FieldTileListener fieldTileListener;
+	private DiceListener diceListener;
 	
 	/*===================================
 	 GETTERS & SETTERS
@@ -107,6 +108,18 @@ public class Controller {
 		return this.fieldTileListener;
 	}
 	
+	/**
+	 * Factory method for a DiceListener object.
+	 * <p>
+	 * @return Returns the default DiceListener
+	 */
+	public ActionListener getDiceListener(){
+		if(this.diceListener==null){
+			this.diceListener = new DiceListener();
+		}
+		return this.diceListener;
+	}
+	
 	// Nested action lister class for the "New Game" button.
 	private class StartNewGameListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
@@ -126,6 +139,13 @@ public class Controller {
 			else if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
 				System.out.println("Tile Clicked");
 			}
+		}
+	}
+	
+	// Nested action listener for Dice events.
+	private class DiceListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			System.out.println("Dice Rolled.");
 		}
 	}
 }
