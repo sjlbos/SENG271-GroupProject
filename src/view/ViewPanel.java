@@ -13,9 +13,13 @@ public class ViewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	public static final Color PLAYER_1_COLOR = Color.RED;
+	public static final Color PLAYER_1_BOARD_COLOR = new Color(242,111,111);
 	public static final Color PLAYER_2_COLOR = new Color(53,91,242);
+	public static final Color PLAYER_2_BOARD_COLOR = new Color(108,117,217);
 	public static final Color PLAYER_3_COLOR = new Color(242,228,29);
+	public static final Color PLAYER_3_BOARD_COLOR = new Color(235,221,136);
 	public static final Color PLAYER_4_COLOR = new Color(33,194,52);
+	public static final Color PLAYER_4_BOARD_COLOR = new Color(120,222,121);
 	public static final Color BLANK_COLOR = Color.WHITE;
 	public static final Color LOOP_COLOR = Color.GRAY;
 	
@@ -69,6 +73,7 @@ public class ViewPanel extends JPanel {
 			for(int j=0;j<4;j++){
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
+				newTile.setColor(getColorForPlayer(i+1));
 				this.homes[i][j]=newTile;
 			}
 		}
@@ -84,70 +89,16 @@ public class ViewPanel extends JPanel {
 	}
 	
 	/**
-	 * Creates a JPanel container for a strip of game tiles.
-	 * 
-	 * @param tiles - An array of the FieldTile objects to be added to panel.
-	 * @param startIndex - The index at which to start reading the tiles array.
-	 * @param endIndex - The index at which to stop reading the tiles array.
-	 * @param panelColor - The background color of the panel.
-	 * @param isHorizontal - Specifies whether the panel should be layed out top to bottom or left to right.
-	 * @return Returns the finished panel containing all attached field tiles.
+	 * This method uses the TileStripFactor to get the necessary tile strips and lays these tile strips out in their proper positions.
 	 */
-	private JPanel getTileStrip(FieldTile[] tiles,int startIndex,int endIndex,Color panelColor,boolean isHorizontal){
-		
-		int numberOfTiles=endIndex-startIndex+1;
-		
-		// Set up dimensions
-		int panelPadding=5;
-		int tileHeight=FieldTile.HEIGHT;
-		int tileWidth=FieldTile.WIDTH;
-		int panelHeight=0;
-		int panelWidth=0;
-		
-		// Create panel
-		JPanel tileStrip = new JPanel();
-		tileStrip.setBackground(panelColor);
-		if(isHorizontal){
-			tileStrip.setLayout(new BoxLayout(tileStrip,BoxLayout.LINE_AXIS));
-			panelHeight=2*panelPadding+tileHeight;
-			panelWidth=numberOfTiles*(tileWidth+panelPadding)+panelPadding;
-		}
-		else{
-			tileStrip.setLayout(new BoxLayout(tileStrip,BoxLayout.PAGE_AXIS));
-			panelHeight=numberOfTiles*(tileHeight+panelPadding)+panelPadding;
-			panelWidth=2*panelPadding+tileWidth;
-		}
-		Dimension d = new Dimension(panelWidth,panelHeight);
-		tileStrip.setPreferredSize(d);
-		tileStrip.setMinimumSize(d);
-		tileStrip.setMaximumSize(d);
-		
-		// Add FieldTiles to panel
-		if(isHorizontal){
-			for(int i=startIndex;i<=endIndex;i++){
-				tileStrip.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
-				tileStrip.add(tiles[i]);
-			}
-			tileStrip.add(Box.createRigidArea(new Dimension(panelPadding,panelHeight)));
-		}
-		else{
-			for(int i=startIndex;i<=endIndex;i++){
-				tileStrip.add(Box.createRigidArea(new Dimension(panelWidth,panelPadding)));
-				tileStrip.add(tiles[i]);
-			}
-			tileStrip.add(Box.createRigidArea(new Dimension(panelWidth,panelPadding)));
-		}
-		return tileStrip;
-	}
-	
 	private void layoutTileStrips(){
 		
 		// Center board components.
 		
-		JPanel p1Goal = TileStripFactory.getGoalForBottom(this.goals[0], ViewPanel.PLAYER_1_COLOR);
-		JPanel p2Goal = TileStripFactory.getGoalForLeft(this.goals[1], ViewPanel.PLAYER_2_COLOR);
-		JPanel p3Goal = TileStripFactory.getGoalForTop(this.goals[2], ViewPanel.PLAYER_3_COLOR);
-		JPanel p4Goal = TileStripFactory.getGoalForRight(this.goals[3], ViewPanel.PLAYER_4_COLOR);
+		JPanel p1Goal = TileStripFactory.getGoalForBottom(this.goals[0], ViewPanel.PLAYER_1_BOARD_COLOR);
+		JPanel p2Goal = TileStripFactory.getGoalForLeft(this.goals[1], ViewPanel.PLAYER_2_BOARD_COLOR);
+		JPanel p3Goal = TileStripFactory.getGoalForTop(this.goals[2], ViewPanel.PLAYER_3_BOARD_COLOR);
+		JPanel p4Goal = TileStripFactory.getGoalForRight(this.goals[3], ViewPanel.PLAYER_4_BOARD_COLOR);
 		
 		JPanel centerSquare = new JPanel(new GridBagLayout());
 		centerSquare.setBackground(Color.BLACK);
@@ -216,10 +167,10 @@ public class ViewPanel extends JPanel {
 		middlePanel.add(bottomStrip, gb2);
 		
 		// Outer board components
-		JPanel p1Home = TileStripFactory.getHomeForBottom(this.homes[0], ViewPanel.PLAYER_1_COLOR);
-		JPanel p2Home = TileStripFactory.getHomeForLeft(this.homes[1], ViewPanel.PLAYER_2_COLOR);
-		JPanel p3Home = TileStripFactory.getHomeForTop(this.homes[2], ViewPanel.PLAYER_3_COLOR);
-		JPanel p4Home = TileStripFactory.getHomeForRight(this.homes[3], ViewPanel.PLAYER_4_COLOR);
+		JPanel p1Home = TileStripFactory.getHomeForBottom(this.homes[0], ViewPanel.PLAYER_1_BOARD_COLOR);
+		JPanel p2Home = TileStripFactory.getHomeForLeft(this.homes[1], ViewPanel.PLAYER_2_BOARD_COLOR);
+		JPanel p3Home = TileStripFactory.getHomeForTop(this.homes[2], ViewPanel.PLAYER_3_BOARD_COLOR);
+		JPanel p4Home = TileStripFactory.getHomeForRight(this.homes[3], ViewPanel.PLAYER_4_BOARD_COLOR);
 		
 		JPanel outerPanel = new JPanel(new GridBagLayout());
 		outerPanel.setBackground(Color.BLACK);
@@ -361,6 +312,29 @@ public class ViewPanel extends JPanel {
 	public void setDieRoll(int roll){
 		this.animator.animateDieRoll(roll);
 	}
+	
+	/*===================================
+	 OTHER METHODS
+	 ===================================*/
+	
+	/**
+	 * This method resets the board to a new game state, with all the pawns in their home fields.
+	 */
+	public void resetBoard(){
+		for(int i=0;i<boardLoop.length;i++){
+			boardLoop[i].setColor(ViewPanel.BLANK_COLOR);
+		}
+		for(int i=0;i<4;i++){
+			for(int j=0;j<4;j++){
+				goals[i][j].setColor(ViewPanel.BLANK_COLOR);
+				homes[i][j].setColor(getColorForPlayer(i+1));
+			}
+		}
+	}
+	
+	/*===================================
+	 ANIMATOR
+	 ===================================*/
 	
 	/**
 	 * A nested helper class responsible for animating the ViewPanel

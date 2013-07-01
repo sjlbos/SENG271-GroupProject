@@ -30,6 +30,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	private Shape circle;
 	private Color fieldColor;
 	private ArrayList<ActionListener> actionListeners;
+	private String id;
 	
 	/*===================================
 	 CONSTRUCTORS
@@ -45,6 +46,7 @@ public class FieldTile extends JComponent implements MouseListener{
 		this.fieldColor=Color.WHITE;
 		this.circle = new Ellipse2D.Double(Padding,Padding,Diameter,Diameter);
 		this.isActive = false;
+		this.id="";
 	}
 	
 	public FieldTile(Color c){
@@ -58,11 +60,20 @@ public class FieldTile extends JComponent implements MouseListener{
 		this.fieldColor = c;
 		this.circle = new Ellipse2D.Double(Padding,Padding,Diameter,Diameter);
 		this.isActive = true;
+		this.id="";
 	}
 	
 	/*===================================
 	 GETTERS & SETTERS
 	 ===================================*/
+	
+	public void setId(String id){
+		this.id=id;
+	}
+	
+	public String getId(){
+		return this.id;
+	}
 	
 	public void toggleIsActive(){
 		this.isActive=this.isActive?false:true;

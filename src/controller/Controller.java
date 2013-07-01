@@ -146,7 +146,6 @@ public class Controller {
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			System.out.println("Dice Rolled.");
-			Controller.this.viewPanel.setDieRoll(3);
 		}
 	}
 }
