@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import controller.Controller;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 public class ViewPanel extends JPanel {
 
@@ -26,6 +27,7 @@ public class ViewPanel extends JPanel {
 	private FieldTile[][] homes;
 	private FieldTile[][] goals;
 	private DieComponent die;
+	private Animator animator;
 	
 	/*===================================
 	 CONSTRUCTORS
@@ -40,6 +42,7 @@ public class ViewPanel extends JPanel {
 		this.boardLoop = new FieldTile[40];
 		this.homes = new FieldTile[4][4];
 		this.goals = new FieldTile[4][4];
+		this.animator = new Animator();
 		
 		this.die = new DieComponent(6);
 		this.die.toggleIsActive();
@@ -350,7 +353,39 @@ public class ViewPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * Sets the number displayed on the die.
+	 * @param roll - an integer between 1 and 6 representing the die roll.
+	 */
 	public void setDieRoll(int roll){
-		this.die.setDieRoll(roll);
+		this.animator.animateDieRoll(roll);
 	}
+	
+	/**
+	 * A nested helper class responsible for animating the ViewPanel
+	 */
+	private class Animator{
+		
+		/**
+		 * Displays random die numbers over 3 seconds before arriving at the correct roll.
+		 * @param toNumber - the number the die should display when it finishes rolling.
+		 */
+		public void animateDieRoll(int toNumber){
+			Random r = new Random();
+			
+			long startTime = System.currentTimeMillis();
+			long currentTime = startTime;
+			int divisor = 400;
+			
+			while(currentTime - startTime < 3000L){	
+				
+				if(currentTime%divisor<10 && currentTime%divisor>-10){
+					ViewPanel.this.die.setDieRoll(r.nextInt(6)+1);
+				}		
+				currentTime = System.currentTimeMillis();
+			}
+			ViewPanel.this.die.setDieRoll(toNumber);
+		}
+	}
+
 }

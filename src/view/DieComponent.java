@@ -76,7 +76,7 @@ public class DieComponent extends JComponent implements MouseListener {
 	
 	public void setDieRoll(int roll){
 		this.dieRoll=roll;
-		this.repaint();
+		this.paintImmediately(0, 0, DieComponent.SIDE_LENGTH, DieComponent.SIDE_LENGTH);
 	}
 	
 	public int getDieRoll(){
@@ -175,7 +175,7 @@ public class DieComponent extends JComponent implements MouseListener {
 			break;
 		default:
 			//How did this happen?
-			System.out.println("Invalid dice roll encountered.");
+			System.out.println("Invalid dice roll encountered:"+this.dieRoll+".");
 		}
 	}
 	
