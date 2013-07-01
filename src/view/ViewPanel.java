@@ -17,6 +17,7 @@ public class ViewPanel extends JPanel {
 	public static final Color PLAYER_3_COLOR = new Color(242,228,29);
 	public static final Color PLAYER_4_COLOR = new Color(33,194,52);
 	public static final Color BLANK_COLOR = Color.WHITE;
+	public static final Color LOOP_COLOR = Color.GRAY;
 	
 	/*===================================
  	FIELDS
@@ -143,10 +144,10 @@ public class ViewPanel extends JPanel {
 		
 		// Center board components.
 		
-		JPanel p1Goal = getTileStrip(this.goals[0], 0, 3, ViewPanel.PLAYER_1_COLOR, false);
-		JPanel p2Goal = getTileStrip(this.goals[1], 0, 3, ViewPanel.PLAYER_2_COLOR, true);
-		JPanel p3Goal = getTileStrip(this.goals[2], 0, 3, ViewPanel.PLAYER_3_COLOR, false);
-		JPanel p4Goal = getTileStrip(this.goals[3], 0, 3, ViewPanel.PLAYER_4_COLOR, true);
+		JPanel p1Goal = TileStripFactory.getGoalForBottom(this.goals[0], ViewPanel.PLAYER_1_COLOR);
+		JPanel p2Goal = TileStripFactory.getGoalForLeft(this.goals[1], ViewPanel.PLAYER_2_COLOR);
+		JPanel p3Goal = TileStripFactory.getGoalForTop(this.goals[2], ViewPanel.PLAYER_3_COLOR);
+		JPanel p4Goal = TileStripFactory.getGoalForRight(this.goals[3], ViewPanel.PLAYER_4_COLOR);
 		
 		JPanel centerSquare = new JPanel(new GridBagLayout());
 		centerSquare.setBackground(Color.BLACK);
@@ -185,10 +186,10 @@ public class ViewPanel extends JPanel {
 		center.add(Box.createGlue(),gb1);
 		
 		// Middle board components.
-		JPanel leftStrip = getTileStrip(this.boardLoop, 0, 10, Color.GRAY, false);
-		JPanel topStrip = getTileStrip(this.boardLoop, 11, 19, Color.GRAY, true);
-		JPanel rightStrip = getTileStrip(this.boardLoop, 20, 30, Color.GRAY, false);
-		JPanel bottomStrip = getTileStrip(this.boardLoop, 31, 39, Color.GRAY, true);
+		JPanel leftStrip = TileStripFactory.getLeftBoardStrip(this.boardLoop, ViewPanel.LOOP_COLOR);
+		JPanel topStrip = TileStripFactory.getTopBoardStrip(this.boardLoop, ViewPanel.LOOP_COLOR);
+		JPanel rightStrip = TileStripFactory.getRightBoardStrip(this.boardLoop, ViewPanel.LOOP_COLOR);
+		JPanel bottomStrip = TileStripFactory.getBottomBoardStrip(this.boardLoop, ViewPanel.LOOP_COLOR);
 		
 		JPanel middlePanel = new JPanel(new GridBagLayout());
 		middlePanel.setBackground(Color.BLACK);
@@ -215,10 +216,10 @@ public class ViewPanel extends JPanel {
 		middlePanel.add(bottomStrip, gb2);
 		
 		// Outer board components
-		JPanel p1Home = getTileStrip(this.homes[0], 0, 3, ViewPanel.PLAYER_1_COLOR, true);
-		JPanel p2Home = getTileStrip(this.homes[1], 0, 3, ViewPanel.PLAYER_2_COLOR, false);
-		JPanel p3Home = getTileStrip(this.homes[2], 0, 3, ViewPanel.PLAYER_3_COLOR, true);
-		JPanel p4Home = getTileStrip(this.homes[3], 0, 3, ViewPanel.PLAYER_4_COLOR, false);
+		JPanel p1Home = TileStripFactory.getHomeForBottom(this.homes[0], ViewPanel.PLAYER_1_COLOR);
+		JPanel p2Home = TileStripFactory.getHomeForLeft(this.homes[1], ViewPanel.PLAYER_2_COLOR);
+		JPanel p3Home = TileStripFactory.getHomeForTop(this.homes[2], ViewPanel.PLAYER_3_COLOR);
+		JPanel p4Home = TileStripFactory.getHomeForRight(this.homes[3], ViewPanel.PLAYER_4_COLOR);
 		
 		JPanel outerPanel = new JPanel(new GridBagLayout());
 		outerPanel.setBackground(Color.BLACK);
