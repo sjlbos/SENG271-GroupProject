@@ -367,7 +367,7 @@ public class ViewPanel extends JPanel {
 			
 			long startTime = System.currentTimeMillis();
 			long currentTime = startTime;
-			int divisor = 400;
+			long divisor = 400;
 			
 			while(currentTime - startTime < 3000L){	
 				
