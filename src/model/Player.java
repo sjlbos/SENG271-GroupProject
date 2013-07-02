@@ -14,4 +14,7 @@ public interface Player {
 	
 	public int getPawnsAtHome();
 	public void setPawnsAtHome(int pawnsAtHome);
+	
+	public int getStartPosition();
+	public void setStartPosition(int player);
 }

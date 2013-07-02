@@ -2,6 +2,14 @@ package model;
 
 import controller.Controller;
 import java.util.HashMap;
+import java.util.ArrayList;
+
+/**
+ * Class to model the game board. <br>
+ * Contains accessors for the players, pawns, dice rolls, etc.
+ * @author Luuk
+ *
+ */
 
 public class Board {
 	
@@ -57,7 +65,7 @@ public class Board {
 		return allPawns;
 	}
 	
-	public Pawn[] getActivePawns(){
+	public ArrayList<Pawn> getActivePawns(){
 		return null;
 	}
 	

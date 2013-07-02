@@ -4,13 +4,16 @@ public class HumanPlayer implements Player {
 	
 	private int playerNumber;
 	private int pawnsAtHome;
+	private int startPosition;
 	private Strategy strategy;
 	private Pawn[] pawns;
 	
 	//Constructor
 	public HumanPlayer(int playerNumber){
 		this.playerNumber = playerNumber;
+		setStartPosition(playerNumber);
 		pawns = new Pawn[4];
+		
 	}
 	
 	/*===============================
@@ -55,5 +58,33 @@ public class HumanPlayer implements Player {
 	@Override
 	public void setPawnsAtHome(int pawnsAtHome){
 		this.pawnsAtHome = pawnsAtHome;
+	}
+	
+	@Override
+	public int getStartPosition(){
+		return this.startPosition;
+	}
+	
+	/**
+	 * Utility method used in constructing the player object to set their starting tile.
+	 * @param player - Player number of the player object being created.
+	 */
+	@Override
+	public void setStartPosition(int player){
+		switch(player){
+			case(1):
+				this.startPosition = 0;
+			case(2):
+				this.startPosition = 0;
+			case(3):
+				this.startPosition = 0;
+			case(4):
+				this.startPosition = 0;
+			default:
+				//This should never occur
+				this.startPosition = -1;
+				
+		}
+				
 	}
 }

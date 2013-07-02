@@ -2,11 +2,13 @@ package controller;
 
 import java.awt.event.*;
 import java.util.Random;
+import java.util.ArrayList;
 
 import model.Board;
 import model.Player;
 import model.Pawn;
 import model.HumanPlayer;
+import model.ComputerPlayer;
 import view.FieldTile;
 import view.ViewPanel;
 
@@ -48,6 +50,7 @@ public class Controller {
 	public void rollDie(){
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
+		this.viewPanel.setDieRoll(currentRoll);
 	}
 	
 	/**
@@ -62,7 +65,8 @@ public class Controller {
 				// wait for die roll event
 				if(this.diceRolled) break;
 			}
-			board.getActivePawns();
+			this.diceRolled = false;
+			ArrayList<Pawn> activePawns = board.getActivePawns();
 			for(;;){
 				// wait for pawn select event
 				if(this.pawnSelected) break;
@@ -73,13 +77,16 @@ public class Controller {
 				//@TODO position = pawn.getPosition()
 				//viewPanel.setColorAtBoardTile(player, position);
 			}
-		} else {
+		} else if (player instanceof ComputerPlayer) {
 			rollDie();
 			//board.makeMove();
 			Pawn[] pawns = board.getPawns();
 			for(Pawn pawn : pawns){
 				
 			}
+		} else {
+			// if you're not human or computer... what are you!?
+			System.out.println("How did this happen, you must be a cyborg!");
 		}
 	}
 	
@@ -145,7 +152,9 @@ public class Controller {
 	// Nested action listener for Dice events.
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			System.out.println("Dice Rolled.");
+			//System.out.println("Dice Rolled.");
+			Controller.this.diceRolled = true;
+			Controller.this.rollDie();
 		}
 	}
 }

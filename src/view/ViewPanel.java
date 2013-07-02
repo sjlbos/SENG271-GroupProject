@@ -326,6 +326,10 @@ public class ViewPanel extends JPanel {
 		this.animator.animateDieRoll(roll);
 	}
 	
+	public Animator getAnimator(){
+		return this.animator;
+	}
+	
 	/*===================================
 	 OTHER METHODS
 	 ===================================*/
@@ -367,7 +371,7 @@ public class ViewPanel extends JPanel {
 			
 			while(currentTime - startTime < 3000L){	
 				
-				if(currentTime%divisor<10 && currentTime%divisor>-10){
+				if(currentTime%divisor<10){
 					ViewPanel.this.die.setDieRoll(r.nextInt(6)+1);
 				}		
 				currentTime = System.currentTimeMillis();
