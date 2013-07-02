@@ -73,13 +73,13 @@ public class HumanPlayer implements Player {
 	public void setStartPosition(int player){
 		switch(player){
 			case(1):
-				this.startPosition = 0;
+				this.startPosition = 36;
 			case(2):
-				this.startPosition = 0;
+				this.startPosition = 6;
 			case(3):
-				this.startPosition = 0;
+				this.startPosition = 16;
 			case(4):
-				this.startPosition = 0;
+				this.startPosition = 26;
 			default:
 				//This should never occur
 				this.startPosition = -1;
