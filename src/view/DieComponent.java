@@ -7,6 +7,15 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.*;
 
+/**
+ * 
+ * @author Stephen Bos
+ * June, 2013
+ * 
+ * This class is a custom JComponent that displays a game die. The die can either be active or inactive.
+ * If the die is active, it will respond to mouse click events and highlights itself when it is moused over.
+ * The die color, dot color, and die roll can all be manually set.
+ */
 public class DieComponent extends JComponent implements MouseListener {
 
 	private static final long serialVersionUID = 1L;

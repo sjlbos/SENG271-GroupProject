@@ -5,6 +5,15 @@ import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.*;
 
+/**
+ * 
+ * @author Stephen Bos
+ * June, 2013
+ *
+ * This class is a JPanel label component that displays the current status of the game.
+ * This panel can display the current player, report a player's victory, or display a custom
+ * message.
+ */
 public class TitlePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -25,7 +34,7 @@ public class TitlePanel extends JPanel {
 	 ===================================*/
 	
 	public TitlePanel(){
-		this.labelText="Player 1 Turn";
+		this.labelText="Welcome to Ludo!";
 		this.setBackground(Color.WHITE);
 		this.setBorder(BorderFactory.createRaisedBevelBorder());
 		this.setPreferredSize(new Dimension(TitlePanel.WIDTH,TitlePanel.HEIGHT));
@@ -45,6 +54,17 @@ public class TitlePanel extends JPanel {
 	
 	public Dimension getMinimumSize(){
 		return this.getPreferredSize();
+	}
+	
+	/**
+	 * Displays a custom message in a black font on the label.
+	 * 
+	 * @param message - the custom message to be displayed. This component will not resize to account for longer strings.
+	 */
+	public void setCustomMessage(String message){
+		this.textColor = Color.BLACK;
+		this.labelText = message;
+		this.repaint();
 	}
 	
 	/**

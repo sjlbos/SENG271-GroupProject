@@ -5,6 +5,29 @@ import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
+/**
+ * @author Stephen Bos
+ * June, 2013
+ * 
+ * FieldTile objects model the circular tiles on the Ludo board where pawns can be placed.
+ * FieldTile subclasses JComponent and thus can be added to any Swing container object. 
+ * 
+ * A tile can be in one of three states: active, inactive, or set as an active destination.
+ * If a tile is active, it responds to mouse events and is user-interactable. If the tile is
+ * inactive, it will not respond to any user input. If the tile is set as an active destination,
+ * it will be highlighted in red, rather than the regular blue or red.
+ * 
+ * It should be noted that FieldTile objects do not store an occupied state. FieldTiles are simply
+ * circles that can be filled with different colors. A separate data model should be responsible for
+ * keeping track of the tile occupation.
+ * 
+ * Although it is not enforced, each tile should be set with an id string so that it can be uniquely identified.
+ * 
+ * FielTiles can respond to the following mouse events:
+ *  - mouseClicked: used to register when a player clicks a pawn, ex. to signal a move
+ *  - mouseEntered: can be used by listeners to highlight a pawn's move destination
+ *  - mouseExited: can be used by listeners to un-highlight a pawn's move destination 
+ */
 public class FieldTile extends JComponent implements MouseListener{
 	
 	public static final String EXIT_EVENT = "exit";
@@ -113,6 +136,10 @@ public class FieldTile extends JComponent implements MouseListener{
 	
 	public void removeActionListener(ActionListener subscriber){
 		this.actionListeners.remove(subscriber);
+	}
+	
+	public String toString(){
+		return this.id;
 	}
 	
 	/*===================================

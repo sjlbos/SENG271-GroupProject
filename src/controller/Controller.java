@@ -131,13 +131,13 @@ public class Controller {
 	private class FieldTileListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			if(e.getActionCommand().equals(FieldTile.ENTER_EVENT)){
-				System.out.println("Entered Field");
+				//System.out.println("Entered Field");
 			}
 			else if(e.getActionCommand().equals(FieldTile.EXIT_EVENT)){
-				System.out.println("Exited Field");
+				//System.out.println("Exited Field");
 			}
 			else if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
-				System.out.println("Tile Clicked");
+				System.out.println("Tile " + e.getSource().toString() +" Clicked");
 			}
 		}
 	}

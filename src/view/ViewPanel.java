@@ -6,6 +6,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
+/**
+ * @author Stephen Bos
+ * June, 2013
+ *
+ * The ViewPanel class is the primary game board view class and provides the interface through which the 
+ * the game board is controlled. When instantiated, ViewPanel objects become the base level JPanel on which 
+ * the rest of the game board components are arranged. ViewPanel objects are responsible for creating and storing 
+ * all of the game's tiles and provide methods for a controller objects to find individual tiles and change
+ * their state.
+ */
 public class ViewPanel extends JPanel {
 
 	public static final int WIDTH = 800;
@@ -65,6 +75,7 @@ public class ViewPanel extends JPanel {
 		for(int i=0;i<boardLoop.length;i++){
 			FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 			newTile.addActionListener(controller.getFieldTileListener());
+			newTile.setId("B|"+i);
 			this.boardLoop[i] = newTile;
 		}
 		
@@ -74,6 +85,7 @@ public class ViewPanel extends JPanel {
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
 				newTile.setColor(getColorForPlayer(i+1));
+				newTile.setId("H|"+(i+1)+"|"+j);
 				this.homes[i][j]=newTile;
 			}
 		}
@@ -83,6 +95,7 @@ public class ViewPanel extends JPanel {
 			for(int j=0;j<4;j++){
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
+				newTile.setId("G|"+(i+1)+"|"+j);
 				this.goals[i][j]=newTile;
 			}
 		}

@@ -10,13 +10,19 @@ import javax.swing.JPanel;
 /**
  * 
  * @author Stephen Bos
+ * June, 2013
  *
  * This class acts as a factory for a ViewPanel object, responsible for creating the tile strips that
  * will be arranged to create the game board.
  */
 public abstract class TileStripFactory {
 	
+	// The padding that will be added between, above, and below each FieldTile 
 	private static final int panelPadding = 5;
+	
+	/*===================================
+ 	LOOP STRIPS
+ 	===================================*/
 	
 	public static JPanel getRightBoardStrip(FieldTile[] boardLoop, Color c){
 		JPanel newPanel = getBlankPanel(11, false, c, false);
@@ -42,6 +48,10 @@ public abstract class TileStripFactory {
 		return newPanel;
 	}
 	
+	/*===================================
+ 	HOME STRIPS
+ 	===================================*/
+	
 	public static JPanel getHomeForRight(FieldTile[] home, Color c){
 		JPanel newPanel = getBlankPanel(4, false, c, false);
 		layoutTiles(home, 3, 0, newPanel, false);
@@ -65,6 +75,10 @@ public abstract class TileStripFactory {
 		layoutTiles(home, 0, 3, newPanel, false);
 		return newPanel;
 	}
+	
+	/*===================================
+ 	GOAL STRIPS
+ 	===================================*/
 	
 	public static JPanel getGoalForRight(FieldTile[] goal, Color c){
 		JPanel newPanel = getBlankPanel(4, true, c, true);
@@ -90,7 +104,19 @@ public abstract class TileStripFactory {
 		return newPanel;
 	}
 	
+	/*===================================
+ 	HELPER METHODS
+ 	===================================*/
 	
+	/**
+	 * Creates a blank JPanel of the appropriate size necessary to hold a specified number of FieldTile components.
+	 * 
+	 * @param numberOfTiles - the number of FieldTiles that will be added to this panel.
+	 * @param isTruncated - if true, no padding space will be allocated to the beginning and end of the panel.
+	 * @param backgroundColor - the color to be used as the background color for this panel.
+	 * @param isHorizontal - if true, the returned panel's width will be greater than its height, allowing tiles to be layed out along a horizontal axis.
+	 * @return Returns a finished panel of the appropriate size.
+	 */
 	private static JPanel getBlankPanel(int numberOfTiles, boolean isTruncated, Color backgroundColor, boolean isHorizontal){
 		
 		//Create the panel to be returned
@@ -135,6 +161,15 @@ public abstract class TileStripFactory {
 		return newPanel;
 	}
 	
+	/**
+	 * This is a helper method which attaches FieldTile objects to a passed JPanel. 
+	 * 
+	 * @param tiles - an array of the FieldTile objects to be arranged.
+	 * @param startIndex - the array index from which to start copying the tiles onto the panel. If the start index is less than the end index, the tiles will be added in reverse order.
+	 * @param endIndex - the array index from which to stop copying the tiles onto the panel.
+	 * @param tileStrip - the panel to which the tiles will be added. It is assumed that this panel is of the correct size and is using a BoxLayout layout manager.
+	 * @param isTruncated - if set to true, no padding will be added to the before the first tile or after the last tile.
+	 */
 	private static void layoutTiles(FieldTile[] tiles, int startIndex, int endIndex, JPanel tileStrip, boolean isTruncated){		
 		
 		if(!isTruncated){

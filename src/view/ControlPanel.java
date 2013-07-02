@@ -4,6 +4,14 @@ import java.awt.Color;
 import javax.swing.*;
 import controller.Controller;
 
+/**
+ * 
+ * @author Stephen Box
+ * June, 2013
+ * 
+ * This panel rests on the bottom of the game screen and contains the start 
+ * new game button.
+ */
 public class ControlPanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
