@@ -31,7 +31,7 @@ public class Application {
 		this.controller = new Controller();
 		
 		// Initialize the model
-		Board gameBoard = new Board(this.controller);
+		Board gameBoard = new Board();
 		
 		// Initialize the game panels
 		ViewPanel viewPanel = new ViewPanel(this.controller);

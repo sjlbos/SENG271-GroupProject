@@ -1,6 +1,5 @@
 package model;
 
-import controller.Controller;
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -21,7 +20,7 @@ public class Board {
 	private HashMap<Player, Field[]> playerEndMap;
 	
 	//Constructor
-	public Board(Controller controller){
+	public Board(){
 		// Create board and player arrays
 		gameBoard = new Field[40];
 		players = new Player[4];
