@@ -16,4 +16,8 @@ public class Pawn {
 	public void setPosition(int pos){
 		this.position = pos;
 	}
+	
+	public Player getOwner(){
+		return this.Owner;
+	}
 }

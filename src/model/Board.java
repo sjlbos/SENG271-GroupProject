@@ -63,9 +63,39 @@ public class Board {
 		}
 		return allPawns;
 	}
-	
+	 /**
+	  * 
+	  * @return Returns all pawns that can be moved
+	  */
 	public ArrayList<Pawn> getActivePawns(){
-		return null;
+		Player player = players[currentPlayer];
+		ArrayList<Pawn> ActivePawns = new ArrayList<Pawn>();
+		ArrayList<Pawn> AllPawns = new ArrayList<Pawn>();
+		if(currentRoll == 6){
+			for(Pawn p: player.getPawns()){
+				AllPawns.add(p);
+				if(p.position == -1){
+					if(gameBoard[p.getOwner().getStartPosition()].getOccupant().getOwner() != p.getOwner()){
+						ActivePawns.add(p);
+					}
+				}
+			}
+			if(ActivePawns.isEmpty()){
+				// need to add cases where pawns are unmovable for 6
+				return AllPawns; 
+			}else{
+				return ActivePawns;
+			}
+		}else{
+			for(Pawn p: player.getPawns()){
+				int pos = p.getPosition() + currentRoll;
+				if(pos>=40) pos-=40;
+				if(pos < p.getOwner().getStartPosition()){
+					ActivePawns.add(p);
+				}
+			}
+			return null;
+		}
 	}
 	
 	/**
