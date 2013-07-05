@@ -2,7 +2,6 @@ package controller;
 
 import java.awt.event.*;
 import java.util.Random;
-import java.util.ArrayList;
 
 import model.Board;
 import model.Player;
@@ -66,7 +65,7 @@ public class Controller {
 				if(this.diceRolled) break;
 			}
 			this.diceRolled = false;
-			ArrayList<Pawn> activePawns = board.getActivePawns();
+			Pawn[] activePawns = board.getMoveablePawns();
 			for(;;){
 				// wait for pawn select event
 				if(this.pawnSelected) break;

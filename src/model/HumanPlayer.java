@@ -84,7 +84,26 @@ public class HumanPlayer implements Player {
 				//This should never occur
 				this.startPosition = -1;
 				
-		}
-				
+		}	
 	}
+
+	/**
+	 * increments the pawnsAtHome counter by one
+	 */
+	@Override
+	public void incrementPawnsAtHome() {
+		this.pawnsAtHome++;
+		
+	}
+
+	/**
+	 * decrements the pawnsAtHome counter by one
+	 */
+	@Override
+	public void decrementPawnsAtHome() {
+		this.pawnsAtHome--;
+		
+	}
+	
+	
 }

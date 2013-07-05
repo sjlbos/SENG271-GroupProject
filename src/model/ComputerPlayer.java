@@ -87,4 +87,17 @@ public class ComputerPlayer implements Player {
 				
 	}
 
+	@Override
+	public void incrementPawnsAtHome() {
+		this.pawnsAtHome++;
+		
+	}
+
+	
+	@Override
+	public void decrementPawnsAtHome() {
+		this.pawnsAtHome--;
+		
+	}
+
 }
