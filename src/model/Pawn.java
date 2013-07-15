@@ -1,9 +1,9 @@
 package model;
 
 public class Pawn {
-	int position;
-	Player Owner;
-	Boolean isMoveable;
+	private int position;
+	private Player Owner;
+	private Boolean isMoveable;
 	
 	public Pawn(Player owner){
 		this.Owner = owner;

@@ -46,11 +46,6 @@ public class HumanPlayer implements Player {
 	}
 	
 	@Override
-	public Move getMove(){
-		return this.strategy.getNextMove(this);
-	}
-	
-	@Override
 	public int getPawnsAtHome(){
 		return this.pawnsAtHome;
 	}
@@ -72,17 +67,22 @@ public class HumanPlayer implements Player {
 	@Override
 	public void setStartPosition(int player){
 		switch(player){
-			case(1):
+			case 0:
 				this.startPosition = 36;
-			case(2):
+				break;
+			case 1:
 				this.startPosition = 6;
-			case(3):
+				break;
+			case 2:
 				this.startPosition = 16;
-			case(4):
+				break;
+			case 3:
 				this.startPosition = 26;
+				break;
 			default:
 				//This should never occur
 				this.startPosition = -1;
+				break;
 				
 		}	
 	}

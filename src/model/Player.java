@@ -10,8 +10,6 @@ public interface Player {
 	public Strategy getStrategy();
 	public void setStrategy(Strategy strategy);
 	
-	public Move getMove();
-	
 	public int getPawnsAtHome();
 	public void setPawnsAtHome(int pawnsAtHome);
 	public void incrementPawnsAtHome();

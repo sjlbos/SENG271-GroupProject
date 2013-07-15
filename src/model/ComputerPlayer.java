@@ -9,16 +9,17 @@ public class ComputerPlayer implements Player {
 	private Strategy strategy;
 	
 	// Constructor
-	public ComputerPlayer(int playerNumber){
+	public ComputerPlayer(int playerNumber, Strategy strategy){
 		this.playerNumber = playerNumber;
 		setStartPosition(playerNumber);
 		this.pawnsAtHome = 4;
-		
+		this.strategy = strategy;
 	}
 	
 	/*===============================
 	 *    GETTERS AND SETTERS
 	 *===============================*/
+	
 	@Override
 	public int getPlayerNumber() {
 		return this.playerNumber;
@@ -45,11 +46,6 @@ public class ComputerPlayer implements Player {
 	}
 	
 	@Override
-	public Move getMove(){
-		return this.strategy.getNextMove(this);
-	}
-	
-	@Override
 	public int getPawnsAtHome(){
 		return this.pawnsAtHome;
 	}
@@ -71,17 +67,22 @@ public class ComputerPlayer implements Player {
 	@Override
 	public void setStartPosition(int player){
 		switch(player){
-			case(1):
+			case 0:
 				this.startPosition = 36;
-			case(2):
+				break;
+			case 1:
 				this.startPosition = 6;
-			case(3):
+				break;
+			case 2:
 				this.startPosition = 16;
-			case(4):
+				break;
+			case 3:
 				this.startPosition = 26;
+				break;
 			default:
 				//This should never occur
 				this.startPosition = -1;
+				break;
 				
 		}
 				
@@ -98,6 +99,11 @@ public class ComputerPlayer implements Player {
 	public void decrementPawnsAtHome() {
 		this.pawnsAtHome--;
 		
+	}
+
+	public Pawn makeMove(int currentRoll, Pawn[] moveablePawns, Field[] gameBoard) {
+		Pawn pawn = this.strategy.getNextMove(currentRoll,moveablePawns,gameBoard);
+		return pawn;
 	}
 
 }

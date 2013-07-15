@@ -1,7 +1,7 @@
 package model;
 
 import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Class to model the game board. <br>
@@ -11,7 +11,6 @@ import java.util.ArrayList;
  */
 
 public class Board {
-	
 	private int currentRoll;
 	private int currentPlayer;
 	private Player[] players;
@@ -24,16 +23,17 @@ public class Board {
 		// Create board and player arrays
 		gameBoard = new Field[40];
 		players = new Player[4];
-		//add a fork for each player
-		for(Player player: players){
-			gameBoard[player.getStartPosition()-1] = new Fork(player);
-		}
+		
 		
 		// Generate the players
 		Player human = new HumanPlayer(0);
 		players[0] = human;
 		for(int i=1; i<4; i++){
-			players[i] = new ComputerPlayer(i);
+			players[i] = new ComputerPlayer(i, new CaptureStrategy());
+		}
+		//add a fork for each player
+		for(Player player: players){
+			gameBoard[player.getStartPosition()] = new Fork(player);
 		}
 		
 		// Map the players to their corresponding home and end fields
@@ -146,6 +146,16 @@ public class Board {
 	 * Makes a move for a computer player based on its strategy
 	 */
 	public void makeMove(){
+		Player player = this.players[currentPlayer];
+		if(player instanceof ComputerPlayer){
+			Pawn pawn = ((ComputerPlayer) player).makeMove(currentRoll, this.getMoveablePawns(), gameBoard);
+			if(pawn != null){
+				this.makeMove(pawn);
+			}
+		}else{
+			//error, should never happen as it is run only on computer players
+			System.exit(1);
+		}
 		
 	}
 	
