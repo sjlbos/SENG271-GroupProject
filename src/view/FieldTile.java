@@ -102,6 +102,10 @@ public class FieldTile extends JComponent implements MouseListener{
 		this.isActive=this.isActive?false:true;
 	}
 	
+	public void setInactive(){
+		this.isActive = false;
+	}
+	
 	public boolean isActive(){
 		return this.isActive;
 	}

@@ -20,20 +20,18 @@ public class Board {
 	
 	//Constructor
 	public Board(){
+		currentPlayer = -1;
 		// Create board and player arrays
 		gameBoard = new Field[40];
 		players = new Player[4];
-		
-		
-		// Generate the players
-		Player human = new HumanPlayer(0);
-		players[0] = human;
-		for(int i=1; i<4; i++){
-			players[i] = new ComputerPlayer(i, new CaptureStrategy());
+		// Fake player generator for testing
+		for(int i=0; i<4; i++){
+			players[i] = new HumanPlayer(i+1);
 		}
+		
 		//add a fork for each player
 		for(Player player: players){
-			gameBoard[player.getStartPosition()] = new Fork(player);
+			gameBoard[player.getStartPosition()-1] = new Fork(player);
 		}
 		
 		// Map the players to their corresponding home and end fields
@@ -50,6 +48,10 @@ public class Board {
 	public Player getNextPlayer(){
 		currentPlayer = (++currentPlayer)%4;
 		return players[currentPlayer];
+	}
+	
+	public void setCurrentPlayer(int player){
+		this.currentPlayer = player;
 	}
 	
 	/**

@@ -11,7 +11,7 @@ public class ComputerPlayer implements Player {
 	// Constructor
 	public ComputerPlayer(int playerNumber, Strategy strategy){
 		this.playerNumber = playerNumber;
-		setStartPosition(playerNumber);
+		this.startPosition = determineStartPosition(playerNumber);
 		this.pawnsAtHome = 4;
 		this.strategy = strategy;
 	}
@@ -65,27 +65,20 @@ public class ComputerPlayer implements Player {
 	 * @param player - Player number of the player object being created.
 	 */
 	@Override
-	public void setStartPosition(int player){
+	public int determineStartPosition(int player){
 		switch(player){
-			case 0:
-				this.startPosition = 36;
-				break;
-			case 1:
-				this.startPosition = 6;
-				break;
-			case 2:
-				this.startPosition = 16;
-				break;
-			case 3:
-				this.startPosition = 26;
-				break;
+			case(1):
+				return 36;
+			case(2):
+				return 6;
+			case(3):
+				return 16;
+			case(4):
+				return 26;
 			default:
 				//This should never occur
-				this.startPosition = -1;
-				break;
-				
-		}
-				
+				return -1;
+		}	
 	}
 
 	@Override

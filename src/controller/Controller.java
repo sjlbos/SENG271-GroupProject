@@ -18,9 +18,8 @@ public class Controller {
  	===================================*/
 	
 	private Board board;
+	private Player currentPlayer;
 	private ViewPanel viewPanel;
-	private boolean diceRolled;
-	private boolean pawnSelected;
 	private int currentRoll;
 	private StartNewGameListener startNewGameListener;
 	private FieldTileListener fieldTileListener;
@@ -50,7 +49,28 @@ public class Controller {
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
 		this.viewPanel.setDieRoll(currentRoll);
+		// if human set the tiles to active and wait for input
+		if (currentPlayer instanceof HumanPlayer){
+			Pawn[] activePawns = board.getMoveablePawns();
+			for(Pawn pawn: activePawns){
+				// set corresponding tiles to active
+				int pos = pawn.getPosition();
+				if (pos == -1){
+					// set the home tile to active
+					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 1).toggleIsActive();
+				} else if (pos >= 0 && pos <= 39){
+					viewPanel.getBoardTileAt(pos).toggleIsActive();
+				} else {
+					// this should never happen
+					// only other case is if the tile is a home tile.. shouldn't happen
+				}
+			}
+		} else {
+			//begin computer player's turn
+			board.makeMove();
+		}
 	}
+	
 	
 	/**
 	 * Resets the game board and begins a new game.
@@ -58,34 +78,14 @@ public class Controller {
 	public void startNewGame(){
 		System.out.println("Fix Me! Start a new game.");
 		
-		Player player = board.getNextPlayer();
-		if(player instanceof HumanPlayer){
-			for(;;){
-				// wait for die roll event
-				if(this.diceRolled) break;
-			}
-			this.diceRolled = false;
-			Pawn[] activePawns = board.getMoveablePawns();
-			for(;;){
-				// wait for pawn select event
-				if(this.pawnSelected) break;
-			}
-			//@TODO board.makeMove(pawn);
-			Pawn[] pawns = board.getPawns();
-			for(Pawn pawn: pawns){
-				//@TODO position = pawn.getPosition()
-				//viewPanel.setColorAtBoardTile(player, position);
-			}
-		} else if (player instanceof ComputerPlayer) {
-			rollDie();
-			//board.makeMove();
-			Pawn[] pawns = board.getPawns();
-			for(Pawn pawn : pawns){
-				
-			}
+		 /* Do some stuf with resetting everything */
+		
+		this.currentPlayer = board.getNextPlayer();
+		board.setCurrentPlayer(currentPlayer.getPlayerNumber());
+		if (this.currentPlayer instanceof HumanPlayer){
+			this.viewPanel.setTilesInactive();
 		} else {
-			// if you're not human or computer... what are you!?
-			System.out.println("How did this happen, you must be a cyborg!");
+			board.makeMove();
 		}
 	}
 	
@@ -144,6 +144,7 @@ public class Controller {
 			}
 			else if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
 				System.out.println("Tile " + e.getSource().toString() +" Clicked");
+				FieldTile ft = (FieldTile)e.getSource();
 			}
 		}
 	}
@@ -152,8 +153,7 @@ public class Controller {
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			//System.out.println("Dice Rolled.");
-			Controller.this.diceRolled = true;
 			Controller.this.rollDie();
-		}
+		}	
 	}
 }

@@ -319,12 +319,60 @@ public class ViewPanel extends JPanel {
 	}
 	
 	/**
+	 * Chance the state of every tile from active to inactive or vice versa depending on present state
+	 */
+	// currently just being used for testing
+	public void toggleAllTiles(){
+		for (FieldTile ft: boardLoop){
+			ft.toggleIsActive();
+		}
+		for (int i=0; i<homes.length; i++){
+			for (FieldTile ft: homes[i]){
+				ft.toggleIsActive();
+			}
+		}
+		for (int i=0; i<goals.length; i++){
+			for (FieldTile ft: goals[i]){
+				ft.toggleIsActive();
+			}
+		}
+	}
+	
+	/**
+	 * Sets all tiles to the inactive state
+	 * Used for initializing the game board
+	 */
+	public void setTilesInactive(){
+		for (FieldTile ft: boardLoop){
+			ft.setInactive();
+		}
+		for (int i=0; i<homes.length; i++){
+			for (FieldTile ft: homes[i]){
+				ft.setInactive();
+			}
+		}
+		for (int i=0; i<goals.length; i++){
+			for (FieldTile ft: goals[i]){
+				ft.setInactive();
+			}
+		}
+	}
+	
+	/**
 	 * Sets the number displayed on the die.
 	 * @param roll - an integer between 1 and 6 representing the die roll.
 	 */
 	public void setDieRoll(int roll){
 		this.animator.animateDieRoll(roll);
 	}
+	
+	/**
+	 * Accessor for the controller to change the state of the die
+	 */
+	public void toggleDieIsActive(){
+		this.die.toggleIsActive();
+	}
+	
 	
 	public Animator getAnimator(){
 		return this.animator;

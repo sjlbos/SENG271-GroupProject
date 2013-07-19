@@ -17,5 +17,5 @@ public interface Player {
 	
 	
 	public int getStartPosition();
-	public void setStartPosition(int player);
+	public int determineStartPosition(int player);
 }
