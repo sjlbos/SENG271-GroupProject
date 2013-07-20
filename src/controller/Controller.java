@@ -105,12 +105,14 @@ public class Controller {
 	 * Updates currentRoll using a pseudo-random number generator
 	 */
 	public void rollDie(){
+		this.currentPlayer = this.board.getNextPlayer();
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
+		board.setCurrentRoll(currentRoll);
 		this.viewPanel.setDieRoll(currentRoll);
+		Pawn[] activePawns = board.getMoveablePawns();
 		// if human set the tiles to active and wait for input
 		if (currentPlayer instanceof HumanPlayer){
-			Pawn[] activePawns = board.getMoveablePawns();
 			for(Pawn pawn: activePawns){
 				// set corresponding tiles to active and wait for player input
 				int pos = pawn.getPosition();
@@ -127,7 +129,7 @@ public class Controller {
 			}
 		} else {
 			//begin computer player's turn
-			board.makeMove();
+			board.makeMove(currentPlayer.getStrategy().getNextMove(currentRoll, activePawns, this.board.getBoard()));
 		}
 	}
 	

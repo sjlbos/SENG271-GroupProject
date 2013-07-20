@@ -20,7 +20,7 @@ public class Board {
 	
 	//Constructor
 	public Board(){
-		currentPlayer = -1;
+		currentPlayer = 0;
 		// Create board and player arrays
 		gameBoard = new Field[40];
 		players = new Player[4];
@@ -29,6 +29,9 @@ public class Board {
 			players[i] = new HumanPlayer(i+1);
 		}
 		
+		for(int i=0;i<40;i++){
+			gameBoard[i] = new Field();
+		}
 		//add a fork for each player
 		for(Player player: players){
 			gameBoard[player.getStartPosition()-1] = new Fork(player);
@@ -62,6 +65,7 @@ public class Board {
 	public void setCurrentPlayer(int player){
 		this.currentPlayer = player;
 	}
+	
 	
 	/**
 	 * @return Returns an array containing all the Pawn objects on the game board
@@ -228,6 +232,15 @@ public class Board {
 		for(Pawn pawn:player.getPawns()){
 			pawn.setIsMoveable(false);
 		}
+	}
+
+	public Field[] getBoard() {
+		return this.gameBoard;
+	}
+
+	public void setCurrentRoll(int roll) {
+		this.currentRoll = roll;
+		
 	}
 	
 }

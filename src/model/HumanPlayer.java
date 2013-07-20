@@ -13,6 +13,10 @@ public class HumanPlayer implements Player {
 		this.playerNumber = playerNumber;
 		this.startPosition = determineStartPosition(playerNumber);
 		pawns = new Pawn[4];
+		for(int i=0;i<4;i++){
+			pawns[i] = new Pawn(this);
+		}
+		this.pawnsAtHome = 4;
 	}
 	
 	/*===============================

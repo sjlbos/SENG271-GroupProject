@@ -14,6 +14,10 @@ public class ComputerPlayer implements Player {
 		this.startPosition = determineStartPosition(playerNumber);
 		this.pawnsAtHome = 4;
 		this.strategy = strategy;
+		pawns = new Pawn[4];
+		for(int i=0;i<4;i++){
+			pawns[i] = new Pawn(this);
+		}
 	}
 	
 	/*===============================
