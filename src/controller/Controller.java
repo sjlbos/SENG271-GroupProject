@@ -41,6 +41,66 @@ public class Controller {
 		return this.currentRoll;
 	}
 	
+	
+	
+	/**
+	 * Resets the game board and begins a new game.
+	 */
+	public void startNewGame(){
+		System.out.println("Fix Me! Start a new game.");
+		
+		 /* Do some stuff with resetting everything */
+		
+		this.currentPlayer = board.getPlayer(1);
+		board.setCurrentPlayer(1);
+		if (this.currentPlayer instanceof HumanPlayer){
+			this.viewPanel.setTilesInactive();
+		} else {
+			rollDie();
+			updateView();
+			nextTurn();
+		}
+	}
+	
+	/**
+	 * Checks if any players have won
+	 * Updates the current player object and facilitates the next turn accordingly
+	 */
+	public void nextTurn(){
+		/*
+		 * We could do some checks in here to see if any player has won
+		 */
+		this.currentPlayer = board.getNextPlayer();
+		board.setCurrentPlayer(currentPlayer.getPlayerNumber());
+		if (this.currentPlayer instanceof HumanPlayer){
+			this.viewPanel.setTilesInactive();
+		} else {
+			rollDie();
+			updateView();
+			nextTurn();
+		}
+	}
+	
+	
+	/**
+	 * Gets all pawns on the board and translates their information to the view
+	 * Home tiles should simply be updated based on the number of pawns the player currently has at "home"
+	 */
+	public void updateView(){
+		/* clear all circles first */
+		Pawn[] allPawns = board.getPawns();
+		for (Pawn pawn: allPawns){
+			int pos = pawn.getPosition();
+			if (pos >= 0 && pos <= 39){
+				viewPanel.setColorAtBoardTile(pawn.getOwner().getPlayerNumber(), pos);
+			} else if (pos == -1){
+				// colour the home tiles based on how many pawns are in there
+			} else {
+				
+			}
+		}
+	}
+	
 	/**
 	 * Simulates rolling the die <br> 
 	 * Updates currentRoll using a pseudo-random number generator
@@ -53,38 +113,21 @@ public class Controller {
 		if (currentPlayer instanceof HumanPlayer){
 			Pawn[] activePawns = board.getMoveablePawns();
 			for(Pawn pawn: activePawns){
-				// set corresponding tiles to active
+				// set corresponding tiles to active and wait for player input
 				int pos = pawn.getPosition();
 				if (pos == -1){
-					// set the home tile to active
+					// set the home tile to active and wait for player input
 					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 1).toggleIsActive();
 				} else if (pos >= 0 && pos <= 39){
 					viewPanel.getBoardTileAt(pos).toggleIsActive();
 				} else {
-					// this should never happen
-					// only other case is if the tile is a home tile.. shouldn't happen
+					/*
+					 * set the home tile to active.. needs to be implemented
+					 */
 				}
 			}
 		} else {
 			//begin computer player's turn
-			board.makeMove();
-		}
-	}
-	
-	
-	/**
-	 * Resets the game board and begins a new game.
-	 */
-	public void startNewGame(){
-		System.out.println("Fix Me! Start a new game.");
-		
-		 /* Do some stuf with resetting everything */
-		
-		this.currentPlayer = board.getNextPlayer();
-		board.setCurrentPlayer(currentPlayer.getPlayerNumber());
-		if (this.currentPlayer instanceof HumanPlayer){
-			this.viewPanel.setTilesInactive();
-		} else {
 			board.makeMove();
 		}
 	}
@@ -144,7 +187,10 @@ public class Controller {
 			}
 			else if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
 				System.out.println("Tile " + e.getSource().toString() +" Clicked");
-				FieldTile ft = (FieldTile)e.getSource();
+				/*
+				 * Call make move using the pawn located at this spot somehow
+				 * NEEDS TO BE IMPLEMENTED
+				 */
 			}
 		}
 	}

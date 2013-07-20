@@ -43,6 +43,15 @@ public class Board {
 	}
 	
 	/**
+	 * Get a player object given their player number
+	 * @param the number of the player to return
+	 * @return the player object, assuming players are stored in sequential order
+	 */
+	public Player getPlayer(int playerNumber){
+		return this.players[playerNumber - 1];
+	}
+	
+	/**
 	 * @return Returns the next player object whose turn it is
 	 */
 	public Player getNextPlayer(){
