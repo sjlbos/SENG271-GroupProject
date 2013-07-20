@@ -48,8 +48,7 @@ public class Controller {
 	 */
 	public void startNewGame(){
 		System.out.println("Fix Me! Start a new game.");
-		
-		 /* Do some stuff with resetting everything */
+		//reset everything
 		
 		this.currentPlayer = board.getPlayer(1);
 		board.setCurrentPlayer(1);
