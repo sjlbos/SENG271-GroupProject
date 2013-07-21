@@ -5,6 +5,8 @@ public class Move {
 	public int startPosition;
 	public Player collision;
 	
+	
+	//Constructors
 	public Move(){
 		this.pawn = null;
 		this.collision = null;

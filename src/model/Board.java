@@ -147,6 +147,7 @@ public class Board {
 				}
 				if( i == currentRoll){
 					if(gameBoard[(currentpos + i) % 40].getOwner() == pawn.getOwner()){
+						continue;
 						//pawn.setIsMoveable(false);
 					}else{
 						MoveablePawns.add(pawn); // pawn.setIsMoveable(true);
@@ -247,6 +248,21 @@ public class Board {
 
 	public Field[] getBoard() {
 		return this.gameBoard;
+	}
+	 
+	public Pawn getPawnAtPosition(Player player, int pos){
+		Pawn[] pawns = player.getPawns();
+		if(pos>40){
+			pos = pos%40;
+			Field[] EndMap = this.playerEndMap.get(player);
+			return EndMap[pos].getOccupant();
+		}
+		for(Pawn pawn: pawns){
+			if(pawn.getPosition() == pos){
+				return pawn;
+			}
+		}
+		return null;
 	}
 	
 	public String toString(){
