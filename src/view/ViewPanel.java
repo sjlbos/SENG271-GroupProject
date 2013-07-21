@@ -60,7 +60,6 @@ public class ViewPanel extends JPanel {
 		this.animator = new Animator();
 		
 		this.die = new DieComponent(6);
-		this.die.toggleIsActive();
 		this.die.addActionListener(controller.getDiceListener());
 
 		initializeTiles();
@@ -375,6 +374,8 @@ public class ViewPanel extends JPanel {
 				homes[i][j].setColor(getColorForPlayer(i+1));
 			}
 		}
+		
+		this.setTilesInactive();
 	}
 	
 	/*===================================
