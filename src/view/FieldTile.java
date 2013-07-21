@@ -108,7 +108,6 @@ public class FieldTile extends JComponent implements MouseListener{
 	
 	public void setInactive(){
 		this.isActive = false;
-		this.repaint();
 	}
 	
 	public boolean isActive(){
@@ -117,7 +116,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	
 	public void setColor(Color c){
 		this.fieldColor=c;
-		this.repaint();
+		this.paintImmediately(0, 0, this.getWidth(), this.getHeight());
 	}
 	
 	public Color getColor(){
