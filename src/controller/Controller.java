@@ -126,7 +126,7 @@ public class Controller {
 	}
 	
 	private void makeComputerMoves(){
-		viewPanel.toggleDieIsActive();
+		
 	}
 	
 	/**
