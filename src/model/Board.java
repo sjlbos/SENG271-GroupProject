@@ -14,7 +14,7 @@ public class Board {
 	private int currentPlayer;
 	private Player[] players;
 	private Field[] gameBoard;
-	//private HashMap<Player, Field[]> playerHomeMap;
+	private Player hitOwner;
 	private HashMap<Player, Field[]> playerEndMap;
 	
 	//Constructor
@@ -104,10 +104,11 @@ public class Board {
 	 * 
 	 * @param sends the pawn at the given position back to the owners home
 	 */
-	private void sendPawnHome(int pos){
+	private Player sendPawnHome(int pos){
 		Pawn temp = gameBoard[pos].getOccupant();
 		temp.setPosition(-1);
 		temp.getOwner().incrementPawnsAtHome();
+		return temp.getOwner();
 	}
 	
 	
@@ -163,17 +164,19 @@ public class Board {
 	/**
 	 * Makes a move for a computer player based on its strategy
 	 */
-	public void makeMove(){
+	public Player makeMove(){
+		
 		Player player = this.players[currentPlayer];
 		if(player instanceof ComputerPlayer){
 			Pawn pawn = ((ComputerPlayer) player).makeMove(currentRoll, this.getMoveablePawns(), gameBoard);
 			if(pawn != null){
-				this.makeMove(pawn);
+				this.hitOwner = makeMove(pawn);
 			}
 		}else{
 			//error, should never happen as it is run only on computer players
 			System.exit(1);
 		}
+		return this.hitOwner;
 		
 	}
 	
@@ -181,14 +184,15 @@ public class Board {
 	 * Moves the pawn selected by the player "currentRoll" number of spaces
 	 * @param Pawn object to be moved
 	 */
-	public void makeMove(Pawn pawn){
+	public Player makeMove(Pawn pawn){
+		this.hitOwner = null;
 		int currentpos = pawn.getPosition();
 		
 		// if pawn clicked is at home, put it in the start position
 		if(pawn.getPosition() == -1){
 			int startpos = pawn.getOwner().getStartPosition();
 			if(gameBoard[startpos].getOccupant() != null){
-				sendPawnHome(startpos);
+				this.hitOwner = sendPawnHome(startpos);
 			}
 			gameBoard[startpos].setOccupant(pawn);
 			pawn.getOwner().decrementPawnsAtHome();
@@ -203,7 +207,7 @@ public class Board {
 				}
 				if(i == currentRoll){
 					if(gameBoard[i].getOccupant() != null){
-						sendPawnHome(i);
+						this.hitOwner = sendPawnHome(i);
 					}
 					gameBoard[currentpos].setOccupant(null);
 					gameBoard[currentpos + i].setOccupant(pawn);
@@ -211,6 +215,7 @@ public class Board {
 				}
 			}
 		}
+		return this.hitOwner;
 			
 	}
 	
