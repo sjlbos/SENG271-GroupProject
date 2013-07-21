@@ -6,24 +6,13 @@ public class RandomStrategy implements Strategy {
 
 	@Override
 	//returns a random pawn
-	public Pawn getNextMove(int currentRoll, Pawn[] moveablePawns, Field[] gameBoard) {
+	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		Random rand = new Random();
-		int count = 4;
-		for(Pawn pawn: moveablePawns){
-			if(!pawn.isMoveable()){
-				count--;
-			}
+		if(moveablePawns.isEmpty()){
+			return null;
 		}
-		Pawn pawn = null;
-		if(count == 0){
-			return pawn;
-		}
-		do{
-			int random = rand.nextInt(4);
-			pawn = moveablePawns[random];
-		}while(!pawn.isMoveable());
-		
-		return pawn;
+		int random = rand.nextInt(moveablePawns.size());
+		return moveablePawns.get(random);
 
 	}
 

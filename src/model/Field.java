@@ -28,4 +28,12 @@ public class Field {
 	public Player getOwner(){
 		return this.owner;
 	}
+	
+	public void setOwner(Player Owner){
+		this.owner = Owner;
+	}
+	
+	public String toString(){
+		return owner + " : " + occupant;
+	}
 }
