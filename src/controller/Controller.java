@@ -37,7 +37,45 @@ public class Controller {
 		return this.currentRoll;
 	}
 	
+	/**
+	 * Factory method for a StartNewGameListener object.
+	 * <p>
+	 * @return Returns the default StartNewGameListener
+	 */
+	public ActionListener getStartNewGameListener(){
+		if(this.startNewGameListener==null){
+			this.startNewGameListener = new StartNewGameListener();
+		}
+		return this.startNewGameListener;
+	}
 	
+	/**
+	 * Factory method for a FieldPanelListener object.
+	 * <p>
+	 * @return Returns the default FieldPanelListener
+	 */
+	public ActionListener getFieldTileListener(){
+		if(this.fieldTileListener==null){
+			this.fieldTileListener = new FieldTileListener();
+		}
+		return this.fieldTileListener;
+	}
+	
+	/**
+	 * Factory method for a DiceListener object.
+	 * <p>
+	 * @return Returns the default DiceListener
+	 */
+	public ActionListener getDiceListener(){
+		if(this.diceListener==null){
+			this.diceListener = new DiceListener();
+		}
+		return this.diceListener;
+	}
+	
+	/*===================================
+	 METHODS
+	 ===================================*/
 	
 	/**
 	 * Resets the game board and begins a new game.
@@ -55,6 +93,22 @@ public class Controller {
 			updateView();
 			nextTurn();
 		}
+	}
+	
+	private void updateActiveStatuses(){
+		
+	}
+	
+	private void makeMove(){
+		
+	}
+	
+	private void makeMove(ActionEvent e){
+		
+	}
+	
+	private void makeComputerMoves(){
+		
 	}
 	
 	/**
@@ -201,42 +255,9 @@ public class Controller {
 		}
 	}
 	
-	
-	/**
-	 * Factory method for a StartNewGameListener object.
-	 * <p>
-	 * @return Returns the default StartNewGameListener
-	 */
-	public ActionListener getStartNewGameListener(){
-		if(this.startNewGameListener==null){
-			this.startNewGameListener = new StartNewGameListener();
-		}
-		return this.startNewGameListener;
-	}
-	
-	/**
-	 * Factory method for a FieldPanelListener object.
-	 * <p>
-	 * @return Returns the default FieldPanelListener
-	 */
-	public ActionListener getFieldTileListener(){
-		if(this.fieldTileListener==null){
-			this.fieldTileListener = new FieldTileListener();
-		}
-		return this.fieldTileListener;
-	}
-	
-	/**
-	 * Factory method for a DiceListener object.
-	 * <p>
-	 * @return Returns the default DiceListener
-	 */
-	public ActionListener getDiceListener(){
-		if(this.diceListener==null){
-			this.diceListener = new DiceListener();
-		}
-		return this.diceListener;
-	}
+	/*===================================
+	 ACTION LISTENERS
+	 ===================================*/
 	
 	// Nested action lister class for the "New Game" button.
 	private class StartNewGameListener implements ActionListener{
@@ -248,18 +269,8 @@ public class Controller {
 	// Nested action listener for FieldPanel events.
 	private class FieldTileListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if(e.getActionCommand().equals(FieldTile.ENTER_EVENT)){
-				//System.out.println("Entered Field");
-			}
-			else if(e.getActionCommand().equals(FieldTile.EXIT_EVENT)){
-				//System.out.println("Exited Field");
-			}
-			else if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
+			if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
 				System.out.println("Tile " + e.getSource().toString() +" Clicked");
-				/*
-				 * Call make move using the pawn located at this spot somehow
-				 * NEEDS TO BE IMPLEMENTED
-				 */
 				viewPanel.setTilesInactive();
 				FieldTile ft = (FieldTile)e.getSource();
 				parseFieldTile(ft.getId());
@@ -270,7 +281,6 @@ public class Controller {
 	// Nested action listener for Dice events.
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			//System.out.println("Dice Rolled.");
 			Controller.this.rollDie();
 		}	
 	}

@@ -319,26 +319,6 @@ public class ViewPanel extends JPanel {
 	}
 	
 	/**
-	 * Chance the state of every tile from active to inactive or vice versa depending on present state
-	 */
-	// currently just being used for testing
-	public void toggleAllTiles(){
-		for (FieldTile ft: boardLoop){
-			ft.toggleIsActive();
-		}
-		for (int i=0; i<homes.length; i++){
-			for (FieldTile ft: homes[i]){
-				ft.toggleIsActive();
-			}
-		}
-		for (int i=0; i<goals.length; i++){
-			for (FieldTile ft: goals[i]){
-				ft.toggleIsActive();
-			}
-		}
-	}
-	
-	/**
 	 * Sets all tiles to the inactive state
 	 * Used for initializing the game board
 	 */
