@@ -1,7 +1,6 @@
 package model;
 
 import java.util.HashMap;
-import java.util.Stack;
 
 /**
  * Class to model the game board. <br>

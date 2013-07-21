@@ -3,11 +3,7 @@ package controller;
 import java.awt.event.*;
 import java.util.Random;
 
-import model.Board;
-import model.Player;
-import model.Pawn;
-import model.HumanPlayer;
-import model.ComputerPlayer;
+import model.*;
 import view.FieldTile;
 import view.ViewPanel;
 
@@ -92,7 +88,7 @@ public class Controller {
 			int pos = pawn.getPosition();
 			//System.out.print(pos);
 			if (pos >= 0 && pos <= 39){
-				viewPanel.setColorAtBoardTile(pawn.getOwner().getPlayerNumber(), pos);
+				viewPanel.setPlayerAtBoardTile(pawn.getOwner().getPlayerNumber(), pos);
 			} else if (pos == -1){
 				// colour the home tiles based on how many pawns are in there
 				continue;
@@ -102,7 +98,6 @@ public class Controller {
 			}
 		}
 		updateViewPlayerHome();
-		viewPanel.repaint();
 	}
 	
 	
