@@ -7,7 +7,7 @@ public class CaptureStrategy implements Strategy{
 	public Pawn getNextMove(int currentRoll, Pawn[] moveablePawns, Field[] gameBoard) {
 		//go through each pawn and check the ones that can be moved
 		for(Pawn pawn: moveablePawns){
-			if(pawn.getIsMoveable()){
+			if(pawn.isMoveable()){
 				//return a pawn if it would catch a pawn
 				int pos = pawn.getPosition();
 				int finalPos = pos+currentRoll;
@@ -35,7 +35,7 @@ public class CaptureStrategy implements Strategy{
 		Random rand = new Random();
 		int count = 4;
 		for(Pawn pawn: moveablePawns){
-			if(!pawn.getIsMoveable()){
+			if(!pawn.isMoveable()){
 				count--;
 			}
 		}
@@ -46,7 +46,7 @@ public class CaptureStrategy implements Strategy{
 		do{
 			int random = rand.nextInt(4);
 			pawn = moveablePawns[random];
-		}while(!pawn.getIsMoveable());
+		}while(!pawn.isMoveable());
 		
 		return pawn;
 

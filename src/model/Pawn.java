@@ -29,7 +29,7 @@ public class Pawn {
 	public void setIsMoveable(Boolean TorF){
 		this.isMoveable = TorF;
 	}
-	public Boolean getIsMoveable(){
+	public Boolean isMoveable(){
 		return this.isMoveable;
 	}
 }

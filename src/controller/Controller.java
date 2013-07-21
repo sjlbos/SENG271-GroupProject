@@ -97,9 +97,8 @@ public class Controller {
 				// colour the home tiles based on how many pawns are in there
 				continue;
 			} else {
-				/*
-				 * Do stuff with the goal pawns
-				 */
+				FieldTile ft = viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40);
+				ft.setColor(viewPanel.getColorForPlayer(currentPlayer.getPlayerNumber()));
 			}
 		}
 		updateViewPlayerHome();
@@ -112,6 +111,7 @@ public class Controller {
 	 * Updates currentRoll using a pseudo-random number generator
 	 */
 	public void rollDie(){
+		boolean hasActive = false;
 		this.currentPlayer = this.board.getNextPlayer();
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
@@ -122,21 +122,28 @@ public class Controller {
 		if (currentPlayer instanceof HumanPlayer){
 			for(Pawn pawn: activePawns){
 				// set corresponding tiles to active and wait for player input
-				int pos = pawn.getPosition();
-				if (pos == -1){
-					// set the home tile to active and wait for player input
-					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
-				} else if (pos >= 0 && pos <= 39){
-					viewPanel.getBoardTileAt(pos).toggleIsActive();
-				} else {
-					/*
-					 * set the goal tile to active.. needs to be implemented
-					 */
+				if (pawn.isMoveable()){
+					hasActive = true;
+					int pos = pawn.getPosition();
+					if (pos == -1){
+						// set the home tile to active and wait for player input
+						viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
+					} else if (pos >= 0 && pos <= 39){
+						viewPanel.getBoardTileAt(pos).setActive();
+					} else {
+						viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40).setActive();
+					}
 				}
 			}
+			if (!hasActive) nextTurn();
 		} else {
 			//begin computer player's turn
-			board.makeMove(currentPlayer.getStrategy().getNextMove(currentRoll, activePawns, this.board.getBoard()));
+			Pawn pawnToMove = currentPlayer.getStrategy().getNextMove(currentRoll, activePawns, this.board.getBoard());
+			if (pawnToMove == null){
+				//do nothing and go on to next turn
+			} else {
+				board.makeMove(pawnToMove);
+			}
 		}
 	}
 	
@@ -147,11 +154,11 @@ public class Controller {
 	 */
 	public void parseFieldTile(String id){
 		String[] tokens = id.split(":");
+		Pawn[] pawns = currentPlayer.getPawns();
 		if ("H".equals(tokens[0])){
 			/*
 			 * Map the home space back to the board and make the move
 			 */
-			Pawn[] pawns = currentPlayer.getPawns();
 			for (Pawn pawn : pawns){
 				if (pawn.getPosition() == -1){
 					board.makeMove(pawn);
@@ -160,6 +167,14 @@ public class Controller {
 				}
 			}
 		} else if ("B".equals(tokens[0])){
+			int pos = Integer.parseInt(tokens[1]);
+			for (Pawn pawn: pawns){
+				if (pawn.getPosition() == pos){
+					board.makeMove(pawn);
+					updateView();
+					break;
+				}
+			}
 			/*
 			 * Map the board tile back to the board
 			 */
@@ -168,6 +183,7 @@ public class Controller {
 			 * Map the goal tile back to the board
 			 */
 		}
+		nextTurn();
 	}
 	
 	/**

@@ -10,7 +10,7 @@ public class RandomStrategy implements Strategy {
 		Random rand = new Random();
 		int count = 4;
 		for(Pawn pawn: moveablePawns){
-			if(!pawn.getIsMoveable()){
+			if(!pawn.isMoveable()){
 				count--;
 			}
 		}
@@ -21,7 +21,7 @@ public class RandomStrategy implements Strategy {
 		do{
 			int random = rand.nextInt(4);
 			pawn = moveablePawns[random];
-		}while(!pawn.getIsMoveable());
+		}while(!pawn.isMoveable());
 		
 		return pawn;
 

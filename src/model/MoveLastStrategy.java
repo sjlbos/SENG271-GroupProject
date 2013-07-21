@@ -12,11 +12,11 @@ public class MoveLastStrategy implements Strategy{
 		for(Pawn temp : moveablePawns){
 			//if pawn to return has not be set and the pawn is movable, replace the pawn with the current one
 			Integer value = startPos - temp.getPosition();
-			if(pawn == null && temp.getIsMoveable()){
+			if(pawn == null && temp.isMoveable()){
 				pawn = temp;
 				currentVal = value;
 			}
-			if(pawn == null || !temp.getIsMoveable()){
+			if(pawn == null || !temp.isMoveable()){
 				continue;
 			//if the new pawn is closer to the home
 			// (the normalized value is closer to zero from the positive side or smaller on the negavtive side)
