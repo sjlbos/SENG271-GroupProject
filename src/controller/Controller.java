@@ -199,6 +199,7 @@ public class Controller {
 			}
 		} else if ("B".equals(tokens[0])){
 			int pos = Integer.parseInt(tokens[1]);
+			viewPanel.getBoardTileAt(pos).setColor(ViewPanel.BLANK_COLOR);
 			for (Pawn pawn: pawns){
 				if (pawn.getPosition() == pos){
 					Move move = board.makeMove(pawn, currentRoll);
@@ -262,6 +263,7 @@ public class Controller {
 	// Nested action listener for Dice events.
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
+			viewPanel.toggleDieIsActive();
 			Controller.this.rollDie();
 			updateActiveStatuses();
 			if (board.getMoveablePawns(currentRoll, currentPlayer).size() == 0){
