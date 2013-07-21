@@ -11,7 +11,6 @@ import java.util.ArrayList;
  */
 
 public class Board {
-	private int currentPlayer;
 	private Player[] players;
 	private Field[] gameBoard;
 	private Player hitOwner;
@@ -19,7 +18,6 @@ public class Board {
 	
 	//Constructor
 	public Board(){
-		currentPlayer = 0;
 		// Create board and player arrays
 		gameBoard = new Field[40];
 		players = new Player[4];
@@ -59,18 +57,6 @@ public class Board {
 	
 	public Player[] getPlayers(){
 		return this.players;
-	}
-	
-	/**
-	 * @return Returns the next player object whose turn it is
-	 */
-	public Player getNextPlayer(){
-		currentPlayer = (++currentPlayer)%4;
-		return players[currentPlayer];
-	}
-	
-	public void setCurrentPlayer(int player){
-		this.currentPlayer = player;
 	}
 	
 	
@@ -121,8 +107,7 @@ public class Board {
 	  * 
 	  * @return Returns all pawns that can be moved
 	  */
-	public ArrayList<Pawn> getMoveablePawns(int currentRoll){
-		Player owner = this.players[currentPlayer];
+	public ArrayList<Pawn> getMoveablePawns(int currentRoll, Player owner){
 		int startpos = owner.getStartPosition();
 		ArrayList<Pawn> MoveablePawns = new ArrayList<Pawn>();
 		//if a six is rolled and the spot in front of the home is not alreadyt occupied by one of the owners
@@ -177,11 +162,10 @@ public class Board {
 	/**
 	 * Makes a move for a computer player based on its strategy
 	 */
-	public Player makeMove(int currentRoll){
+	public Player makeMove(int currentRoll, Player player){
 		
-		Player player = this.players[currentPlayer];
 		if(player instanceof ComputerPlayer){
-			Pawn pawn = ((ComputerPlayer) player).makeMove(currentRoll, this.getMoveablePawns(currentRoll), gameBoard);
+			Pawn pawn = ((ComputerPlayer) player).makeMove(currentRoll, this.getMoveablePawns(currentRoll, player), gameBoard);
 			if(pawn != null){
 				this.hitOwner = makeMove(pawn, currentRoll);
 			}
