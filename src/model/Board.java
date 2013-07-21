@@ -11,7 +11,6 @@ import java.util.ArrayList;
  */
 
 public class Board {
-	private int currentRoll;
 	private int currentPlayer;
 	private Player[] players;
 	private Field[] gameBoard;
@@ -28,6 +27,10 @@ public class Board {
 		for(int i=0; i<4; i++){
 			players[i] = new HumanPlayer(i+1);
 		}
+		players[0] = new HumanPlayer(1);
+		players[1] = new ComputerPlayer(2, new CaptureStrategy());
+		players[2] = new ComputerPlayer(3, new RandomStrategy());
+		players[3] = new ComputerPlayer(4, new MoveFirstStrategy());
 		
 		for(int i=0;i<40;i++){
 			gameBoard[i] = new Field();
@@ -118,7 +121,7 @@ public class Board {
 	  * 
 	  * @return Returns all pawns that can be moved
 	  */
-	public ArrayList<Pawn> getMoveablePawns(){
+	public ArrayList<Pawn> getMoveablePawns(int currentRoll){
 		Player owner = this.players[currentPlayer];
 		int startpos = owner.getStartPosition();
 		ArrayList<Pawn> MoveablePawns = new ArrayList<Pawn>();
@@ -174,13 +177,13 @@ public class Board {
 	/**
 	 * Makes a move for a computer player based on its strategy
 	 */
-	public Player makeMove(){
+	public Player makeMove(int currentRoll){
 		
 		Player player = this.players[currentPlayer];
 		if(player instanceof ComputerPlayer){
-			Pawn pawn = ((ComputerPlayer) player).makeMove(currentRoll, this.getMoveablePawns(), gameBoard);
+			Pawn pawn = ((ComputerPlayer) player).makeMove(currentRoll, this.getMoveablePawns(currentRoll), gameBoard);
 			if(pawn != null){
-				this.hitOwner = makeMove(pawn);
+				this.hitOwner = makeMove(pawn, currentRoll);
 			}
 		}else{
 			//error, should never happen as it is run only on computer players
@@ -194,7 +197,7 @@ public class Board {
 	 * Moves the pawn selected by the player "currentRoll" number of spaces
 	 * @param Pawn object to be moved
 	 */
-	public Player makeMove(Pawn pawn){
+	public Player makeMove(Pawn pawn, int currentRoll){
 		this.hitOwner = null;
 		int currentpos = pawn.getPosition();
 		
@@ -259,11 +262,6 @@ public class Board {
 
 	public Field[] getBoard() {
 		return this.gameBoard;
-	}
-
-	public void setCurrentRoll(int roll) {
-		this.currentRoll = roll;
-		
 	}
 	
 	public String toString(){
