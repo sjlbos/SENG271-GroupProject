@@ -98,29 +98,25 @@ public class Controller {
 	}
 	
 	private void updateActiveStatuses(){
-		if (currentPlayer instanceof HumanPlayer){
-			ArrayList<Pawn> activePawns = board.getMoveablePawns(currentRoll, currentPlayer);
-			for(Pawn pawn: activePawns){
-				// set corresponding tiles to active and wait for player input
-				int pos = pawn.getPosition();
-				if (pos == -1){
-					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
-				} else if (pos >= 0 && pos <= 39){
-					viewPanel.getBoardTileAt(pos).setActive();
-				} else {
-					viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40).setActive();
-				}
+		ArrayList<Pawn> activePawns = board.getMoveablePawns(currentRoll, currentPlayer);
+		for(Pawn pawn: activePawns){
+			// set corresponding tiles to active and wait for player input
+			int pos = pawn.getPosition();
+			if (pos == -1){
+				viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
+			} else if (pos >= 0 && pos <= 39){
+				viewPanel.getBoardTileAt(pos).setActive();
+			} else {
+				viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40).setActive();
 			}
-		} else {
-			viewPanel.setTilesInactive();
 		}
 	}
 	
 	private void makeComputerMove(){
 		rollDie();
-		Player collision = board.makeMove(currentRoll, currentPlayer);
-		if (collision != null){
-			viewPanel.setPlayerAtHomeTile(collision.getPlayerNumber(), collision.getPawnsAtHome()-1);
+		Move move = board.makeMove(currentRoll, currentPlayer);
+		if (move.collision != null){
+			viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
 		}
 	}
 	
@@ -130,7 +126,13 @@ public class Controller {
 	
 	private void makeComputerMoves(){
 		for (int i=2; i<=4; i++){
+			try { 
+				Thread.sleep(2000);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
 			this.setCurrentPlayer(board.getPlayer(i));
+			System.out.println(currentPlayer.getPlayerNumber());
 			makeComputerMove();
 		}
 		this.setCurrentPlayer(board.getPlayer(1));
@@ -168,7 +170,8 @@ public class Controller {
 	 */
 	public void rollDie(){
 		Random rand = new Random();
-		this.currentRoll = rand.nextInt(6) + 1;
+		//this.currentRoll = rand.nextInt(6) + 1;
+		this.currentRoll = 6;
 		this.viewPanel.setDieRoll(currentRoll);
 	}
 	
@@ -186,8 +189,11 @@ public class Controller {
 			 */
 			for (Pawn pawn : pawns){
 				if (pawn.getPosition() == -1){
-					board.makeMove(pawn, currentRoll);
-					updateView();
+					Move move = board.makeMove(pawn, currentRoll);
+					viewPanel.setPlayerAtBoardTile(currentPlayer.getPlayerNumber(), currentPlayer.getStartPosition());
+					if (move.collision != null){
+						viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
+					}
 					break;
 				}
 			}
@@ -195,7 +201,7 @@ public class Controller {
 			int pos = Integer.parseInt(tokens[1]);
 			for (Pawn pawn: pawns){
 				if (pawn.getPosition() == pos){
-					board.makeMove(pawn, currentRoll);
+					Move move = board.makeMove(pawn, currentRoll);
 					updateView();
 					break;
 				}

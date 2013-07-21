@@ -82,7 +82,7 @@ public class FieldTile extends JComponent implements MouseListener{
 		
 		this.fieldColor = c;
 		this.circle = new Ellipse2D.Double(Padding,Padding,Diameter,Diameter);
-		this.isActive = true;
+		this.isActive = false;
 		this.id="";
 	}
 	
