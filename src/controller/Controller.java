@@ -81,13 +81,11 @@ public class Controller {
 	 * Resets the game board and begins a new game.
 	 */
 	public void startNewGame(){
-		System.out.println("Fix Me! Start a new game.");
-		//reset everything
-		
+		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
 		board.setCurrentPlayer(1);
 		if (this.currentPlayer instanceof HumanPlayer){
-			this.viewPanel.setTilesInactive();
+			this.viewPanel.toggleDieIsActive();
 		} else {
 			rollDie();
 			updateView();
@@ -96,7 +94,27 @@ public class Controller {
 	}
 	
 	private void updateActiveStatuses(){
-		
+		boolean hasActivePawns = false;
+		if (currentPlayer instanceof HumanPlayer){
+			Pawn[] activePawns = board.getMoveablePawns();
+			for(Pawn pawn: activePawns){
+				// set corresponding tiles to active and wait for player input
+				if (pawn.isMoveable()){
+					hasActivePawns = true;
+					int pos = pawn.getPosition();
+					if (pos == -1){
+						// set the home tile to active and wait for player input
+						viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
+					} else if (pos >= 0 && pos <= 39){
+						viewPanel.getBoardTileAt(pos).setActive();
+					} else {
+						viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40).setActive();
+					}
+				}
+			}
+		} else {
+			
+		}
 	}
 	
 	private void makeMove(){
@@ -108,7 +126,7 @@ public class Controller {
 	}
 	
 	private void makeComputerMoves(){
-		
+		viewPanel.toggleDieIsActive();
 	}
 	
 	/**
@@ -160,34 +178,17 @@ public class Controller {
 	 * Updates currentRoll using a pseudo-random number generator
 	 */
 	public void rollDie(){
-		boolean hasActive = false;
-		this.currentPlayer = this.board.getNextPlayer();
 		Random rand = new Random();
 		//this.currentRoll = rand.nextInt(6) + 1;
 		this.currentRoll = 6;
 		board.setCurrentRoll(currentRoll);
 		this.viewPanel.setDieRoll(currentRoll);
-		Pawn[] activePawns = board.getMoveablePawns();
 		// if human set the tiles to active and wait for input
 		if (currentPlayer instanceof HumanPlayer){
-			for(Pawn pawn: activePawns){
-				// set corresponding tiles to active and wait for player input
-				if (pawn.isMoveable()){
-					hasActive = true;
-					int pos = pawn.getPosition();
-					if (pos == -1){
-						// set the home tile to active and wait for player input
-						viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
-					} else if (pos >= 0 && pos <= 39){
-						viewPanel.getBoardTileAt(pos).setActive();
-					} else {
-						viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40).setActive();
-					}
-				}
-			}
-			if (!hasActive) nextTurn();
+			updateActiveStatuses();
 		} else {
 			//begin computer player's turn
+			Pawn[] activePawns = board.getMoveablePawns();
 			Pawn pawnToMove = currentPlayer.getStrategy().getNextMove(currentRoll, activePawns, this.board.getBoard());
 			if (pawnToMove == null){
 				//do nothing and go on to next turn
@@ -282,6 +283,7 @@ public class Controller {
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			Controller.this.rollDie();
+			viewPanel.toggleDieIsActive();
 		}	
 	}
 }
