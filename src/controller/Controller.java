@@ -90,15 +90,22 @@ public class Controller {
 		Pawn[] allPawns = board.getPawns();
 		for (Pawn pawn: allPawns){
 			int pos = pawn.getPosition();
+			//System.out.print(pos);
 			if (pos >= 0 && pos <= 39){
 				viewPanel.setColorAtBoardTile(pawn.getOwner().getPlayerNumber(), pos);
 			} else if (pos == -1){
 				// colour the home tiles based on how many pawns are in there
+				continue;
 			} else {
-				
+				/*
+				 * Do stuff with the goal pawns
+				 */
 			}
 		}
+		updateViewPlayerHome();
+		viewPanel.repaint();
 	}
+	
 	
 	/**
 	 * Simulates rolling the die <br> 
@@ -118,18 +125,67 @@ public class Controller {
 				int pos = pawn.getPosition();
 				if (pos == -1){
 					// set the home tile to active and wait for player input
-					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 1).toggleIsActive();
+					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
 				} else if (pos >= 0 && pos <= 39){
 					viewPanel.getBoardTileAt(pos).toggleIsActive();
 				} else {
 					/*
-					 * set the home tile to active.. needs to be implemented
+					 * set the goal tile to active.. needs to be implemented
 					 */
 				}
 			}
 		} else {
 			//begin computer player's turn
 			board.makeMove(currentPlayer.getStrategy().getNextMove(currentRoll, activePawns, this.board.getBoard()));
+		}
+	}
+	
+	/**
+	 * Used for parsing the id string of the tile a player selects when moving a pawn
+	 * This information is used to communicate to the board which pawn to move
+	 * @param id
+	 */
+	public void parseFieldTile(String id){
+		String[] tokens = id.split(":");
+		if ("H".equals(tokens[0])){
+			/*
+			 * Map the home space back to the board and make the move
+			 */
+			Pawn[] pawns = currentPlayer.getPawns();
+			for (Pawn pawn : pawns){
+				if (pawn.getPosition() == -1){
+					board.makeMove(pawn);
+					updateView();
+					break;
+				}
+			}
+		} else if ("B".equals(tokens[0])){
+			/*
+			 * Map the board tile back to the board
+			 */
+		} else {
+			/*
+			 * Map the goal tile back to the board
+			 */
+		}
+	}
+	
+	/**
+	 * Iterates over all players and sets the colours of their home tiles
+	 * Uses the pawnsAtHome attribute to colour that many first, then the rest blank
+	 */
+	public void updateViewPlayerHome(){
+		for (Player player : board.getPlayers()){
+			int numPawns = player.getPawnsAtHome();
+			for (int i=0; i<4; i++){
+				FieldTile ft = viewPanel.getHomeTileForPlayerAt(player.getPlayerNumber(), i);
+				if(numPawns != 0){
+					ft.setColor(viewPanel.getColorForPlayer(player.getPlayerNumber()));
+					numPawns--;
+				} else {
+					ft.setColor(ViewPanel.BLANK_COLOR);
+				}
+			}
 		}
 	}
 	
@@ -192,6 +248,9 @@ public class Controller {
 				 * Call make move using the pawn located at this spot somehow
 				 * NEEDS TO BE IMPLEMENTED
 				 */
+				viewPanel.setTilesInactive();
+				FieldTile ft = (FieldTile)e.getSource();
+				parseFieldTile(ft.getId());
 			}
 		}
 	}

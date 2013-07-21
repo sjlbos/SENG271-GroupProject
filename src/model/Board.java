@@ -54,6 +54,10 @@ public class Board {
 		return this.players[playerNumber - 1];
 	}
 	
+	public Player[] getPlayers(){
+		return this.players;
+	}
+	
 	/**
 	 * @return Returns the next player object whose turn it is
 	 */
@@ -189,6 +193,7 @@ public class Board {
 			}
 			gameBoard[startpos].setOccupant(pawn);
 			pawn.getOwner().decrementPawnsAtHome();
+			pawn.setPosition(pawn.getOwner().getStartPosition());
 		}else{
 			//move the pawn the given number of slots, all error handeling is done by the getMovablePawns method
 			for(int i=1;i<=currentRoll;i++){

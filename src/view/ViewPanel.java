@@ -75,7 +75,7 @@ public class ViewPanel extends JPanel {
 		for(int i=0;i<boardLoop.length;i++){
 			FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 			newTile.addActionListener(controller.getFieldTileListener());
-			newTile.setId("B|"+i);
+			newTile.setId("B:"+i);
 			this.boardLoop[i] = newTile;
 		}
 		
@@ -85,7 +85,7 @@ public class ViewPanel extends JPanel {
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
 				newTile.setColor(getColorForPlayer(i+1));
-				newTile.setId("H|"+(i+1)+"|"+j);
+				newTile.setId("H:"+(i+1)+":"+j);
 				this.homes[i][j]=newTile;
 			}
 		}
@@ -95,7 +95,7 @@ public class ViewPanel extends JPanel {
 			for(int j=0;j<4;j++){
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
-				newTile.setId("G|"+(i+1)+"|"+j);
+				newTile.setId("G:"+(i+1)+":"+j);
 				this.goals[i][j]=newTile;
 			}
 		}
@@ -228,7 +228,7 @@ public class ViewPanel extends JPanel {
 	 * @param player - an integer between 1 and 4. Any other integer returns the default blank color.
 	 * @return Returns the color of that specified player.
 	 */
-	private Color getColorForPlayer(int player){
+	public Color getColorForPlayer(int player){
 		switch(player){
 		
 		case 1:
