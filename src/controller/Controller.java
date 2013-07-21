@@ -163,8 +163,7 @@ public class Controller {
 		boolean hasActive = false;
 		this.currentPlayer = this.board.getNextPlayer();
 		Random rand = new Random();
-		//this.currentRoll = rand.nextInt(6) + 1;
-		this.currentRoll = 6;
+		this.currentRoll = rand.nextInt(6) + 1;
 		board.setCurrentRoll(currentRoll);
 		this.viewPanel.setDieRoll(currentRoll);
 		Pawn[] activePawns = board.getMoveablePawns();

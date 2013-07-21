@@ -1,22 +1,21 @@
 package model;
 
 import java.util.Random;
+import java.util.ArrayList;
 
 public class CaptureStrategy implements Strategy{
 
-	public Pawn getNextMove(int currentRoll, Pawn[] moveablePawns, Field[] gameBoard) {
+	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		//go through each pawn and check the ones that can be moved
 		for(Pawn pawn: moveablePawns){
-			if(pawn.isMoveable()){
-				//return a pawn if it would catch a pawn
-				int pos = pawn.getPosition();
-				int finalPos = pos+currentRoll;
-				if(finalPos >= 40){
-					finalPos = finalPos - 40;
-				}
-				if(gameBoard[finalPos].getOccupant() != null){
-					return pawn;
-				}
+			//return a pawn if it would catch a pawn
+			int pos = pawn.getPosition();
+			int finalPos = pos+currentRoll;
+			if(finalPos >= 40){
+				finalPos = finalPos - 40;
+			}
+			if(gameBoard[finalPos].getOccupant() != null){
+				return pawn;
 			}
 		}
 		//if no suitable moves, move random
@@ -31,24 +30,12 @@ public class CaptureStrategy implements Strategy{
 	 * @param gameBoard
 	 * @return
 	 */
-	public Pawn moveRandom(int currentRoll, Pawn[] moveablePawns, Field[] gameBoard){
+	public Pawn moveRandom(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard){
 		Random rand = new Random();
-		int count = 4;
-		for(Pawn pawn: moveablePawns){
-			if(!pawn.isMoveable()){
-				count--;
-			}
+		if(moveablePawns.isEmpty()){
+			return null;
 		}
-		Pawn pawn = null;
-		if(count == 0){
-			return pawn;
-		}
-		do{
-			int random = rand.nextInt(4);
-			pawn = moveablePawns[random];
-		}while(!pawn.isMoveable());
-		
-		return pawn;
-
+		int random = rand.nextInt(moveablePawns.size());
+		return moveablePawns.get(random);
 	}
 }

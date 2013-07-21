@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class ComputerPlayer implements Player {
 
 	private int playerNumber;
@@ -98,7 +100,7 @@ public class ComputerPlayer implements Player {
 		
 	}
 
-	public Pawn makeMove(int currentRoll, Pawn[] moveablePawns, Field[] gameBoard) {
+	public Pawn makeMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		Pawn pawn = this.strategy.getNextMove(currentRoll,moveablePawns,gameBoard);
 		return pawn;
 	}

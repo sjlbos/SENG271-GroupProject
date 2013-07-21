@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public interface Strategy {
 	
 	/**
@@ -9,5 +11,5 @@ public interface Strategy {
 	 * @param gameBoard
 	 * @return Pawn to be moved
 	 */
-	public Pawn getNextMove(int currentRoll, Pawn[] moveablePawns, Field[] gameBoard);
+	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard);
 }
