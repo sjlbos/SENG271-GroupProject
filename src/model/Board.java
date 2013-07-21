@@ -13,7 +13,6 @@ import java.util.ArrayList;
 public class Board {
 	private Player[] players;
 	private Field[] gameBoard;
-	private Player hitOwner;
 	private HashMap<Player, Field[]> playerEndMap;
 	
 	//Constructor
@@ -162,18 +161,18 @@ public class Board {
 	/**
 	 * Makes a move for a computer player based on its strategy
 	 */
-	public Player makeMove(int currentRoll, Player player){
-		
+	public Move makeMove(int currentRoll, Player player){
+		Move move = null;
 		if(player instanceof ComputerPlayer){
 			Pawn pawn = ((ComputerPlayer) player).makeMove(currentRoll, this.getMoveablePawns(currentRoll, player), gameBoard);
 			if(pawn != null){
-				this.hitOwner = makeMove(pawn, currentRoll);
+				move = makeMove(pawn, currentRoll);
 			}
 		}else{
 			//error, should never happen as it is run only on computer players
 			System.exit(1);
 		}
-		return this.hitOwner;
+		return move;
 		
 	}
 	
@@ -181,21 +180,23 @@ public class Board {
 	 * Moves the pawn selected by the player "currentRoll" number of spaces
 	 * @param Pawn object to be moved
 	 */
-	public Player makeMove(Pawn pawn, int currentRoll){
-		this.hitOwner = null;
+	public Move makeMove(Pawn pawn, int currentRoll){
+		Move move = new Move();
+		move.pawn = pawn;
 		int currentpos = pawn.getPosition();
 		
 		// if pawn clicked is at home, put it in the start position
 		if(pawn.getPosition() == -1){
 			int startpos = pawn.getOwner().getStartPosition();
+			move.startPosition = startpos;
 			if(gameBoard[startpos].getOccupant() != null){
-				this.hitOwner = sendPawnHome(startpos);
+				move.collision = sendPawnHome(startpos);
 			}
 			updateField(startpos, pawn);
 			pawn.getOwner().decrementPawnsAtHome();
 			pawn.setPosition(pawn.getOwner().getStartPosition());
 		}else{
-			//move the pawn the given number of slots, all error handeling is done by the getMovablePawns method
+			//move the pawn the given number of slots, all error handling is done by the getMovablePawns method
 			for(int i=1;i<=currentRoll;i++){
 				if(gameBoard[(currentpos + i) % 40].getOwner() == pawn.getOwner()){
 					Field[] EndMap = playerEndMap.get(pawn.getOwner());
@@ -204,7 +205,7 @@ public class Board {
 				}
 				if(i == currentRoll){
 					if(gameBoard[(currentpos + i) % 40].getOccupant() != null){
-						this.hitOwner = sendPawnHome((currentpos + i) % 40);
+						move.collision = sendPawnHome((currentpos + i) % 40);
 					}
 					updateField(currentpos, null);
 					gameBoard[(currentpos + i) % 40].setOccupant(pawn);
@@ -212,7 +213,7 @@ public class Board {
 				}
 			}
 		}
-		return this.hitOwner;
+		return move;
 			
 	}
 	
