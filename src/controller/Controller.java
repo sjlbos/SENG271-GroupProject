@@ -123,8 +123,12 @@ public class Controller {
 		}
 	}
 	
-	private void makeMove(){
-		
+	private void makeComputerMove(){
+		rollDie();
+		Player collision = board.makeMove(currentRoll, currentPlayer);
+		if (collision != null){
+			viewPanel.setPlayerAtHomeTile(collision.getPlayerNumber(), collision.getPawnsAtHome()-1);
+		}
 	}
 	
 	private void makeMove(ActionEvent e){
@@ -132,7 +136,12 @@ public class Controller {
 	}
 	
 	private void makeComputerMoves(){
-		
+		for (int i=2; i<=4; i++){
+			this.setCurrentPlayer(board.getPlayer(i));
+			makeComputerMove();
+		}
+		this.setCurrentPlayer(board.getPlayer(1));
+		viewPanel.toggleDieIsActive();
 	}
 	
 	/**
@@ -276,7 +285,7 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			Controller.this.rollDie();
 			updateActiveStatuses();
-			if (board.getMoveablePawns().length == 0){
+			if (board.getMoveablePawns().size() == 0){
 				makeComputerMoves();
 			}
 		}	
