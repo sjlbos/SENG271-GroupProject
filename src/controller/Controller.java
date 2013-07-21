@@ -2,10 +2,10 @@ package controller;
 
 import java.awt.event.*;
 import java.util.Random;
+import java.util.ArrayList;
 
 import model.*;
-import view.FieldTile;
-import view.ViewPanel;
+import view.*;
 
 public class Controller {
 	
@@ -20,6 +20,7 @@ public class Controller {
 	private StartNewGameListener startNewGameListener;
 	private FieldTileListener fieldTileListener;
 	private DiceListener diceListener;
+	private TitlePanel titlePanel;
 	
 	/*===================================
 	 GETTERS & SETTERS
@@ -31,6 +32,15 @@ public class Controller {
 	
 	public void setViewPanel(ViewPanel viewPanel){
 		this.viewPanel=viewPanel;
+	}
+	
+	public void setTitlePanel(TitlePanel titlePanel){
+		this.titlePanel = titlePanel;
+	}
+	
+	public void setCurrentPlayer(Player player){
+		this.currentPlayer = player;
+		this.titlePanel.setTurnForPlayerNumber(this.currentPlayer.getPlayerNumber());
 	}
 	
 	public int getCurrentRoll(){
@@ -84,6 +94,7 @@ public class Controller {
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
 		board.setCurrentPlayer(1);
+		titlePanel.setTurnForPlayerNumber(1);
 		if (this.currentPlayer instanceof HumanPlayer){
 			this.viewPanel.toggleDieIsActive();
 		} else {
@@ -94,26 +105,21 @@ public class Controller {
 	}
 	
 	private void updateActiveStatuses(){
-		boolean hasActivePawns = false;
 		if (currentPlayer instanceof HumanPlayer){
-			Pawn[] activePawns = board.getMoveablePawns();
+			ArrayList<Pawn> activePawns = board.getMoveablePawns();
 			for(Pawn pawn: activePawns){
 				// set corresponding tiles to active and wait for player input
-				if (pawn.isMoveable()){
-					hasActivePawns = true;
-					int pos = pawn.getPosition();
-					if (pos == -1){
-						// set the home tile to active and wait for player input
-						viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
-					} else if (pos >= 0 && pos <= 39){
-						viewPanel.getBoardTileAt(pos).setActive();
-					} else {
-						viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40).setActive();
-					}
+				int pos = pawn.getPosition();
+				if (pos == -1){
+					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), 0).setActive();
+				} else if (pos >= 0 && pos <= 39){
+					viewPanel.getBoardTileAt(pos).setActive();
+				} else {
+					viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40).setActive();
 				}
 			}
 		} else {
-			
+			viewPanel.setTilesInactive();
 		}
 	}
 	
@@ -183,19 +189,6 @@ public class Controller {
 		this.currentRoll = 6;
 		board.setCurrentRoll(currentRoll);
 		this.viewPanel.setDieRoll(currentRoll);
-		// if human set the tiles to active and wait for input
-		if (currentPlayer instanceof HumanPlayer){
-			updateActiveStatuses();
-		} else {
-			//begin computer player's turn
-			Pawn[] activePawns = board.getMoveablePawns();
-			Pawn pawnToMove = currentPlayer.getStrategy().getNextMove(currentRoll, activePawns, this.board.getBoard());
-			if (pawnToMove == null){
-				//do nothing and go on to next turn
-			} else {
-				board.makeMove(pawnToMove);
-			}
-		}
 	}
 	
 	/**
@@ -203,7 +196,7 @@ public class Controller {
 	 * This information is used to communicate to the board which pawn to move
 	 * @param id
 	 */
-	public void parseFieldTile(String id){
+	public void performRound(String id){
 		String[] tokens = id.split(":");
 		Pawn[] pawns = currentPlayer.getPawns();
 		if ("H".equals(tokens[0])){
@@ -234,7 +227,7 @@ public class Controller {
 			 * Map the goal tile back to the board
 			 */
 		}
-		nextTurn();
+		makeComputerMoves();
 	}
 	
 	/**
@@ -274,7 +267,7 @@ public class Controller {
 				System.out.println("Tile " + e.getSource().toString() +" Clicked");
 				viewPanel.setTilesInactive();
 				FieldTile ft = (FieldTile)e.getSource();
-				parseFieldTile(ft.getId());
+				performRound(ft.getId());
 			}
 		}
 	}
@@ -283,7 +276,10 @@ public class Controller {
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			Controller.this.rollDie();
-			viewPanel.toggleDieIsActive();
+			updateActiveStatuses();
+			if (board.getMoveablePawns().length == 0){
+				makeComputerMoves();
+			}
 		}	
 	}
 }
