@@ -93,20 +93,13 @@ public class Controller {
 	public void startNewGame(){
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
-		board.setCurrentPlayer(1);
 		titlePanel.setTurnForPlayerNumber(1);
-		if (this.currentPlayer instanceof HumanPlayer){
-			this.viewPanel.toggleDieIsActive();
-		} else {
-			rollDie();
-			updateView();
-			nextTurn();
-		}
+		this.viewPanel.toggleDieIsActive();
 	}
 	
 	private void updateActiveStatuses(){
 		if (currentPlayer instanceof HumanPlayer){
-			ArrayList<Pawn> activePawns = board.getMoveablePawns();
+			ArrayList<Pawn> activePawns = board.getMoveablePawns(currentRoll, currentPlayer);
 			for(Pawn pawn: activePawns){
 				// set corresponding tiles to active and wait for player input
 				int pos = pawn.getPosition();
@@ -144,25 +137,6 @@ public class Controller {
 		viewPanel.toggleDieIsActive();
 	}
 	
-	/**
-	 * Checks if any players have won
-	 * Updates the current player object and facilitates the next turn accordingly
-	 */
-	public void nextTurn(){
-		/*
-		 * We could do some checks in here to see if any player has won
-		 */
-		this.currentPlayer = board.getNextPlayer();
-		board.setCurrentPlayer(currentPlayer.getPlayerNumber());
-		if (this.currentPlayer instanceof HumanPlayer){
-			this.viewPanel.setTilesInactive();
-		} else {
-			rollDie();
-			updateView();
-			nextTurn();
-		}
-	}
-	
 	
 	/**
 	 * Gets all pawns on the board and translates their information to the view
@@ -195,7 +169,6 @@ public class Controller {
 	public void rollDie(){
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
-		board.setCurrentRoll(currentRoll);
 		this.viewPanel.setDieRoll(currentRoll);
 	}
 	
@@ -213,7 +186,7 @@ public class Controller {
 			 */
 			for (Pawn pawn : pawns){
 				if (pawn.getPosition() == -1){
-					board.makeMove(pawn);
+					board.makeMove(pawn, currentRoll);
 					updateView();
 					break;
 				}
@@ -222,7 +195,7 @@ public class Controller {
 			int pos = Integer.parseInt(tokens[1]);
 			for (Pawn pawn: pawns){
 				if (pawn.getPosition() == pos){
-					board.makeMove(pawn);
+					board.makeMove(pawn, currentRoll);
 					updateView();
 					break;
 				}
@@ -285,7 +258,7 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			Controller.this.rollDie();
 			updateActiveStatuses();
-			if (board.getMoveablePawns().size() == 0){
+			if (board.getMoveablePawns(currentRoll, currentPlayer).size() == 0){
 				makeComputerMoves();
 			}
 		}	
