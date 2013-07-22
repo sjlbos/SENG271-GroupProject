@@ -201,7 +201,7 @@ public class Board {
 		}else{
 			//move the pawn the given number of slots, all error handling is done by the getMovablePawns method
 			for(int i=1;i<=currentRoll;i++){
-				if(gameBoard[(currentpos + i) % 40].getPawnOwner() == pawn.getOwner()){
+				if(gameBoard[(currentpos + i) % 40].getForkOwner() == pawn.getOwner()){
 					Field[] EndMap = playerEndMap.get(pawn.getOwner());
 					EndMap[currentRoll-i].setOccupant(pawn);
 					EndMap[currentRoll-i].setPawnOwner(pawn.getOwner());
