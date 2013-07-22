@@ -6,6 +6,9 @@ public class MoveFirstStrategy implements Strategy {
 
 	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		//normalize pawn position based on home
+		if(moveablePawns.isEmpty()){
+			return null;
+		}
 		int startPos = moveablePawns.get(0).getOwner().getStartPosition();
 		Pawn pawn = null;
 		Integer currentVal = null;
