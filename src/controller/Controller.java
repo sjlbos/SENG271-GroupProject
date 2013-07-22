@@ -203,6 +203,7 @@ public class Controller {
 				if (pawn.getPosition() == -1){
 					Move move = board.makeMove(pawn, currentRoll);
 					viewPanel.setPlayerAtBoardTile(currentPlayer.getPlayerNumber(), currentPlayer.getStartPosition());
+					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), currentPlayer.getPawnsAtHome()).setColor(ViewPanel.BLANK_COLOR);
 					if (move.collision != null){
 						viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
 					}
