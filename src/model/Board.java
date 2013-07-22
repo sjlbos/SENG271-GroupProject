@@ -185,11 +185,11 @@ public class Board {
 		Move move = new Move();
 		move.pawn = pawn;
 		int currentpos = pawn.getPosition();
+		move.startPosition = currentpos;
 		
 		// if pawn clicked is at home, put it in the start position
 		if(pawn.getPosition() == -1){
 			int startpos = pawn.getOwner().getStartPosition();
-			move.startPosition = startpos;
 			if(gameBoard[startpos].getOccupant() != null){
 				move.collision = sendPawnHome(startpos);
 			}
