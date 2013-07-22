@@ -60,7 +60,6 @@ public class ViewPanel extends JPanel {
 		this.animator = new Animator();
 		
 		this.die = new DieComponent(6);
-		this.die.toggleIsActive();
 		this.die.addActionListener(controller.getDiceListener());
 
 		initializeTiles();
@@ -75,7 +74,7 @@ public class ViewPanel extends JPanel {
 		for(int i=0;i<boardLoop.length;i++){
 			FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 			newTile.addActionListener(controller.getFieldTileListener());
-			newTile.setId("B|"+i);
+			newTile.setId("B:"+i);
 			this.boardLoop[i] = newTile;
 		}
 		
@@ -85,7 +84,7 @@ public class ViewPanel extends JPanel {
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
 				newTile.setColor(getColorForPlayer(i+1));
-				newTile.setId("H|"+(i+1)+"|"+j);
+				newTile.setId("H:"+(i+1)+":"+j);
 				this.homes[i][j]=newTile;
 			}
 		}
@@ -95,7 +94,7 @@ public class ViewPanel extends JPanel {
 			for(int j=0;j<4;j++){
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
-				newTile.setId("G|"+(i+1)+"|"+j);
+				newTile.setId("G:"+(i+1)+":"+j);
 				this.goals[i][j]=newTile;
 			}
 		}
@@ -228,7 +227,7 @@ public class ViewPanel extends JPanel {
 	 * @param player - an integer between 1 and 4. Any other integer returns the default blank color.
 	 * @return Returns the color of that specified player.
 	 */
-	private Color getColorForPlayer(int player){
+	public Color getColorForPlayer(int player){
 		switch(player){
 		
 		case 1:
@@ -289,7 +288,7 @@ public class ViewPanel extends JPanel {
 	 * @param player - The player number of the player to set at this tile. Can be an integer between 1 and 4 or 0 to clear the tile.
 	 * @param position - The position of the tile on the main board that the player is being assigned to.
 	 */
-	public void setColorAtBoardTile(int player,int position){
+	public void setPlayerAtBoardTile(int player,int position){
 		FieldTile tile = getBoardTileAt(position);
 		if(tile!=null){
 			tile.setColor(getColorForPlayer(player));
@@ -315,26 +314,6 @@ public class ViewPanel extends JPanel {
 		FieldTile tile = getGoalTileForPlayerAt(player,position);
 		if(tile!=null){
 			tile.setColor(getColorForPlayer(player));
-		}
-	}
-	
-	/**
-	 * Chance the state of every tile from active to inactive or vice versa depending on present state
-	 */
-	// currently just being used for testing
-	public void toggleAllTiles(){
-		for (FieldTile ft: boardLoop){
-			ft.toggleIsActive();
-		}
-		for (int i=0; i<homes.length; i++){
-			for (FieldTile ft: homes[i]){
-				ft.toggleIsActive();
-			}
-		}
-		for (int i=0; i<goals.length; i++){
-			for (FieldTile ft: goals[i]){
-				ft.toggleIsActive();
-			}
 		}
 	}
 	
@@ -395,6 +374,8 @@ public class ViewPanel extends JPanel {
 				homes[i][j].setColor(getColorForPlayer(i+1));
 			}
 		}
+		
+		this.setTilesInactive();
 	}
 	
 	/*===================================

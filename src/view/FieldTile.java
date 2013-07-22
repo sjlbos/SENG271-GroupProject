@@ -82,7 +82,7 @@ public class FieldTile extends JComponent implements MouseListener{
 		
 		this.fieldColor = c;
 		this.circle = new Ellipse2D.Double(Padding,Padding,Diameter,Diameter);
-		this.isActive = true;
+		this.isActive = false;
 		this.id="";
 	}
 	
@@ -102,6 +102,10 @@ public class FieldTile extends JComponent implements MouseListener{
 		this.isActive=this.isActive?false:true;
 	}
 	
+	public void setActive(){
+		this.isActive = true;
+	}
+	
 	public void setInactive(){
 		this.isActive = false;
 	}
@@ -112,6 +116,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	
 	public void setColor(Color c){
 		this.fieldColor=c;
+		this.paintImmediately(0, 0, this.getWidth(), this.getHeight());
 	}
 	
 	public Color getColor(){
@@ -239,7 +244,11 @@ public class FieldTile extends JComponent implements MouseListener{
 	public void mouseReleased(MouseEvent e) {
 		if(this.isActive){
 			this.mousePressed = false;
-			this.repaint();	
+			this.paintImmediately(0, 0, this.getWidth(), this.getHeight());
+			ActionEvent event = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,FieldTile.CLICK_EVENT);
+			for(ActionListener subscriber:this.actionListeners){
+				subscriber.actionPerformed(event);
+			}
 		}
 	}
 }

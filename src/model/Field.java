@@ -5,12 +5,12 @@ import model.Pawn;
 public class Field {
 	
 	private Pawn occupant;
-	private Player owner;
+	private Player pawnOwner;
 	
 	//default Constructor
 	public Field(){
 		this.occupant = null;
-		this.owner = null;
+		this.pawnOwner = null;
 	}
 	
 	/*=================================
@@ -26,6 +26,14 @@ public class Field {
 	}
 	
 	public Player getOwner(){
-		return this.owner;
+		return this.pawnOwner;
+	}
+	
+	public void setOwner(Player Owner){
+		this.pawnOwner = Owner;
+	}
+	
+	public String toString(){
+		return pawnOwner + " : " + occupant;
 	}
 }

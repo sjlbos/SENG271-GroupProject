@@ -3,12 +3,10 @@ package model;
 public class Pawn {
 	private int position;
 	private Player Owner;
-	private Boolean isMoveable;
 	
 	public Pawn(Player owner){
 		this.Owner = owner;
 		this.position = -1;
-		this.isMoveable = false;
 	}
 	
 	/*=================================
@@ -26,10 +24,8 @@ public class Pawn {
 	public Player getOwner(){
 		return this.Owner;
 	}
-	public void setIsMoveable(Boolean TorF){
-		this.isMoveable = TorF;
-	}
-	public Boolean getIsMoveable(){
-		return this.isMoveable;
+	
+	public String toString(){
+		return Owner + " : " + position;
 	}
 }

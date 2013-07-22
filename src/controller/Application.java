@@ -59,7 +59,8 @@ public class Application {
 		
 		// Add components to the controller
 		this.controller.setBoard(gameBoard);
-		this.controller.setViewPanel(viewPanel);	
+		this.controller.setViewPanel(viewPanel);
+		this.controller.setTitlePanel(titlePanel);
 	}
 	
 	/**
