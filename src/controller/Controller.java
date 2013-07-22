@@ -3,8 +3,6 @@ package controller;
 import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
-
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import model.*;
