@@ -394,17 +394,11 @@ public class ViewPanel extends JPanel {
 		public void animateDieRoll(int toNumber){
 			Random r = new Random();
 			
-			long startTime = System.currentTimeMillis();
-			long currentTime = startTime;
-			long divisor = 400;
-			
-			while(currentTime - startTime < 3000L){	
-				
-				if(currentTime%divisor<10){
-					ViewPanel.this.die.setDieRoll(r.nextInt(6)+1);
-				}		
-				currentTime = System.currentTimeMillis();
+			for(int i=0;i<5;i++){
+				ViewPanel.this.die.setDieRoll(r.nextInt(6)+1);
+				try{Thread.sleep(1000);}catch(Exception e){}
 			}
+
 			ViewPanel.this.die.setDieRoll(toNumber);
 		}
 	}

@@ -4,6 +4,9 @@ import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+
 import model.*;
 import view.*;
 
@@ -21,6 +24,7 @@ public class Controller {
 	private FieldTileListener fieldTileListener;
 	private DiceListener diceListener;
 	private TitlePanel titlePanel;
+	private Timer timer;
 	
 	/*===================================
 	 GETTERS & SETTERS
@@ -95,6 +99,13 @@ public class Controller {
 		this.currentPlayer = board.getPlayer(1);
 		titlePanel.setTurnForPlayerNumber(1);
 		this.viewPanel.toggleDieIsActive();
+		
+		timer = new Timer(15, new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				viewPanel.repaint();
+			}
+		});
+		timer.start();
 	}
 	
 	private void updateActiveStatuses(){
@@ -120,10 +131,6 @@ public class Controller {
 		}
 	}
 	
-	private void makeMove(ActionEvent e){
-		
-	}
-	
 	private void makeComputerMoves(){
 		for (int i=2; i<=4; i++){
 			try { 
@@ -132,7 +139,6 @@ public class Controller {
 				e.printStackTrace();
 			}
 			this.setCurrentPlayer(board.getPlayer(i));
-			System.out.println(currentPlayer.getPlayerNumber());
 			makeComputerMove();
 		}
 		this.setCurrentPlayer(board.getPlayer(1));
@@ -252,10 +258,7 @@ public class Controller {
 	private class FieldTileListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
-				System.out.println("Tile " + e.getSource().toString() +" Clicked");
-				viewPanel.setTilesInactive();
-				FieldTile ft = (FieldTile)e.getSource();
-				performRound(ft.getId());
+				(new TileEventThread(e)).start();
 			}
 		}
 	}
@@ -263,12 +266,38 @@ public class Controller {
 	// Nested action listener for Dice events.
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
+			(new DieEventThread()).start();
+		}	
+	}
+	
+	/*===================================
+	 EVENT THREADS
+	 ===================================*/
+	
+	private class DieEventThread extends Thread{
+		
+		public void run(){
 			viewPanel.toggleDieIsActive();
 			Controller.this.rollDie();
 			updateActiveStatuses();
 			if (board.getMoveablePawns(currentRoll, currentPlayer).size() == 0){
 				makeComputerMoves();
 			}
-		}	
+		}
+	}
+	
+	private class TileEventThread extends Thread{
+		
+		ActionEvent event;
+		
+		public TileEventThread(ActionEvent event){
+			this.event=event;
+		}
+		
+		public void run(){
+			viewPanel.setTilesInactive();
+			FieldTile ft = (FieldTile)event.getSource();
+			performRound(ft.getId());
+		}
 	}
 }

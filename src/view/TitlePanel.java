@@ -64,7 +64,7 @@ public class TitlePanel extends JPanel {
 	public void setCustomMessage(String message){
 		this.textColor = Color.BLACK;
 		this.labelText = message;
-		this.paintImmediately(0,0,this.getWidth(),this.getHeight());
+		this.repaint();
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class TitlePanel extends JPanel {
 		default:
 			System.out.println("Invalid player number passed to TitlePanel.");
 		}
-		this.paintImmediately(0,0,this.getWidth(),this.getHeight());
+		this.repaint();
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class TitlePanel extends JPanel {
 		default:
 			System.out.println("Invalid player number passed to TitlePanel.");
 		}
-		this.paintImmediately(0,0,this.getWidth(),this.getHeight());
+		this.repaint();
 	}
 	
 	/*===================================
