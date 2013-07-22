@@ -394,13 +394,12 @@ public class ViewPanel extends JPanel {
 		public void animateDieRoll(int toNumber){
 			Random r = new Random();
 			
-			for(int i=0;i<5;i++){
+			for(int i=0;i<6;i++){
 				ViewPanel.this.die.setDieRoll(r.nextInt(6)+1);
-				try{Thread.sleep(1000);}catch(Exception e){}
+				try{Thread.sleep(500);}catch(Exception e){}
 			}
 
 			ViewPanel.this.die.setDieRoll(toNumber);
 		}
 	}
-
 }
