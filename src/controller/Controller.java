@@ -123,14 +123,16 @@ public class Controller {
 	
 	private void makeComputerMove(){
 		rollDie();
-		Move move = board.makeMove(currentRoll, currentPlayer);
-		if (move.startPosition >= 0 && move.startPosition <= 39){
-			viewPanel.getBoardTileAt(move.startPosition).setColor(ViewPanel.BLANK_COLOR);
-		} else if (move.startPosition > 39 && move.startPosition < 44){
-			viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), move.startPosition-40).setColor(ViewPanel.BLANK_COLOR);
-		}
-		if (move.collision != null){
-			viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
+		Move move = board.makeMove(currentRoll, currentPlayer);	
+		if (move != null) {
+			if (move.startPosition >= 0 && move.startPosition <= 39){
+				viewPanel.getBoardTileAt(move.startPosition).setColor(ViewPanel.BLANK_COLOR);
+			} else if (move.startPosition > 39 && move.startPosition < 44){
+				viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), move.startPosition-40).setColor(ViewPanel.BLANK_COLOR);
+			}
+			if (move.collision != null){
+				viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
+			}
 		}
 	}
 	
@@ -180,8 +182,8 @@ public class Controller {
 	 */
 	public void rollDie(){
 		Random rand = new Random();
-		//this.currentRoll = rand.nextInt(6) + 1;
-		this.currentRoll = 6;
+		this.currentRoll = rand.nextInt(6) + 1;
+		//this.currentRoll = 6;
 		this.viewPanel.setDieRoll(currentRoll);
 	}
 	
