@@ -111,7 +111,7 @@ public class Board {
 		ArrayList<Pawn> MoveablePawns = new ArrayList<Pawn>();
 		//if a six is rolled and the spot in front of the home is not alreadyt occupied by one of the owners
 		//pawns, if possible move a pawn out from home
-		if(currentRoll == 6 && gameBoard[startpos].getOwner() != owner && owner.getPawnsAtHome() != 0){
+		if(currentRoll == 6 && gameBoard[startpos].getPawnOwner() != owner && owner.getPawnsAtHome() != 0){
 			for(Pawn pawn: owner.getPawns()){
 				if(pawn.getPosition() == -1){
 					MoveablePawns.add(pawn); //pawn.setIsMoveable(true);
@@ -130,7 +130,7 @@ public class Board {
 			int currentpos = pawn.getPosition();
 			//check each spot to make sure it doesnt pass the goal fork
 			for(int i=1;i<=currentRoll;i++){
-				if(gameBoard[(currentpos + i) % 40] instanceof Fork && gameBoard[currentpos + i].getOwner() == owner){
+				if(gameBoard[(currentpos + i) % 40] instanceof Fork && gameBoard[currentpos + i].getForkOwner() == owner){
 					int remainingMoves = currentRoll - i;
 					if(remainingMoves > 4){
 						//pawn.setIsMoveable(false);
@@ -146,7 +146,7 @@ public class Board {
 					}
 				}
 				if( i == currentRoll){
-					if(gameBoard[(currentpos + i) % 40].getOwner() == pawn.getOwner()){
+					if(gameBoard[(currentpos + i) % 40].getPawnOwner() == pawn.getOwner()){
 						continue;
 						//pawn.setIsMoveable(false);
 					}else{
@@ -168,6 +168,8 @@ public class Board {
 			Pawn pawn = ((ComputerPlayer) player).makeMove(currentRoll, this.getMoveablePawns(currentRoll, player), gameBoard);
 			if(pawn != null){
 				move = makeMove(pawn, currentRoll);
+			}else{
+				return null;
 			}
 		}else{
 			//error, should never happen as it is run only on computer players
@@ -199,9 +201,11 @@ public class Board {
 		}else{
 			//move the pawn the given number of slots, all error handling is done by the getMovablePawns method
 			for(int i=1;i<=currentRoll;i++){
-				if(gameBoard[(currentpos + i) % 40].getOwner() == pawn.getOwner()){
+				if(gameBoard[(currentpos + i) % 40].getPawnOwner() == pawn.getOwner()){
 					Field[] EndMap = playerEndMap.get(pawn.getOwner());
 					EndMap[currentRoll-i].setOccupant(pawn);
+					EndMap[currentRoll-i].setPawnOwner(pawn.getOwner());
+					
 					pawn.setPosition(40 + (currentRoll-i));
 				}
 				if(i == currentRoll){
@@ -209,7 +213,7 @@ public class Board {
 						move.collision = sendPawnHome((currentpos + i) % 40);
 					}
 					updateField(currentpos, null);
-					gameBoard[(currentpos + i) % 40].setOccupant(pawn);
+					updateField((currentpos + i) % 40, pawn);
 					pawn.setPosition((currentpos + i) % 40);
 				}
 			}
@@ -235,9 +239,9 @@ public class Board {
 	private void updateField(int pos, Pawn pawn){
 		this.gameBoard[pos].setOccupant(pawn);
 		if(pawn != null){
-			this.gameBoard[pos].setOwner(pawn.getOwner());
+			this.gameBoard[pos].setPawnOwner(pawn.getOwner());
 		}else{
-			this.gameBoard[pos].setOwner(null);
+			this.gameBoard[pos].setPawnOwner(null);
 		}
 	}
 	
