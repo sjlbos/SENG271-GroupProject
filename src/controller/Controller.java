@@ -3,11 +3,7 @@ package controller;
 import java.awt.event.*;
 import java.util.Random;
 
-import model.Board;
-import model.Player;
-import model.Pawn;
-import model.HumanPlayer;
-import model.ComputerPlayer;
+import model.*;
 import view.FieldTile;
 import view.ViewPanel;
 
