@@ -192,7 +192,7 @@ public class Controller {
 	 * This information is used to communicate to the board which pawn to move
 	 * @param id
 	 */
-	public void performRound(String id){
+	public void makeHumanMove(String id){
 		String[] tokens = id.split(":");
 		Pawn[] pawns = currentPlayer.getPawns();
 		if ("H".equals(tokens[0])){
@@ -228,7 +228,6 @@ public class Controller {
 			 * Map the goal tile back to the board
 			 */
 		}
-		makeComputerMoves();
 	}
 	
 	/**
@@ -304,7 +303,8 @@ public class Controller {
 		public void run(){
 			viewPanel.setTilesInactive();
 			FieldTile ft = (FieldTile)event.getSource();
-			performRound(ft.getId());
+			makeHumanMove(ft.getId());
+			makeComputerMoves();
 		}
 	}
 }
