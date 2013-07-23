@@ -52,6 +52,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	private boolean isActiveDestination;
 	private Shape circle;
 	private Color fieldColor;
+	private Color borderColor;
 	private ArrayList<ActionListener> actionListeners;
 	private String id;
 	
@@ -67,6 +68,7 @@ public class FieldTile extends JComponent implements MouseListener{
 		this.actionListeners = new ArrayList<ActionListener>();
 		
 		this.fieldColor=Color.WHITE;
+		this.borderColor=Color.BLACK;
 		this.circle = new Ellipse2D.Double(Padding,Padding,Diameter,Diameter);
 		this.isActive = false;
 		this.id="";
@@ -81,6 +83,7 @@ public class FieldTile extends JComponent implements MouseListener{
 		this.actionListeners = new ArrayList<ActionListener>();
 		
 		this.fieldColor = c;
+		this.borderColor = Color.BLACK;
 		this.circle = new Ellipse2D.Double(Padding,Padding,Diameter,Diameter);
 		this.isActive = false;
 		this.id="";
@@ -96,6 +99,14 @@ public class FieldTile extends JComponent implements MouseListener{
 	
 	public String getId(){
 		return this.id;
+	}
+	
+	public void setBorderColor(Color c){
+		this.borderColor = c;
+	}
+	
+	public Color getBorderColor(){
+		return this.borderColor;
 	}
 	
 	public void toggleIsActive(){
@@ -116,7 +127,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	
 	public void setColor(Color c){
 		this.fieldColor=c;
-		this.paintImmediately(0, 0, this.getWidth(), this.getHeight());
+		this.repaint();
 	}
 	
 	public Color getColor(){
@@ -174,7 +185,7 @@ public class FieldTile extends JComponent implements MouseListener{
 			g2.setColor(Color.RED);
 		}
 		else{
-			g2.setColor(Color.BLACK);
+			g2.setColor(borderColor);
 		}
 		g2.setStroke(new BasicStroke(3));
 		g2.draw(this.circle);
@@ -217,10 +228,11 @@ public class FieldTile extends JComponent implements MouseListener{
 	 * An ActionEvent is also fired to all subscribers
 	 */
 	public void mouseExited(MouseEvent e) {
+		
+		this.mouseEntered = false;
+		this.repaint();
+		
 		if(this.isActive){
-			this.mouseEntered = false;
-			this.repaint();
-			
 			ActionEvent event = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,FieldTile.EXIT_EVENT);
 			for(ActionListener subscriber:this.actionListeners){
 				subscriber.actionPerformed(event);
@@ -244,11 +256,7 @@ public class FieldTile extends JComponent implements MouseListener{
 	public void mouseReleased(MouseEvent e) {
 		if(this.isActive){
 			this.mousePressed = false;
-			this.paintImmediately(0, 0, this.getWidth(), this.getHeight());
-			ActionEvent event = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,FieldTile.CLICK_EVENT);
-			for(ActionListener subscriber:this.actionListeners){
-				subscriber.actionPerformed(event);
-			}
+			this.repaint();
 		}
 	}
 }

@@ -85,7 +85,7 @@ public class DieComponent extends JComponent implements MouseListener {
 	
 	public void setDieRoll(int roll){
 		this.dieRoll=roll;
-		this.paintImmediately(0, 0, DieComponent.SIDE_LENGTH, DieComponent.SIDE_LENGTH);
+		this.repaint();
 	}
 	
 	public int getDieRoll(){
@@ -218,10 +218,8 @@ public class DieComponent extends JComponent implements MouseListener {
 	 * If the mouse exits the component, the field is redrawn with a normal border.
 	 */
 	public void mouseExited(MouseEvent e) {
-		if(this.isActive){
-			this.mouseEntered = false;
-			this.repaint();	
-		}
+		this.mouseEntered = false;
+		this.repaint();	
 	}
 
 	public void mousePressed(MouseEvent e) {

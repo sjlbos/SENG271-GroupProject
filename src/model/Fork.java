@@ -14,7 +14,8 @@ public class Fork extends Field{
 	 * Getters And Setters
 	===================================*/
 	
-	public Player getOwner(){
+	@Override
+	public Player getForkOwner(){
 		return this.owner;
 	}
 	

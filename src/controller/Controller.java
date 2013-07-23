@@ -3,6 +3,7 @@ package controller;
 import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 import model.*;
 import view.FieldTile;
@@ -25,6 +26,7 @@ public class Controller {
 	private FieldTileListener fieldTileListener;
 	private DiceListener diceListener;
 	private TitlePanel titlePanel;
+	private Timer timer;
 	
 	/*===================================
 	 GETTERS & SETTERS
@@ -99,6 +101,13 @@ public class Controller {
 		this.currentPlayer = board.getPlayer(1);
 		titlePanel.setTurnForPlayerNumber(1);
 		this.viewPanel.toggleDieIsActive();
+		
+		timer = new Timer(15, new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				viewPanel.repaint();
+			}
+		});
+		timer.start();
 	}
 	
 	private void updateActiveStatuses(){
@@ -118,14 +127,17 @@ public class Controller {
 	
 	private void makeComputerMove(){
 		rollDie();
-		Move move = board.makeMove(currentRoll, currentPlayer);
-		if (move.collision != null){
-			viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
+		Move move = board.makeMove(currentRoll, currentPlayer);	
+		if (move != null) {
+			if (move.startPosition >= 0 && move.startPosition <= 39){
+				viewPanel.getBoardTileAt(move.startPosition).setColor(ViewPanel.BLANK_COLOR);
+			} else if (move.startPosition > 39 && move.startPosition < 44){
+				viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), move.startPosition-40).setColor(ViewPanel.BLANK_COLOR);
+			}
+			if (move.collision != null){
+				viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
+			}
 		}
-	}
-	
-	private void makeMove(ActionEvent e){
-		
 	}
 	
 	private void makeComputerMoves(){
@@ -136,8 +148,8 @@ public class Controller {
 				e.printStackTrace();
 			}
 			this.setCurrentPlayer(board.getPlayer(i));
-			System.out.println(currentPlayer.getPlayerNumber());
 			makeComputerMove();
+			updateView();
 		}
 		this.setCurrentPlayer(board.getPlayer(1));
 		viewPanel.toggleDieIsActive();
@@ -174,9 +186,9 @@ public class Controller {
 	 */
 	public void rollDie(){
 		Random rand = new Random();
-		//this.currentRoll = rand.nextInt(6) + 1;
-		this.currentRoll = 6;
-		this.viewPanel.setDieRoll(currentRoll);
+		this.currentRoll = rand.nextInt(6) + 1;
+		//this.currentRoll = 6;
+		this.animateDieRoll(currentRoll);
 	}
 	
 	/**
@@ -184,7 +196,7 @@ public class Controller {
 	 * This information is used to communicate to the board which pawn to move
 	 * @param id
 	 */
-	public void performRound(String id){
+	public void makeHumanMove(String id){
 		String[] tokens = id.split(":");
 		Pawn[] pawns = currentPlayer.getPawns();
 		if ("H".equals(tokens[0])){
@@ -195,6 +207,7 @@ public class Controller {
 				if (pawn.getPosition() == -1){
 					Move move = board.makeMove(pawn, currentRoll);
 					viewPanel.setPlayerAtBoardTile(currentPlayer.getPlayerNumber(), currentPlayer.getStartPosition());
+					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), currentPlayer.getPawnsAtHome()).setColor(ViewPanel.BLANK_COLOR);
 					if (move.collision != null){
 						viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
 					}
@@ -219,7 +232,6 @@ public class Controller {
 			 * Map the goal tile back to the board
 			 */
 		}
-		makeComputerMoves();
 	}
 	
 	/**
@@ -241,6 +253,23 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Animates the rolling of the die. This method randomly generates 6 numbers
+	 * between 1 and 6 and displays them on the die at half second intervals until
+	 * the real die roll is finally displayed.
+	 * @param toNumber - the number to which the die will be rolled.
+	 */
+	private void animateDieRoll(int toNumber){
+		Random r = new Random();
+		
+		for(int i=0;i<6;i++){
+			viewPanel.setDieRoll(r.nextInt(6)+1);
+			try{Thread.sleep(500);}catch(Exception e){}
+		}
+
+		viewPanel.setDieRoll(toNumber);
+	}
+	
 	/*===================================
 	 ACTION LISTENERS
 	 ===================================*/
@@ -256,10 +285,7 @@ public class Controller {
 	private class FieldTileListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
-				System.out.println("Tile " + e.getSource().toString() +" Clicked");
-				viewPanel.setTilesInactive();
-				FieldTile ft = (FieldTile)e.getSource();
-				performRound(ft.getId());
+				(new TileEventThread(e)).start();
 			}
 		}
 	}
@@ -267,12 +293,53 @@ public class Controller {
 	// Nested action listener for Dice events.
 	private class DiceListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
+			(new DieEventThread()).start();
+		}	
+	}
+	
+	/*===================================
+	 EVENT THREADS
+	 ===================================*/
+	
+	/**
+	 * This class defines the thread that will be executed when a player rolls the die. 
+	 * Once the die has been clicked, this thread sets the die to be inactive, rolls the die 
+	 * and animates the die roll, and performs a round of play if the player is unable to make a
+	 * move.
+	 */
+	private class DieEventThread extends Thread{
+		
+		public void run(){
 			viewPanel.toggleDieIsActive();
 			Controller.this.rollDie();
 			updateActiveStatuses();
+			// If the player is unable to move, perform a round of play.
 			if (board.getMoveablePawns(currentRoll, currentPlayer).size() == 0){
 				makeComputerMoves();
 			}
-		}	
+		}
+	}
+	
+	/**
+	 * This class defines the thread that will be executed when the player clicks a tile to make a move.
+	 * This thread performs a complete round of play, first setting all tiles to be inactive, performing the 
+	 * player's move and then moving each of the computer players in succession. When this thread ends, the 
+	 * die will once again be active, awaiting another roll from the player.
+	 */
+	private class TileEventThread extends Thread{
+		
+		ActionEvent event;
+		
+		// This thread requires the event that triggered this thread's execution in its constructor.
+		public TileEventThread(ActionEvent event){
+			this.event=event;
+		}
+		
+		public void run(){
+			viewPanel.setTilesInactive();
+			FieldTile ft = (FieldTile)event.getSource();
+			makeHumanMove(ft.getId());
+			makeComputerMoves();
+		}
 	}
 }

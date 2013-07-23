@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import controller.Controller;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Random;
 
 /**
  * @author Stephen Bos
@@ -42,7 +41,6 @@ public class ViewPanel extends JPanel {
 	private FieldTile[][] homes;
 	private FieldTile[][] goals;
 	private DieComponent die;
-	private Animator animator;
 	
 	/*===================================
 	 CONSTRUCTORS
@@ -57,13 +55,13 @@ public class ViewPanel extends JPanel {
 		this.boardLoop = new FieldTile[40];
 		this.homes = new FieldTile[4][4];
 		this.goals = new FieldTile[4][4];
-		this.animator = new Animator();
 		
 		this.die = new DieComponent(6);
 		this.die.addActionListener(controller.getDiceListener());
 
 		initializeTiles();
 		layoutTileStrips();
+		resetBoard();
 	}
 	
 	/**
@@ -83,7 +81,6 @@ public class ViewPanel extends JPanel {
 			for(int j=0;j<4;j++){
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
-				newTile.setColor(getColorForPlayer(i+1));
 				newTile.setId("H:"+(i+1)+":"+j);
 				this.homes[i][j]=newTile;
 			}
@@ -342,7 +339,7 @@ public class ViewPanel extends JPanel {
 	 * @param roll - an integer between 1 and 6 representing the die roll.
 	 */
 	public void setDieRoll(int roll){
-		this.animator.animateDieRoll(roll);
+		this.die.setDieRoll(roll);
 	}
 	
 	/**
@@ -350,11 +347,6 @@ public class ViewPanel extends JPanel {
 	 */
 	public void toggleDieIsActive(){
 		this.die.toggleIsActive();
-	}
-	
-	
-	public Animator getAnimator(){
-		return this.animator;
 	}
 	
 	/*===================================
@@ -365,9 +357,11 @@ public class ViewPanel extends JPanel {
 	 * This method resets the board to a new game state, with all the pawns in their home fields.
 	 */
 	public void resetBoard(){
+		// Reset board tiles to blank color
 		for(int i=0;i<boardLoop.length;i++){
 			boardLoop[i].setColor(ViewPanel.BLANK_COLOR);
 		}
+		// Set home and goal tiles to player colors and set entry tiles to the appropriate colors
 		for(int i=0;i<4;i++){
 			for(int j=0;j<4;j++){
 				goals[i][j].setColor(ViewPanel.BLANK_COLOR);
@@ -375,38 +369,13 @@ public class ViewPanel extends JPanel {
 			}
 		}
 		
+		// Set entry tiles with the appropriate border color
+		boardLoop[36].setBorderColor(ViewPanel.PLAYER_1_BOARD_COLOR);
+		boardLoop[6].setBorderColor(ViewPanel.PLAYER_2_BOARD_COLOR);
+		boardLoop[16].setBorderColor(ViewPanel.PLAYER_3_BOARD_COLOR);
+		boardLoop[26].setBorderColor(ViewPanel.PLAYER_4_BOARD_COLOR);
+		
+		// Set every to an inactive state
 		this.setTilesInactive();
 	}
-	
-	/*===================================
-	 ANIMATOR
-	 ===================================*/
-	
-	/**
-	 * A nested helper class responsible for animating the ViewPanel
-	 */
-	private class Animator{
-		
-		/**
-		 * Displays random die numbers over 3 seconds before arriving at the correct roll.
-		 * @param toNumber - the number the die should display when it finishes rolling.
-		 */
-		public void animateDieRoll(int toNumber){
-			Random r = new Random();
-			
-			long startTime = System.currentTimeMillis();
-			long currentTime = startTime;
-			long divisor = 400;
-			
-			while(currentTime - startTime < 3000L){	
-				
-				if(currentTime%divisor<10){
-					ViewPanel.this.die.setDieRoll(r.nextInt(6)+1);
-				}		
-				currentTime = System.currentTimeMillis();
-			}
-			ViewPanel.this.die.setDieRoll(toNumber);
-		}
-	}
-
 }

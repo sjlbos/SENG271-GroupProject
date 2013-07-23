@@ -25,13 +25,20 @@ public class Field {
 		this.occupant = pawn;
 	}
 	
-	public Player getOwner(){
+	public Player getPawnOwner(){
 		return this.pawnOwner;
 	}
 	
-	public void setOwner(Player Owner){
+	public Player getForkOwner(){
+		return null;
+	}
+	
+	
+	public void setPawnOwner(Player Owner){
 		this.pawnOwner = Owner;
 	}
+	
+	
 	
 	public String toString(){
 		return pawnOwner + " : " + occupant;
