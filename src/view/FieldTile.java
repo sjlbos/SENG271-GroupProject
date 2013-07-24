@@ -239,12 +239,10 @@ public class FieldTile extends JComponent implements MouseListener{
 		
 		this.mouseEntered = false;
 		this.repaint();
-		
-		if(this.isActive){
-			ActionEvent event = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,FieldTile.EXIT_EVENT);
-			for(ActionListener subscriber:this.actionListeners){
-				subscriber.actionPerformed(event);
-			}
+
+		ActionEvent event = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,FieldTile.EXIT_EVENT);
+		for(ActionListener subscriber:this.actionListeners){
+			subscriber.actionPerformed(event);
 		}
 	}
 	
