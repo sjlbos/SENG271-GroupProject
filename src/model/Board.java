@@ -9,7 +9,6 @@ import java.util.ArrayList;
  * @author Luuk
  *
  */
-
 public class Board {
 	private Player[] players;
 	private Field[] gameBoard;
@@ -64,7 +63,6 @@ public class Board {
 		return this.players;
 	}
 	
-	
 	/**
 	 * @return Returns an array containing all the Pawn objects on the game board
 	 * 
@@ -106,12 +104,10 @@ public class Board {
 		return temp.getOwner();
 	}
 	
-	
-	
-	 /**
-	  * 
-	  * @return Returns all pawns that can be moved
-	  */
+	/**
+	 * 
+	 * @return Returns all pawns that can be moved
+	 */
 	public ArrayList<Pawn> getMoveablePawns(int currentRoll, Player owner){
 		int startpos = owner.getStartPosition();
 		ArrayList<Pawn> MoveablePawns = new ArrayList<Pawn>();
@@ -277,7 +273,6 @@ public class Board {
 	 * 
 	 * @param player to set all their pawn to non movable at the end of a round
 	 */
-
 	public Field[] getBoard() {
 		return this.gameBoard;
 	}
@@ -296,6 +291,9 @@ public class Board {
 		Player owner = pawn.getOwner();
 		int startPos = pawn.getPosition();
 		int playerStartTile = owner.getStartPosition();
+		if(pawn.getPosition() == -1){
+			return owner.getStartPosition();
+		}
 		for(int i=1;i<=dieRoll;i++){
 			if((startPos + i)%40 == playerStartTile){
 				int remainingMoves = dieRoll - i;
