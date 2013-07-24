@@ -297,14 +297,16 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
 				(new TileEventThread(e)).start();
-			} else if (e.getActionCommand().equals(FieldTile.ENTER_EVENT)){
-				//turn on the end-point highlighting
+			} else {
 				FieldTile ft = (FieldTile)e.getSource();
 				String id = ft.getId();
 				Pawn pawn = getPawnFromTileID(id);
 				int destination = board.getMoveDestination(pawn, currentRoll);
-			} else if (e.getActionCommand().equals(FieldTile.EXIT_EVENT)){
-				// turn off the end-point highlighting
+				if (e.getActionCommand().equals(FieldTile.ENTER_EVENT)){
+					// turn on
+				} else if (e.getActionCommand().equals(FieldTile.EXIT_EVENT)){
+					// turn off
+				}
 			}
 		}
 	}
