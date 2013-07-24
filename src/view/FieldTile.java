@@ -150,6 +150,14 @@ public class FieldTile extends JComponent implements MouseListener{
 		this.isActiveDestination = isActiveDestination?false:true;
 	}
 	
+	public void setIsActiveDestination(boolean isActiveDestination){
+		this.isActiveDestination=isActiveDestination;
+	}
+	
+	public boolean isActiveDestination(){
+		return this.isActiveDestination;
+	}
+	
 	public void addActionListener(ActionListener subscriber){
 		this.actionListeners.add(subscriber);
 	}

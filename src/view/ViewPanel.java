@@ -315,6 +315,23 @@ public class ViewPanel extends JPanel {
 	}
 	
 	/**
+	 * @param player - The player number of the player who owns this goal
+	 * @param position - The position of the tile in this goal
+	 * @param isActive - Setting this parameter to True will highlight the tile at the passed position in red.
+	 */
+	public void setActiveDestinationAtGoalForPlayer(int player, int position, boolean isActive){
+		goals[player][position].setIsActiveDestination(isActive);
+	}
+	
+	/**
+	 * @param position - The position of the tile on the board loop.
+	 * @param isActive - Setting this parameter to True will highlight the tile at the passed position in red.
+	 */
+	public void setActiveDestinationOnBoard(int position, boolean isActive){
+		boardLoop[position].setIsActiveDestination(isActive);
+	}
+	
+	/**
 	 * Sets all tiles to the inactive state
 	 * Used for initializing the game board
 	 */
