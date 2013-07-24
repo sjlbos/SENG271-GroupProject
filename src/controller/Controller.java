@@ -110,6 +110,9 @@ public class Controller {
 		timer.start();
 	}
 	
+	/**
+	 * Updates the active statuses of field tiles so that only movable pawns are active.
+	 */
 	private void updateActiveStatuses(){
 		ArrayList<Pawn> activePawns = board.getMoveablePawns(currentRoll, currentPlayer);
 		for(Pawn pawn: activePawns){
@@ -125,6 +128,37 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Simulates rolling the die <br> 
+	 * Updates currentRoll using a pseudo-random number generator
+	 */
+	public void rollDie(){
+		Random rand = new Random();
+		this.currentRoll = rand.nextInt(6) + 1;
+		currentRoll = 6;
+		this.viewPanel.setDieRoll(currentRoll);
+		this.animateDieRoll(currentRoll);
+	}
+	
+	
+	/**
+	 * Parses a FieldTile's ID attribute and returns the pawn object at that tile
+	 * @param The Field Tile's ID string
+	 * @return The pawn object currently at the tile
+	 */
+	private Pawn getPawnFromTileId(String id){
+		String[] tokens = id.split(":");
+		int pos = Integer.parseInt(tokens[1]);
+		if ("H".equals(tokens[0])){
+			return board.getPawnAtPosition(currentPlayer, -1);
+		} else {
+			return board.getPawnAtPosition(currentPlayer, pos);
+		}
+	}
+	
+	/**
+	 * Performs a computer move.
+	 */
 	private void makeComputerMove(){
 		rollDie();
 		Move move = board.makeMove(currentRoll, currentPlayer);	
@@ -147,18 +181,6 @@ public class Controller {
 	}
 	
 	/**
-	 * Simulates rolling the die <br> 
-	 * Updates currentRoll using a pseudo-random number generator
-	 */
-	public void rollDie(){
-		Random rand = new Random();
-		this.currentRoll = rand.nextInt(6) + 1;
-		currentRoll = 6;
-		this.viewPanel.setDieRoll(currentRoll);
-		this.animateDieRoll(currentRoll);
-	}
-	
-	/**
 	 * Used for parsing the id string of the tile a player selects when moving a pawn
 	 * This information is used to communicate to the board which pawn to move
 	 * @param id
@@ -168,7 +190,7 @@ public class Controller {
 		Move move=board.makeMove(pawn, currentRoll);
 		animatePlayerMove(currentPlayer,move);
 	}
-	
+
 	/**
 	 * Used for setting a tile color on the view panel given a board player and coordinate.
 	 * @param player - the player to put at the tile position.
@@ -186,38 +208,6 @@ public class Controller {
 		else{
 			viewPanel.setPlayerAtBoardTile(playerNumber, position);
 		}
-	}
-	
-	/**
-	 * Parses a FieldTile's ID attribute and returns the pawn object at that tile
-	 * @param The Field Tile's ID string
-	 * @return The pawn object currently at the tile
-	 */
-	private Pawn getPawnFromTileId(String id){
-		String[] tokens = id.split(":");
-		int pos = Integer.parseInt(tokens[1]);
-		if ("H".equals(tokens[0])){
-			return board.getPawnAtPosition(currentPlayer, -1);
-		} else {
-			return board.getPawnAtPosition(currentPlayer, pos);
-		}
-	}
-	
-	/**
-	 * Animates the rolling of the die. This method randomly generates 6 numbers
-	 * between 1 and 6 and displays them on the die at half second intervals until
-	 * the real die roll is finally displayed.
-	 * @param toNumber - the number to which the die will be rolled.
-	 */
-	private void animateDieRoll(int toNumber){
-		Random r = new Random();
-		
-		for(int i=0;i<6;i++){
-			viewPanel.setDieRoll(r.nextInt(6)+1);
-			try{Thread.sleep(500);}catch(Exception e){}
-		}
-
-		viewPanel.setDieRoll(toNumber);
 	}
 	
 	/**
@@ -240,17 +230,17 @@ public class Controller {
 		}
 		
 		int moveNumber=1;
-		Player overridenPlayer = null;
+		Pawn overridenPawn = null;
 		do{
-			if(overridenPlayer!=null){
-				setTileAtPosition(overridenPlayer, currentPosition,false);
+			if(overridenPawn!=null){
+				setTileAtPosition(overridenPawn.getOwner(), currentPosition,false);
 			}
 			else{
 				setTileAtPosition(player,currentPosition,true);
 			}
-			overridenPlayer = board.getPawnAtPosition(nextPosition);
-			setTileAtPosition(player,nextPosition,false);
 			
+			overridenPawn = board.getPawnAtPosition(nextPosition);
+			setTileAtPosition(player,nextPosition,false);
 			
 			currentPosition = nextPosition;
 			
@@ -274,8 +264,8 @@ public class Controller {
 			moveNumber++;
 		}while(moveNumber<=numberOfMoves);
 		
-		if(overridenPlayer!=null){
-			setTileAtPosition(overridenPlayer, currentPosition,false);
+		if(overridenPawn!=null){
+			setTileAtPosition(overridenPawn.getOwner(), currentPosition,false);
 		}
 		else{
 			setTileAtPosition(player,currentPosition,true);
@@ -284,6 +274,23 @@ public class Controller {
 		if(move.collision!=null){
 			setTileAtPosition(move.collision,-1,false);
 		}
+	}
+	
+	/**
+	 * Animates the rolling of the die. This method randomly generates 6 numbers
+	 * between 1 and 6 and displays them on the die at half second intervals until
+	 * the real die roll is finally displayed.
+	 * @param toNumber - the number to which the die will be rolled.
+	 */
+	private void animateDieRoll(int toNumber){
+		Random r = new Random();
+		
+		for(int i=0;i<6;i++){
+			viewPanel.setDieRoll(r.nextInt(6)+1);
+			try{Thread.sleep(500);}catch(Exception e){}
+		}
+
+		viewPanel.setDieRoll(toNumber);
 	}
 	
 	/*===================================
