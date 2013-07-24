@@ -16,4 +16,7 @@ public class RandomStrategy implements Strategy {
 
 	}
 
+	public String toString(){
+		return "Random";
+	}
 }

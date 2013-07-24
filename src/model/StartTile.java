@@ -1,11 +1,11 @@
 package model;
 
 
-public class Fork extends Field{
+public class StartTile extends Field{
 	private Player owner;
 	
 	//Default Constructor
-	public Fork(Player player){
+	public StartTile(Player player){
 		this.owner = player;
 	}
 	

@@ -38,4 +38,9 @@ public class CaptureStrategy implements Strategy{
 		int random = rand.nextInt(moveablePawns.size());
 		return moveablePawns.get(random);
 	}
+	
+	public String toString(){
+		return "Capture";
+	}
 }
+

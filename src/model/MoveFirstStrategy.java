@@ -44,5 +44,9 @@ public class MoveFirstStrategy implements Strategy {
 		
 		return pawn;
 	}
+	
+	public String toString(){
+		return "Move First";
+	}
 
 }

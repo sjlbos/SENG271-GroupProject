@@ -187,8 +187,10 @@ public class Controller {
 	public void rollDie(){
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
+		this.viewPanel.setDieRoll(currentRoll);
 		//this.currentRoll = 6;
 		this.animateDieRoll(currentRoll);
+
 	}
 	
 	/**

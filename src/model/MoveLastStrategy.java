@@ -38,4 +38,8 @@ public class MoveLastStrategy implements Strategy{
 		return pawn;
 	}
 
+	
+	public String toString(){
+		return "Move Last";
+	}
 }
