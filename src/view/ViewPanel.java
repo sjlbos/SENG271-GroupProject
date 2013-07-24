@@ -282,7 +282,7 @@ public class ViewPanel extends JPanel {
 	}
 	
 	/**
-	 * @param player - The player number of the player to set at this tile. Can be an integer between 1 and 4 or 0 to clear the tile.
+	 * @param player - The player number of the player to set at this tile. Can be an integer between 1 and 4.
 	 * @param position - The position of the tile on the main board that the player is being assigned to.
 	 */
 	public void setPlayerAtBoardTile(int player,int position){
@@ -290,6 +290,17 @@ public class ViewPanel extends JPanel {
 		if(tile!=null){
 			tile.setColor(getColorForPlayer(player));
 		}	
+	}
+	
+	/**
+	 * @param player - The player number of the player to set at this tile. Can be an integer between 1 and 4.
+	 * @param position - The position of the tile on the main board that the player is being assigned to.
+	 */
+	public void clearPlayerAtBoardTile(int player, int position){
+		FieldTile tile = getBoardTileAt(position);
+		if(tile!=null){
+			tile.setColor(ViewPanel.BLANK_COLOR);
+		}
 	}
 	
 	/**

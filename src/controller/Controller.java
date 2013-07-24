@@ -197,16 +197,29 @@ public class Controller {
 	 * @param position - the board coordinate of the tile to be changed.
 	 */
 	private void setTileAtPosition(Player player, int position, boolean isEmpty){
-		int playerNumber=isEmpty?0:player.getPlayerNumber();
+		int playerNumber = player.getPlayerNumber();
 		
-		if(position<0){
-			viewPanel.setPlayerAtHomeTile(playerNumber, player.getPawnsAtHome()-1);
-		}
-		else if(position>39){
-			viewPanel.setPlayerAtGoalTile(playerNumber, position-40);
+		if(isEmpty){
+			if(position<0){
+				viewPanel.clearPlayerAtHomeTile(playerNumber, player.getPawnsAtHome());
+			}
+			else if(position>39){
+				viewPanel.clearPlayerAtGoalTile(playerNumber, position-40);
+			}
+			else{
+				viewPanel.clearPlayerAtBoardTile(playerNumber, position);
+			}
 		}
 		else{
-			viewPanel.setPlayerAtBoardTile(playerNumber, position);
+			if(position<0){
+				viewPanel.setPlayerAtHomeTile(playerNumber, player.getPawnsAtHome()-1);
+			}
+			else if(position>39){
+				viewPanel.setPlayerAtGoalTile(playerNumber, position-40);
+			}
+			else{
+				viewPanel.setPlayerAtBoardTile(playerNumber, position);
+			}
 		}
 	}
 	
