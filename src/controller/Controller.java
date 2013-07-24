@@ -251,6 +251,7 @@ public class Controller {
 			overridenPlayer = board.getPawnAtPosition(nextPosition);
 			setTileAtPosition(player,nextPosition,false);
 			
+			
 			currentPosition = nextPosition;
 			
 			if(move.pawn.getPosition()>39){
