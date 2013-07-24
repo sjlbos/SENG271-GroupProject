@@ -293,7 +293,7 @@ public class ViewPanel extends JPanel {
 	}
 	
 	/**
-	 * @param player - The player number of the player who owns this home.Can be an integer between 1 and 4 or 0 to clear the tile.
+	 * @param player - The player number of the player who owns this home.Can be an integer between 1 and 4.
 	 * @param position - The position of the tile in the player's home.
 	 */
 	public void setPlayerAtHomeTile(int player, int position){
@@ -304,13 +304,35 @@ public class ViewPanel extends JPanel {
 	}
 	
 	/**
-	 * @param player - The player number of the player who owns this goal.Can be an integer between 1 and 4 or 0 to clear the tile.
-	 * @param position - The position of the title in the player's goal.
+	 * @param player - The player number of the player who belongs to this home. Can be an integer between 1 and 4.
+	 * @param position - The position of the tile in the player's home.
+	 */
+	public void clearPlayerAtHomeTile(int player, int position){
+		FieldTile tile = getHomeTileForPlayerAt(player,position);
+		if(tile!=null){
+			tile.setColor(ViewPanel.BLANK_COLOR);
+		}
+	}
+	
+	/**
+	 * @param player - The player number of the player who owns this goal.Can be an integer between 1 and 4.
+	 * @param position - The position of the tile in the player's goal.
 	 */
 	public void setPlayerAtGoalTile(int player, int position){
 		FieldTile tile = getGoalTileForPlayerAt(player,position);
 		if(tile!=null){
 			tile.setColor(getColorForPlayer(player));
+		}
+	}
+	
+	/**
+	 * @param player - The player number of the player who owns this goal. Can be an integer between 1 and 4.
+	 * @param position - The position of the tile in the player's goal.
+	 */
+	public void clearPlayerAtGoalTile(int player, int position){
+		FieldTile tile = getGoalTileForPlayerAt(player,position);
+		if(tile!=null){
+			tile.setColor(ViewPanel.BLANK_COLOR);
 		}
 	}
 	
