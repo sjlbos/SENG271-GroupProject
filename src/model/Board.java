@@ -308,6 +308,11 @@ public class Board {
 		return null;
 	}
 	
+	
+	public Pawn getPawnAtPosition(int pos){
+		return this.gameBoard[pos].getOccupant();
+	}
+	
 	public int getMoveDestination(Pawn pawn, int dieRoll){
 		Player owner = pawn.getOwner();
 		int startPos = pawn.getPosition();
