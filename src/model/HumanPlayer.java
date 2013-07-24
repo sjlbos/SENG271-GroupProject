@@ -103,5 +103,7 @@ public class HumanPlayer implements Player {
 		
 	}
 	
-	
+	public String toString(){
+		return "HumanPlayer: " + this.playerNumber;
+	}
 }

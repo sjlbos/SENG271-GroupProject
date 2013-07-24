@@ -12,4 +12,5 @@ public interface Strategy {
 	 * @return Pawn to be moved
 	 */
 	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard);
+	public String toString();
 }

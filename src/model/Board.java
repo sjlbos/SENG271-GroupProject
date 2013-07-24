@@ -297,6 +297,19 @@ public class Board {
 		return null;
 	}
 	
+	public int getMoveDestination(Pawn pawn, int dieRoll){
+		Player owner = pawn.getOwner();
+		int startPos = pawn.getPosition();
+		int playerStartTile = owner.getStartPosition();
+		for(int i=1;i<=dieRoll;i++){
+			if((startPos + i)%40 == playerStartTile){
+				int remainingMoves = dieRoll - i;
+				return 40 + (remainingMoves);
+			}
+		}
+		return (startPos + dieRoll)%40;
+	}
+	
 	public String toString(){
 		String s = "";
 		for(Field field: this.gameBoard){

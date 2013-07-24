@@ -8,5 +8,9 @@ public class CautiousStrategy implements Strategy{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public String toString(){
+		return "Cautious";
+	}
 
 }

@@ -105,4 +105,7 @@ public class ComputerPlayer implements Player {
 		return pawn;
 	}
 
+	public String toString(){
+		return "ComputerPlayer: " + this.playerNumber + " with strategy " + this.strategy; 
+	}
 }
