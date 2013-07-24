@@ -284,11 +284,6 @@ public class Board {
 	 
 	public Pawn getPawnAtPosition(Player player, int pos){
 		Pawn[] pawns = player.getPawns();
-		if(pos>40){
-			pos = pos%40;
-			Field[] EndMap = this.playerEndMap.get(player);
-			return EndMap[pos].getOccupant();
-		}
 		for(Pawn pawn: pawns){
 			if(pawn.getPosition() == pos){
 				return pawn;
