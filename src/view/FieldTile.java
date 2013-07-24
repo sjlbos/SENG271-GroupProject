@@ -119,6 +119,11 @@ public class FieldTile extends JComponent implements MouseListener{
 	
 	public void setInactive(){
 		this.isActive = false;
+		this.mouseEntered = false;
+		ActionEvent event = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,FieldTile.EXIT_EVENT);
+		for(ActionListener subscriber:this.actionListeners){
+			subscriber.actionPerformed(event);
+		}
 	}
 	
 	public boolean isActive(){
@@ -239,10 +244,12 @@ public class FieldTile extends JComponent implements MouseListener{
 		
 		this.mouseEntered = false;
 		this.repaint();
-
-		ActionEvent event = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,FieldTile.EXIT_EVENT);
-		for(ActionListener subscriber:this.actionListeners){
-			subscriber.actionPerformed(event);
+		
+		if(this.isActive){
+			ActionEvent event = new ActionEvent(this,ActionEvent.ACTION_PERFORMED,FieldTile.EXIT_EVENT);
+			for(ActionListener subscriber:this.actionListeners){
+				subscriber.actionPerformed(event);
+			}
 		}
 	}
 	
