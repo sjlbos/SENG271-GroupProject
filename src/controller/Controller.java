@@ -186,9 +186,9 @@ public class Controller {
 	 */
 	public void rollDie(){
 		Random rand = new Random();
-		this.currentRoll = rand.nextInt(6) + 1;
+		//this.currentRoll = rand.nextInt(6) + 1;
+		this.currentRoll = 6;
 		this.viewPanel.setDieRoll(currentRoll);
-		//this.currentRoll = 6;
 		this.animateDieRoll(currentRoll);
 
 	}
@@ -241,8 +241,11 @@ public class Controller {
 	private Pawn getPawnFromTileID(String id){
 		String[] tokens = id.split(":");
 		int pos = Integer.parseInt(tokens[1]);
-		Pawn pawn = board.getPawnAtPosition(currentPlayer, pos);
-		return pawn;
+		if ("H".equals(tokens[0])){
+			return board.getPawnAtPosition(currentPlayer, -1);
+		} else {
+			return board.getPawnAtPosition(currentPlayer, pos);
+		}
 	}
 	
 	/**
@@ -304,8 +307,18 @@ public class Controller {
 				int destination = board.getMoveDestination(pawn, currentRoll);
 				if (e.getActionCommand().equals(FieldTile.ENTER_EVENT)){
 					// turn on
+					if (destination < 40){
+						viewPanel.setActiveDestinationOnBoard(destination, true);
+					} else {
+						viewPanel.setActiveDestinationAtGoalForPlayer(currentPlayer.getPlayerNumber(), destination, true);
+					}
 				} else if (e.getActionCommand().equals(FieldTile.EXIT_EVENT)){
 					// turn off
+					if (destination < 40){
+						viewPanel.setActiveDestinationOnBoard(destination, false);
+					} else {
+						viewPanel.setActiveDestinationAtGoalForPlayer(currentPlayer.getPlayerNumber(), destination, false);
+					}
 				}
 			}
 		}
