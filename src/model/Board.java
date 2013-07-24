@@ -21,13 +21,14 @@ public class Board {
 		gameBoard = new Field[40];
 		players = new Player[4];
 		// Fake player generator for testing
-		for(int i=0; i<4; i++){
+		/*for(int i=0; i<4; i++){
 			players[i] = new HumanPlayer(i+1);
-		}
+		}*/
 		players[0] = new HumanPlayer(1);
 		players[1] = new ComputerPlayer(2, new CaptureStrategy());
 		players[2] = new ComputerPlayer(3, new RandomStrategy());
 		players[3] = new ComputerPlayer(4, new MoveFirstStrategy());
+		
 		
 		for(int i=0;i<40;i++){
 			gameBoard[i] = new Field();
@@ -45,7 +46,10 @@ public class Board {
 			Field[] EndMap = playerEndMap.get(player);
 			for(int i=0;i<4;i++){
 				EndMap[i] = new Field();
+<<<<<<< HEAD
 				
+=======
+>>>>>>> fe575512eaac9d8a195e4af7b9cbcbb925ced231
 			}
 		}
 		
@@ -137,6 +141,7 @@ public class Board {
 			//if pawn is in end goal
 			//check each spot to make sure it doesnt pass the goal fork
 			for(int i=1;i<=currentRoll;i++){
+<<<<<<< HEAD
 				if(currentpos >= 40){
 					if(getClosestPawnInGoal(owner,pawn) > currentRoll + currentpos && currentRoll + currentpos < 45){
 						MoveablePawns.add(pawn);
@@ -146,6 +151,9 @@ public class Board {
 					}
 				}
 				if(gameBoard[(currentpos + i) % 40] instanceof StartTile && gameBoard[(currentpos + i) % 40].getForkOwner() == owner){
+=======
+				if(gameBoard[(currentpos + i) % 40] instanceof Fork && gameBoard[(currentpos + i)%40].getForkOwner() == owner){
+>>>>>>> fe575512eaac9d8a195e4af7b9cbcbb925ced231
 					int remainingMoves = currentRoll - i;
 					if(remainingMoves > 4){
 						//pawn.setIsMoveable(false);
@@ -228,10 +236,14 @@ public class Board {
 				if(gameBoard[(currentpos + i) % 40].getForkOwner() == pawn.getOwner()){
 					updateField(currentpos,null);
 					Field[] EndMap = playerEndMap.get(pawn.getOwner());
-					EndMap[currentRoll-i].setOccupant(pawn);
-					EndMap[currentRoll-i].setPawnOwner(pawn.getOwner());
+					EndMap[currentRoll-i-1].setOccupant(pawn);
+					EndMap[currentRoll-i-1].setPawnOwner(pawn.getOwner());
 					
+<<<<<<< HEAD
 					pawn.setPosition(40 + (currentRoll-i));
+=======
+					pawn.setPosition(40 + (currentRoll-i-1));
+>>>>>>> fe575512eaac9d8a195e4af7b9cbcbb925ced231
 					return move;
 				}
 				if(i == currentRoll){
@@ -263,10 +275,12 @@ public class Board {
 	}
 	
 	private void updateField(int pos, Pawn pawn){
-		this.gameBoard[pos].setOccupant(pawn);
+		
 		if(pawn != null){
+			this.gameBoard[pos].setOccupant(pawn);
 			this.gameBoard[pos].setPawnOwner(pawn.getOwner());
 		}else{
+			this.gameBoard[pos].setOccupant(null);
 			this.gameBoard[pos].setPawnOwner(null);
 		}
 	}

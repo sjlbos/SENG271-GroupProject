@@ -6,7 +6,11 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 import model.*;
+import view.FieldTile;
+import view.ViewPanel;
+
 import view.*;
+
 
 public class Controller {
 	
@@ -183,12 +187,10 @@ public class Controller {
 	public void rollDie(){
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
-		if(currentPlayer == this.board.getPlayer(1)){
-			this.currentRoll = 1;
-		}else{
-			this.currentRoll = 1;
-		}
-		//this.viewPanel.setDieRoll(currentRoll);
+		this.viewPanel.setDieRoll(currentRoll);
+		//this.currentRoll = 6;
+		this.animateDieRoll(currentRoll);
+
 	}
 	
 	/**
@@ -253,6 +255,23 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Animates the rolling of the die. This method randomly generates 6 numbers
+	 * between 1 and 6 and displays them on the die at half second intervals until
+	 * the real die roll is finally displayed.
+	 * @param toNumber - the number to which the die will be rolled.
+	 */
+	private void animateDieRoll(int toNumber){
+		Random r = new Random();
+		
+		for(int i=0;i<6;i++){
+			viewPanel.setDieRoll(r.nextInt(6)+1);
+			try{Thread.sleep(500);}catch(Exception e){}
+		}
+
+		viewPanel.setDieRoll(toNumber);
+	}
+	
 	/*===================================
 	 ACTION LISTENERS
 	 ===================================*/
@@ -284,22 +303,36 @@ public class Controller {
 	 EVENT THREADS
 	 ===================================*/
 	
+	/**
+	 * This class defines the thread that will be executed when a player rolls the die. 
+	 * Once the die has been clicked, this thread sets the die to be inactive, rolls the die 
+	 * and animates the die roll, and performs a round of play if the player is unable to make a
+	 * move.
+	 */
 	private class DieEventThread extends Thread{
 		
 		public void run(){
 			viewPanel.toggleDieIsActive();
 			Controller.this.rollDie();
 			updateActiveStatuses();
+			// If the player is unable to move, perform a round of play.
 			if (board.getMoveablePawns(currentRoll, currentPlayer).size() == 0){
 				makeComputerMoves();
 			}
 		}
 	}
 	
+	/**
+	 * This class defines the thread that will be executed when the player clicks a tile to make a move.
+	 * This thread performs a complete round of play, first setting all tiles to be inactive, performing the 
+	 * player's move and then moving each of the computer players in succession. When this thread ends, the 
+	 * die will once again be active, awaiting another roll from the player.
+	 */
 	private class TileEventThread extends Thread{
 		
 		ActionEvent event;
 		
+		// This thread requires the event that triggered this thread's execution in its constructor.
 		public TileEventThread(ActionEvent event){
 			this.event=event;
 		}
