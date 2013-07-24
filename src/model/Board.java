@@ -50,6 +50,27 @@ public class Board {
 		
 	}
 	
+	//Constructor for given players
+//	public Board(Player[] newPlayers){
+//		gameBoard = new Field[40];
+//		for(int i=0;i<40;i++){
+//			gameBoard[i] = new Field();
+//		}
+//		this.players = newPlayers;
+//		for(Player player: players){
+//			gameBoard[player.getStartPosition()] = new StartTile(player);
+//		}
+//		playerEndMap = new HashMap<Player, Field[]>();
+//		for (Player player: players){
+//			playerEndMap.put(player, new Field[4]);
+//			Field[] EndMap = playerEndMap.get(player);
+//			for(int i=0;i<4;i++){
+//				EndMap[i] = new Field();
+//			}
+//		}
+//		
+//	}
+	
 	/**
 	 * Get a player object given their player number
 	 * @param the number of the player to return
@@ -285,6 +306,11 @@ public class Board {
 			}
 		}
 		return null;
+	}
+	
+	
+	public Pawn getPawnAtPosition(int pos){
+		return this.gameBoard[pos].getOccupant();
 	}
 	
 	public int getMoveDestination(Pawn pawn, int dieRoll){

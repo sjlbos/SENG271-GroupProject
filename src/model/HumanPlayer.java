@@ -5,12 +5,25 @@ public class HumanPlayer implements Player {
 	private int playerNumber;
 	private int pawnsAtHome;
 	private int startPosition;
+	private String name;
 	private Strategy strategy;
 	private Pawn[] pawns;
 	
 	//Constructor
 	public HumanPlayer(int playerNumber){
 		this.playerNumber = playerNumber;
+		this.name = "Player " + playerNumber;
+		this.startPosition = determineStartPosition(playerNumber);
+		pawns = new Pawn[4];
+		for(int i=0;i<4;i++){
+			pawns[i] = new Pawn(this);
+		}
+		this.pawnsAtHome = 4;
+	}
+	
+	public HumanPlayer(int playerNumber, String newName){
+		this.playerNumber = playerNumber;
+		this.name = newName;
 		this.startPosition = determineStartPosition(playerNumber);
 		pawns = new Pawn[4];
 		for(int i=0;i<4;i++){
@@ -36,6 +49,10 @@ public class HumanPlayer implements Player {
 	@Override
 	public Pawn[] getPawns(){
 		return this.pawns;
+	}
+	
+	public String getName(){
+		return this.name;
 	}
 	
 	@Override
