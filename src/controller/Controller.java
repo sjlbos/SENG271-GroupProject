@@ -129,56 +129,22 @@ public class Controller {
 		rollDie();
 		Move move = board.makeMove(currentRoll, currentPlayer);	
 		if (move != null) {
-			if (move.startPosition >= 0 && move.startPosition <= 39){
-				viewPanel.getBoardTileAt(move.startPosition).setColor(ViewPanel.BLANK_COLOR);
-			} else if (move.startPosition > 39 && move.startPosition < 44){
-				viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), move.startPosition-40).setColor(ViewPanel.BLANK_COLOR);
-			}
-			if (move.collision != null){
-				viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
-			}
+			animatePlayerMove(currentPlayer,move);
 		}
 	}
 	
+	/**
+	 * Cycles through all of the computer players, performing each player's move in turn.
+	 */
 	private void makeComputerMoves(){
 		for (int i=2; i<=4; i++){
-			try { 
-				Thread.sleep(2000);
-			} catch (Exception e){
-				e.printStackTrace();
-			}
+			try{Thread.sleep(2000);}catch(Exception e){};
 			this.setCurrentPlayer(board.getPlayer(i));
 			makeComputerMove();
-			updateView();
 		}
 		this.setCurrentPlayer(board.getPlayer(1));
 		viewPanel.toggleDieIsActive();
 	}
-	
-	
-	/**
-	 * Gets all pawns on the board and translates their information to the view
-	 * Home tiles should simply be updated based on the number of pawns the player currently has at "home"
-	 */
-	public void updateView(){
-		/* clear all circles first */
-		Pawn[] allPawns = board.getPawns();
-		for (Pawn pawn: allPawns){
-			int pos = pawn.getPosition();
-			//System.out.print(pos);
-			if (pos >= 0 && pos <= 39){
-				viewPanel.setPlayerAtBoardTile(pawn.getOwner().getPlayerNumber(), pos);
-			} else if (pos == -1){
-				// colour the home tiles based on how many pawns are in there
-				continue;
-			} else {
-				FieldTile ft = viewPanel.getGoalTileForPlayerAt(currentPlayer.getPlayerNumber(), pos-40);
-				ft.setColor(viewPanel.getColorForPlayer(currentPlayer.getPlayerNumber()));
-			}
-		}
-		updateViewPlayerHome();
-	}
-	
 	
 	/**
 	 * Simulates rolling the die <br> 
@@ -186,11 +152,10 @@ public class Controller {
 	 */
 	public void rollDie(){
 		Random rand = new Random();
-		//this.currentRoll = rand.nextInt(6) + 1;
-		this.currentRoll = 6;
+		this.currentRoll = rand.nextInt(6) + 1;
+		currentRoll = 6;
 		this.viewPanel.setDieRoll(currentRoll);
 		this.animateDieRoll(currentRoll);
-
 	}
 	
 	/**
@@ -199,37 +164,27 @@ public class Controller {
 	 * @param id
 	 */
 	public void makeHumanMove(String id){
-		String[] tokens = id.split(":");
-		Pawn[] pawns = currentPlayer.getPawns();
-		if ("H".equals(tokens[0])){
-			/*
-			 * Map the home space back to the board and make the move
-			 */
-			for (Pawn pawn : pawns){
-				if (pawn.getPosition() == -1){
-					Move move = board.makeMove(pawn, currentRoll);
-					viewPanel.setPlayerAtBoardTile(currentPlayer.getPlayerNumber(), currentPlayer.getStartPosition());
-					viewPanel.getHomeTileForPlayerAt(currentPlayer.getPlayerNumber(), currentPlayer.getPawnsAtHome()).setColor(ViewPanel.BLANK_COLOR);
-					if (move.collision != null){
-						viewPanel.setPlayerAtHomeTile(move.collision.getPlayerNumber(), move.collision.getPawnsAtHome()-1);
-					}
-					break;
-				}
-			}
-		} else if ("B".equals(tokens[0])){
-			int pos = Integer.parseInt(tokens[1]);
-			viewPanel.getBoardTileAt(pos).setColor(ViewPanel.BLANK_COLOR);
-			for (Pawn pawn: pawns){
-				if (pawn.getPosition() == pos){
-					Move move = board.makeMove(pawn, currentRoll);
-					updateView();
-					break;
-				}
-			}
-		} else {
-			/*
-			 * Map the goal tile back to the board
-			 */
+		Pawn pawn = getPawnFromTileId(id);
+		Move move=board.makeMove(pawn, currentRoll);
+		animatePlayerMove(currentPlayer,move);
+	}
+	
+	/**
+	 * Used for setting a tile color on the view panel given a board player and coordinate.
+	 * @param player - the player to put at the tile position.
+	 * @param position - the board coordinate of the tile to be changed.
+	 */
+	private void setTileAtPosition(Player player, int position, boolean isEmpty){
+		int playerNumber=isEmpty?0:player.getPlayerNumber();
+		
+		if(position<0){
+			viewPanel.setPlayerAtHomeTile(playerNumber, player.getPawnsAtHome()-1);
+		}
+		else if(position>39){
+			viewPanel.setPlayerAtGoalTile(playerNumber, position-40);
+		}
+		else{
+			viewPanel.setPlayerAtBoardTile(playerNumber, position);
 		}
 	}
 	
@@ -238,32 +193,13 @@ public class Controller {
 	 * @param The Field Tile's ID string
 	 * @return The pawn object currently at the tile
 	 */
-	private Pawn getPawnFromTileID(String id){
+	private Pawn getPawnFromTileId(String id){
 		String[] tokens = id.split(":");
 		int pos = Integer.parseInt(tokens[1]);
 		if ("H".equals(tokens[0])){
 			return board.getPawnAtPosition(currentPlayer, -1);
 		} else {
 			return board.getPawnAtPosition(currentPlayer, pos);
-		}
-	}
-	
-	/**
-	 * Iterates over all players and sets the colours of their home tiles
-	 * Uses the pawnsAtHome attribute to colour that many first, then the rest blank
-	 */
-	public void updateViewPlayerHome(){
-		for (Player player : board.getPlayers()){
-			int numPawns = player.getPawnsAtHome();
-			for (int i=0; i<4; i++){
-				FieldTile ft = viewPanel.getHomeTileForPlayerAt(player.getPlayerNumber(), i);
-				if(numPawns != 0){
-					ft.setColor(viewPanel.getColorForPlayer(player.getPlayerNumber()));
-					numPawns--;
-				} else {
-					ft.setColor(ViewPanel.BLANK_COLOR);
-				}
-			}
 		}
 	}
 	
@@ -282,6 +218,71 @@ public class Controller {
 		}
 
 		viewPanel.setDieRoll(toNumber);
+	}
+	
+	/**
+	 * Animates a complete pawn move from start to end position.
+	 * @param player - the player to be moved.
+	 * @param move - the move object representing the moved to be made.
+	 */
+	private void animatePlayerMove(Player player, Move move){
+		int numberOfMoves = move.startPosition==-1?1:currentRoll;
+		int currentPosition = move.startPosition;
+		int nextPosition;
+		if(currentPosition==-1){
+			nextPosition = player.getStartPosition();
+		}
+		else if(currentPosition==player.getStartPosition()-1){
+			nextPosition = 40;
+		}
+		else{
+			nextPosition = (currentPosition+1)%40;
+		}
+		
+		int moveNumber=1;
+		Player overridenPlayer = null;
+		do{
+			if(overridenPlayer!=null){
+				setTileAtPosition(overridenPlayer, currentPosition,false);
+			}
+			else{
+				setTileAtPosition(player,currentPosition,true);
+			}
+			overridenPlayer = board.getPawnAtPosition(nextPosition);
+			setTileAtPosition(player,nextPosition,false);
+			
+			currentPosition = nextPosition;
+			
+			if(move.pawn.getPosition()>39){
+				if(move.startPosition>39){
+					nextPosition++;
+				}
+				else if(currentPosition==player.getStartPosition()-1){
+					nextPosition = 40;
+				}
+				else{
+					nextPosition=(nextPosition+1)%40;
+				}
+			}
+			else{
+				nextPosition=(nextPosition+1)%40;
+			}
+			
+			try{Thread.sleep(300L);}catch(Exception e){};
+			
+			moveNumber++;
+		}while(moveNumber<=numberOfMoves);
+		
+		if(overridenPlayer!=null){
+			setTileAtPosition(overridenPlayer, currentPosition,false);
+		}
+		else{
+			setTileAtPosition(player,currentPosition,true);
+		}
+		
+		if(move.collision!=null){
+			setTileAtPosition(move.collision,-1,false);
+		}
 	}
 	
 	/*===================================
@@ -303,7 +304,7 @@ public class Controller {
 			} else {
 				FieldTile ft = (FieldTile)e.getSource();
 				String id = ft.getId();
-				Pawn pawn = getPawnFromTileID(id);
+				Pawn pawn = getPawnFromTileId(id);
 				int destination = board.getMoveDestination(pawn, currentRoll);
 				if (e.getActionCommand().equals(FieldTile.ENTER_EVENT)){
 					// turn on
