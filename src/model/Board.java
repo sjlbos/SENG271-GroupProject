@@ -34,7 +34,7 @@ public class Board {
 		}
 		//add a fork for each player
 		for(Player player: players){
-			gameBoard[player.getStartPosition()-1] = new Fork(player);
+			gameBoard[player.getStartPosition()] = new StartTile(player);
 		}
 		
 		// Map the players to their corresponding home and end fields
@@ -42,7 +42,13 @@ public class Board {
 		playerEndMap = new HashMap<Player, Field[]>();
 		for (Player player: players){
 			playerEndMap.put(player, new Field[4]);
+			Field[] EndMap = playerEndMap.get(player);
+			for(int i=0;i<4;i++){
+				EndMap[i] = new Field();
+				
+			}
 		}
+		
 	}
 	
 	/**
@@ -82,7 +88,7 @@ public class Board {
 	private int getClosestPawnInGoal(Player owner, Pawn pawn){
 		int standard = 45;
 		for(Pawn temp:owner.getPawns()){
-			if(temp.getPosition() < standard && temp.getPosition() > pawn.getPosition()){
+			if(temp.getPosition() < standard && temp.getPosition() > pawn.getPosition() && temp.getPosition() >= 40){
 				standard = temp.getPosition();
 			}
 		}
@@ -128,21 +134,30 @@ public class Board {
 				continue;
 			}
 			int currentpos = pawn.getPosition();
+			//if pawn is in end goal
 			//check each spot to make sure it doesnt pass the goal fork
 			for(int i=1;i<=currentRoll;i++){
-				if(gameBoard[(currentpos + i) % 40] instanceof Fork && gameBoard[currentpos + i].getForkOwner() == owner){
+				if(currentpos >= 40){
+					if(getClosestPawnInGoal(owner,pawn) > currentRoll + currentpos && currentRoll + currentpos < 45){
+						MoveablePawns.add(pawn);
+						break;
+					}else{
+						break;
+					}
+				}
+				if(gameBoard[(currentpos + i) % 40] instanceof StartTile && gameBoard[(currentpos + i) % 40].getForkOwner() == owner){
 					int remainingMoves = currentRoll - i;
 					if(remainingMoves > 4){
 						//pawn.setIsMoveable(false);
-						continue;
+						break;
 					}
 					//make sure the pawn doesnt pass another in the goal area
-					if(getClosestPawnInGoal(owner,pawn) < remainingMoves){
+					if(getClosestPawnInGoal(owner,pawn) > remainingMoves + 40){
 						MoveablePawns.add(pawn); //pawn.setIsMoveable(true);
-						continue;
+						break;
 					}else{
 						//pawn.setIsMoveable(false);
-						continue;
+						break;
 					}
 				}
 				if( i == currentRoll){
@@ -201,12 +216,23 @@ public class Board {
 		}else{
 			//move the pawn the given number of slots, all error handling is done by the getMovablePawns method
 			for(int i=1;i<=currentRoll;i++){
+				if(currentpos >= 40){
+					Field[] EndMap = this.playerEndMap.get(pawn.getOwner());
+					EndMap[currentpos].setOccupant(null);
+					EndMap[currentpos].setPawnOwner(null);
+					EndMap[currentpos + currentRoll].setOccupant(pawn);
+					EndMap[currentpos + currentRoll].setPawnOwner(pawn.getOwner());
+					
+					
+				}
 				if(gameBoard[(currentpos + i) % 40].getForkOwner() == pawn.getOwner()){
+					updateField(currentpos,null);
 					Field[] EndMap = playerEndMap.get(pawn.getOwner());
 					EndMap[currentRoll-i].setOccupant(pawn);
 					EndMap[currentRoll-i].setPawnOwner(pawn.getOwner());
 					
 					pawn.setPosition(40 + (currentRoll-i));
+					return move;
 				}
 				if(i == currentRoll){
 					if(gameBoard[(currentpos + i) % 40].getOccupant() != null){

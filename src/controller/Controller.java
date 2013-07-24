@@ -183,8 +183,12 @@ public class Controller {
 	public void rollDie(){
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
-		//this.currentRoll = 6;
-		this.viewPanel.setDieRoll(currentRoll);
+		if(currentPlayer == this.board.getPlayer(1)){
+			this.currentRoll = 1;
+		}else{
+			this.currentRoll = 1;
+		}
+		//this.viewPanel.setDieRoll(currentRoll);
 	}
 	
 	/**
