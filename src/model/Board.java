@@ -291,7 +291,7 @@ public class Board {
 		Player owner = pawn.getOwner();
 		int startPos = pawn.getPosition();
 		int playerStartTile = owner.getStartPosition();
-		if(pawn.getPosition() == 6){
+		if(pawn.getPosition() == -1){
 			return owner.getStartPosition();
 		}
 		for(int i=1;i<=dieRoll;i++){
