@@ -81,7 +81,7 @@ public class ViewPanel extends JPanel {
 			for(int j=0;j<4;j++){
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
-				newTile.setId("H:"+(i+1)+":"+j);
+				newTile.setId("H:"+j+":"+(i+1));
 				this.homes[i][j]=newTile;
 			}
 		}
@@ -91,7 +91,7 @@ public class ViewPanel extends JPanel {
 			for(int j=0;j<4;j++){
 				FieldTile newTile = new FieldTile(ViewPanel.BLANK_COLOR);
 				newTile.addActionListener(controller.getFieldTileListener());
-				newTile.setId("G:"+(i+1)+":"+j);
+				newTile.setId("G:"+j+":"+(i+1));
 				this.goals[i][j]=newTile;
 			}
 		}

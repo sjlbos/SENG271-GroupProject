@@ -224,14 +224,23 @@ public class Controller {
 					break;
 				}
 			}
-			/*
-			 * Map the board tile back to the board
-			 */
 		} else {
 			/*
 			 * Map the goal tile back to the board
 			 */
 		}
+	}
+	
+	/**
+	 * Parses a FieldTile's ID attribute and returns the pawn object at that tile
+	 * @param The Field Tile's ID string
+	 * @return The pawn object currently at the tile
+	 */
+	private Pawn getPawnFromTileID(String id){
+		String[] tokens = id.split(":");
+		int pos = Integer.parseInt(tokens[1]);
+		Pawn pawn = board.getPawnAtPosition(currentPlayer, pos);
+		return pawn;
 	}
 	
 	/**
@@ -286,6 +295,14 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			if(e.getActionCommand().equals(FieldTile.CLICK_EVENT)){
 				(new TileEventThread(e)).start();
+			} else if (e.getActionCommand().equals(FieldTile.ENTER_EVENT)){
+				//turn on the end-point highlighting
+				FieldTile ft = (FieldTile)e.getSource();
+				String id = ft.getId();
+				Pawn pawn = getPawnFromTileID(id);
+				int destination = board.getMoveDestination(pawn, currentRoll);
+			} else if (e.getActionCommand().equals(FieldTile.EXIT_EVENT)){
+				// turn off the end-point highlighting
 			}
 		}
 	}
