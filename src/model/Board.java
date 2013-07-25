@@ -258,6 +258,7 @@ public class Board {
 					EndMap[currentpos - 40].setPawnOwner(null);
 					EndMap[currentpos + currentRoll - 40].setOccupant(pawn);
 					EndMap[currentpos + currentRoll - 40].setPawnOwner(pawn.getOwner());
+					pawn.setPosition(currentpos + currentRoll);
 					break;
 					
 					
