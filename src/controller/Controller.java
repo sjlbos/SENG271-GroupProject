@@ -17,7 +17,7 @@ public class Controller {
 	private static final double SPEED_FACTOR = 1;
 	
 	private static final long DIE_INTERVAL = (long) (500/SPEED_FACTOR);
-	private static final long MOVE_INTERVAL = (long) (300/SPEED_FACTOR);
+	private static final long MOVE_INTERVAL = (long) (350/SPEED_FACTOR);
 	private static final long TURN_PAUSE = (long) (2000/SPEED_FACTOR);
 	
 	/*===================================
@@ -260,7 +260,8 @@ public class Controller {
 	 */
 	private void setVictory(){
 		viewPanel.setTilesInactive();
-		playClip("Victory");
+		if (currentPlayer instanceof HumanPlayer) playClip("Victory");
+		else playClip("GameOver");
 		titlePanel.setVictoryForPlayer(currentPlayer.getPlayerNumber());
 	}
 	
