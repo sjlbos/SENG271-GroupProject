@@ -21,6 +21,15 @@ public class MoveFirstStrategy implements Strategy {
 				currentVal = value;
 				continue;
 			}
+			if(temp.getPosition() >= 40){
+				if(pawn.getPosition() >= 40){
+					if(temp.getPosition() > pawn.getPosition()){
+						return pawn;
+					}
+				}else{
+					pawn = temp;
+				}
+			}
 			if(value >= 0 && currentVal >= 0){
 				if(value > currentVal){
 					currentVal = value;
