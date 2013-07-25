@@ -310,7 +310,11 @@ public class Board {
 	
 	
 	public Pawn getPawnAtPosition(int pos){
-		return this.gameBoard[pos].getOccupant();
+		if(pos>39){
+			return null;
+		}else{
+			return this.gameBoard[pos].getOccupant();
+		}
 	}
 	
 	public int getMoveDestination(Pawn pawn, int dieRoll){
