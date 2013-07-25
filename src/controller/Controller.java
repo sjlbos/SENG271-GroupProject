@@ -156,7 +156,6 @@ public class Controller {
 	 */
 	public void rollDie(){
 		this.playClip("Dice");
-		//(new AudioThread(this.getAudioClip("Dice"))).start();
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
 		rolledSix = currentRoll == 6 ? true : false;
@@ -261,6 +260,7 @@ public class Controller {
 	 */
 	private void setVictory(){
 		viewPanel.setTilesInactive();
+		playClip("Victory");
 		titlePanel.setVictoryForPlayer(currentPlayer.getPlayerNumber());
 	}
 	
@@ -444,6 +444,7 @@ public class Controller {
 			if (moveable.size() == 0 && rolledSix){
 				viewPanel.toggleDieIsActive();
 			} else if (moveable.size() == 0) {
+				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
 				makeComputerMoves();
 			}
 		}
@@ -475,6 +476,7 @@ public class Controller {
 			if ( rolledSix ){
 				viewPanel.toggleDieIsActive();
 			} else {
+				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
 				makeComputerMoves();
 			}
 		}
