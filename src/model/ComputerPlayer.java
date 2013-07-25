@@ -14,7 +14,7 @@ public class ComputerPlayer implements Player {
 	// Constructor
 	public ComputerPlayer(int playerNumber, Strategy strategy){
 		this.playerNumber = playerNumber;
-		this.name = "player " + playerNumber;
+		this.name = "Player " + playerNumber;
 		this.startPosition = determineStartPosition(playerNumber);
 		this.pawnsAtHome = 4;
 		this.strategy = strategy;

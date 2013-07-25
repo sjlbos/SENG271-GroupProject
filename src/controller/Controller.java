@@ -65,7 +65,7 @@ public class Controller {
 		this.audioClips = audioClips;
 	}
 	
-	public Clip getAudioClip(String streamName){
+	public synchronized Clip getAudioClip(String streamName){
 		if(this.audioClips!=null){
 			return audioClips.get(streamName);
 		}
@@ -155,14 +155,14 @@ public class Controller {
 	 * Updates currentRoll using a pseudo-random number generator
 	 */
 	public void rollDie(){
-		(new AudioThread(this.getAudioClip("Dice"))).start();
+		this.playClip("Dice");
+		//(new AudioThread(this.getAudioClip("Dice"))).start();
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
 		rolledSix = currentRoll == 6 ? true : false;
 		this.viewPanel.setDieRoll(currentRoll);
 		this.animateDieRoll(currentRoll);
 	}
-	
 	
 	/**
 	 * Parses a FieldTile's ID attribute and returns the pawn object at that tile
@@ -265,6 +265,23 @@ public class Controller {
 	}
 	
 	/**
+	 * Plays an audio clip.
+	 * @param clipName - The name of the audio clip (without file suffix)
+	 */
+	private void playClip(String clipName){
+		Clip clip = this.getAudioClip(clipName);
+		
+		if(clip!=null){
+			if(clip.isRunning()){
+				clip.stop();
+			}
+			clip.setFramePosition(0);
+			clip.start();
+			return;
+		}
+	}
+	
+	/**
 	 * Animates a complete pawn move from start to end position.
 	 * @param player - the player to be moved.
 	 * @param move - the move object representing the moved to be made.
@@ -288,6 +305,23 @@ public class Controller {
 		int moveNumber=1;
 		Pawn overridenPawn = null;
 		do{
+			
+			// Play appropriate sound
+			if(moveNumber == numberOfMoves){
+				if(move.collision!=null){
+					playClip("Capture");
+				}
+				else if(nextPosition>39){
+					playClip("Goal");
+				}
+				else{
+					playClip("Move");
+				}
+			}
+			else{
+				playClip("Move");
+			}
+			
 			if(overridenPawn!=null){
 				setTileAtPosition(overridenPawn.getOwner(), currentPosition,false);
 			}
@@ -314,8 +348,6 @@ public class Controller {
 			else{
 				nextPosition=(nextPosition+1)%40;
 			}
-			
-			(new AudioThread(this.getAudioClip("Move2"))).start();
 			
 			try{Thread.sleep(MOVE_INTERVAL);}catch(Exception e){};
 			
@@ -444,25 +476,6 @@ public class Controller {
 				viewPanel.toggleDieIsActive();
 			} else {
 				makeComputerMoves();
-			}
-		}
-	}
-	
-	/**
-	 * This class defines a thread that will be executed to play a specified audio stream.
-	 */
-	private class AudioThread extends Thread{
-		
-		private Clip clip;
-		
-		public AudioThread(Clip clip){
-			this.clip = clip;
-		}
-		
-		public void run(){
-			if(clip!=null){
-				clip.setFramePosition(0);
-				clip.start();	
 			}
 		}
 	}
