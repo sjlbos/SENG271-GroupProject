@@ -26,6 +26,7 @@ public class Controller {
 	private Player currentPlayer;
 	private ViewPanel viewPanel;
 	private int currentRoll;
+	private boolean rolledSix;
 	private StartNewGameListener startNewGameListener;
 	private FieldTileListener fieldTileListener;
 	private DiceListener diceListener;
@@ -139,6 +140,7 @@ public class Controller {
 	public void rollDie(){
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
+		rolledSix = currentRoll == 6 ? true : false;
 		this.viewPanel.setDieRoll(currentRoll);
 		this.animateDieRoll(currentRoll);
 	}
@@ -168,8 +170,9 @@ public class Controller {
 	 */
 	private void makeComputerMove(){
 		rollDie();
-		Move move = board.makeMove(currentRoll, currentPlayer);	
+		Move move = board.makeMove(currentRoll, currentPlayer);
 		if (move != null) {
+			try { Thread.sleep(1500);} catch (Exception e) { e.printStackTrace();}
 			animatePlayerMove(currentPlayer,move);
 		}
 	}
@@ -181,6 +184,7 @@ public class Controller {
 		for (int i=2; i<=4; i++){
 			this.setCurrentPlayer(board.getPlayer(i));
 			makeComputerMove();
+			if (rolledSix) i--;
 			try{Thread.sleep(TURN_PAUSE);}catch(Exception e){};
 		}
 		this.setCurrentPlayer(board.getPlayer(1));
@@ -284,13 +288,6 @@ public class Controller {
 			moveNumber++;
 		}while(moveNumber<=numberOfMoves);
 		
-		if(overridenPawn!=null){
-			setTileAtPosition(overridenPawn.getOwner(), currentPosition,false);
-		}
-		else{
-			setTileAtPosition(player,currentPosition,true);
-		}
-		
 		if(move.collision!=null){
 			setTileAtPosition(move.collision,-1,false);
 		}
@@ -376,8 +373,11 @@ public class Controller {
 			viewPanel.toggleDieIsActive();
 			Controller.this.rollDie();
 			updateActiveStatuses();
+			ArrayList<Pawn> moveable = board.getMoveablePawns(currentRoll, currentPlayer);
 			// If the player is unable to move, perform a round of play.
-			if (board.getMoveablePawns(currentRoll, currentPlayer).size() == 0){
+			if (moveable.size() == 0 && rolledSix){
+				viewPanel.toggleDieIsActive();
+			} else if (moveable.size() == 0) {
 				makeComputerMoves();
 			}
 		}
@@ -402,7 +402,11 @@ public class Controller {
 			viewPanel.setTilesInactive();
 			FieldTile ft = (FieldTile)event.getSource();
 			makeHumanMove(ft.getId());
-			makeComputerMoves();
+			if ( rolledSix ){
+				viewPanel.toggleDieIsActive();
+			} else {
+				makeComputerMoves();
+			}
 		}
 	}
 }
