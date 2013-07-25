@@ -353,7 +353,7 @@ public class ViewPanel extends JPanel {
 	 * @param isActive - Setting this parameter to True will highlight the tile at the passed position in red.
 	 */
 	public void setActiveDestinationAtGoalForPlayer(int player, int position, boolean isActive){
-		goals[player][position].setIsActiveDestination(isActive);
+		goals[player-1][position].setIsActiveDestination(isActive);
 	}
 	
 	/**
