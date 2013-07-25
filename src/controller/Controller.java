@@ -117,7 +117,7 @@ public class Controller {
 	/**
 	 * Resets the game board and begins a new game.
 	 */
-	public void startNewGame(){
+	private void startNewGame(){
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
 		titlePanel.setTurnForPlayerNumber(1,currentPlayer.getName());
@@ -154,7 +154,7 @@ public class Controller {
 	 * Simulates rolling the die <br> 
 	 * Updates currentRoll using a pseudo-random number generator
 	 */
-	public void rollDie(){
+	private void rollDie(){
 		this.playClip("Dice");
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
@@ -217,7 +217,7 @@ public class Controller {
 	 * This information is used to communicate to the board which pawn to move
 	 * @param id
 	 */
-	public void makeHumanMove(String id){
+	private void makeHumanMove(String id){
 		Pawn pawn = getPawnFromTileId(id);
 		Move move=board.makeMove(pawn, currentRoll);
 		animatePlayerMove(currentPlayer,move);
