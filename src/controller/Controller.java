@@ -151,8 +151,12 @@ public class Controller {
 		int pos = Integer.parseInt(tokens[1]);
 		if ("H".equals(tokens[0])){
 			return board.getPawnAtPosition(currentPlayer, -1);
-		} else {
+		} 
+		else if ("B".equals(tokens[1])){
 			return board.getPawnAtPosition(currentPlayer, pos);
+		}
+		else {
+			return board.getPawnAtPosition(currentPlayer, pos+40);
 		}
 	}
 	
