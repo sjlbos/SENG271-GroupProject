@@ -184,6 +184,10 @@ public class Controller {
 		for (int i=2; i<=4; i++){
 			this.setCurrentPlayer(board.getPlayer(i));
 			makeComputerMove();
+			if (board.HasWon(currentPlayer)){
+				setVictory();
+				return;
+			}
 			if (rolledSix) i--;
 			try{Thread.sleep(TURN_PAUSE);}catch(Exception e){};
 		}
@@ -232,6 +236,14 @@ public class Controller {
 				viewPanel.setPlayerAtBoardTile(playerNumber, position);
 			}
 		}
+	}
+	
+	/**
+	 * Disables all tiles and displays a message that the current player has won
+	 */
+	private void setVictory(){
+		viewPanel.setTilesInactive();
+		titlePanel.setVictoryForPlayer(currentPlayer.getPlayerNumber());
 	}
 	
 	/**
@@ -402,6 +414,10 @@ public class Controller {
 			viewPanel.setTilesInactive();
 			FieldTile ft = (FieldTile)event.getSource();
 			makeHumanMove(ft.getId());
+			if (board.HasWon(currentPlayer)){
+				setVictory();
+				return;
+			}
 			if ( rolledSix ){
 				viewPanel.toggleDieIsActive();
 			} else {
