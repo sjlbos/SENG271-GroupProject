@@ -4,15 +4,19 @@ import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
 import javax.swing.Timer;
-
 import model.*;
-import view.FieldTile;
-import view.ViewPanel;
-
 import view.*;
 
-
 public class Controller {
+	
+	/*===================================
+ 	CONSTANTS
+ 	===================================*/
+	private static final double SPEED_FACTOR = 1;
+	
+	private static final long DIE_INTERVAL = (long) (500/SPEED_FACTOR);
+	private static final long MOVE_INTERVAL = (long) (300/SPEED_FACTOR);
+	private static final long TURN_PAUSE = (long) (2000/SPEED_FACTOR);
 	
 	/*===================================
  	FIELDS
@@ -180,9 +184,9 @@ public class Controller {
 	 */
 	private void makeComputerMoves(){
 		for (int i=2; i<=4; i++){
-			try{Thread.sleep(2000);}catch(Exception e){};
 			this.setCurrentPlayer(board.getPlayer(i));
 			makeComputerMove();
+			try{Thread.sleep(TURN_PAUSE);}catch(Exception e){};
 		}
 		this.setCurrentPlayer(board.getPlayer(1));
 		viewPanel.toggleDieIsActive();
@@ -280,7 +284,7 @@ public class Controller {
 				nextPosition=(nextPosition+1)%40;
 			}
 			
-			try{Thread.sleep(300L);}catch(Exception e){};
+			try{Thread.sleep(MOVE_INTERVAL);}catch(Exception e){};
 			
 			moveNumber++;
 		}while(moveNumber<=numberOfMoves);
@@ -308,7 +312,7 @@ public class Controller {
 		
 		for(int i=0;i<6;i++){
 			viewPanel.setDieRoll(r.nextInt(6)+1);
-			try{Thread.sleep(500);}catch(Exception e){}
+			try{Thread.sleep(DIE_INTERVAL);}catch(Exception e){}
 		}
 
 		viewPanel.setDieRoll(toNumber);
