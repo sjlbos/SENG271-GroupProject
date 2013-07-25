@@ -135,11 +135,11 @@ public class Controller {
 	public void rollDie(){
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
-//		if(currentPlayer == board.getPlayer(1)){
-//			currentRoll = 2;
-//		}else{
-//			currentRoll = 5;
-//		}
+		if(currentPlayer == board.getPlayer(1)){
+			currentRoll = 39;
+		}else{
+			currentRoll = 5;
+		}
 		this.viewPanel.setDieRoll(currentRoll);
 		this.animateDieRoll(currentRoll);
 	}
