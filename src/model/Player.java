@@ -6,6 +6,7 @@ public interface Player {
 	public void setPlayerNumber(int number);
 	
 	public Pawn[] getPawns();
+	public String getName();
 	
 	public Strategy getStrategy();
 	public void setStrategy(Strategy strategy);

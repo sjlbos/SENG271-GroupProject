@@ -50,7 +50,7 @@ public class Controller {
 	
 	public void setCurrentPlayer(Player player){
 		this.currentPlayer = player;
-		this.titlePanel.setTurnForPlayerNumber(this.currentPlayer.getPlayerNumber());
+		this.titlePanel.setTurnForPlayerNumber(this.currentPlayer.getPlayerNumber(), this.currentPlayer.getName());
 	}
 	
 	public int getCurrentRoll(){
@@ -103,7 +103,7 @@ public class Controller {
 	public void startNewGame(){
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
-		titlePanel.setTurnForPlayerNumber(1);
+		titlePanel.setTurnForPlayerNumber(1,currentPlayer.getName());
 		this.viewPanel.toggleDieIsActive();
 		
 		timer = new Timer(15, new ActionListener(){
