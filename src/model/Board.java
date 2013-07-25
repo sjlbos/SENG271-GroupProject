@@ -325,6 +325,9 @@ public class Board {
 		if(pawn.getPosition() == -1){
 			return owner.getStartPosition();
 		}
+		if (startPos > 39){
+			return startPos + dieRoll;
+		}
 		for(int i=1;i<=dieRoll;i++){
 			if((startPos + i)%40 == playerStartTile){
 				int remainingMoves = dieRoll - i;
