@@ -84,6 +84,25 @@ public class Board {
 		return this.players;
 	}
 	
+	public void reset(){
+		for(Player player: this.players){
+			Pawn[] pawns = player.getPawns();
+			Field[] EndMap = this.playerEndMap.get(player);
+			for(Pawn pawn:pawns){
+				int pos = pawn.getPosition();
+				if(pos >= 40){
+					EndMap[pos-40].setOccupant(null);
+					EndMap[pos-40].setPawnOwner(null);
+				}else if(pos == -1){
+					continue;
+				}else{
+					updateField(pos,null);
+				}
+				pawn.setPosition(-1);
+			}
+		}
+	}
+	
 	/**
 	 * @return Returns an array containing all the Pawn objects on the game board
 	 * 
