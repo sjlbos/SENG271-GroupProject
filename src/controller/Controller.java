@@ -156,7 +156,7 @@ public class Controller {
 		if ("H".equals(tokens[0])){
 			return board.getPawnAtPosition(currentPlayer, -1);
 		} 
-		else if ("B".equals(tokens[1])){
+		else if ("B".equals(tokens[0])){
 			return board.getPawnAtPosition(currentPlayer, pos);
 		}
 		else {
