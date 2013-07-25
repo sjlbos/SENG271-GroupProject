@@ -3,9 +3,11 @@ package controller;
 import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.Timer;
 import model.*;
 import view.*;
+import javax.sound.sampled.*;
 
 public class Controller {
 	
@@ -31,6 +33,7 @@ public class Controller {
 	private DiceListener diceListener;
 	private TitlePanel titlePanel;
 	private Timer timer;
+	private HashMap<String,Clip> audioClips;
 	
 	/*===================================
 	 GETTERS & SETTERS
@@ -55,6 +58,19 @@ public class Controller {
 	
 	public int getCurrentRoll(){
 		return this.currentRoll;
+	}
+	
+	public void setAudioClips(HashMap<String,Clip> audioClips){
+		this.audioClips = audioClips;
+	}
+	
+	public Clip getAudioClip(String streamName){
+		if(this.audioClips!=null){
+			return audioClips.get(streamName);
+		}
+		else{
+			return null;
+		}
 	}
 	
 	/**
@@ -137,8 +153,10 @@ public class Controller {
 	 * Updates currentRoll using a pseudo-random number generator
 	 */
 	public void rollDie(){
+		(new AudioThread(this.getAudioClip("Dice"))).start();
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
+		this.currentRoll=6;
 		this.viewPanel.setDieRoll(currentRoll);
 		this.animateDieRoll(currentRoll);
 	}
@@ -279,6 +297,8 @@ public class Controller {
 				nextPosition=(nextPosition+1)%40;
 			}
 			
+			(new AudioThread(this.getAudioClip("Move2"))).start();
+			
 			try{Thread.sleep(MOVE_INTERVAL);}catch(Exception e){};
 			
 			moveNumber++;
@@ -391,7 +411,7 @@ public class Controller {
 	 */
 	private class TileEventThread extends Thread{
 		
-		ActionEvent event;
+		private ActionEvent event;
 		
 		// This thread requires the event that triggered this thread's execution in its constructor.
 		public TileEventThread(ActionEvent event){
@@ -403,6 +423,25 @@ public class Controller {
 			FieldTile ft = (FieldTile)event.getSource();
 			makeHumanMove(ft.getId());
 			makeComputerMoves();
+		}
+	}
+	
+	/**
+	 * This class defines a thread that will be executed to play a specified audio stream.
+	 */
+	private class AudioThread extends Thread{
+		
+		private Clip clip;
+		
+		public AudioThread(Clip clip){
+			this.clip = clip;
+		}
+		
+		public void run(){
+			if(clip!=null){
+				clip.setFramePosition(0);
+				clip.start();	
+			}
 		}
 	}
 }
