@@ -105,7 +105,7 @@ public class Board {
 	 * @return Returns integer of closest pawn to the s
 	 */
 	private int getClosestPawnInGoal(Player owner, Pawn pawn){
-		int standard = 45;
+		int standard = 44;
 		for(Pawn temp:owner.getPawns()){
 			if(temp.getPosition() < standard && temp.getPosition() > pawn.getPosition() && temp.getPosition() >= 40){
 				standard = temp.getPosition();
@@ -164,7 +164,7 @@ public class Board {
 				}
 				if(gameBoard[(currentpos + i) % 40] instanceof StartTile && gameBoard[(currentpos + i) % 40].getForkOwner() == owner){
 					int remainingMoves = currentRoll - i;
-					if(remainingMoves > 4){
+					if(remainingMoves >= 4){
 						//pawn.setIsMoveable(false);
 						break;
 					}
