@@ -309,7 +309,12 @@ public class Controller {
 			// Play appropriate sound
 			if(moveNumber == numberOfMoves){
 				if(move.collision!=null){
-					playClip("Capture");
+					if(move.collision instanceof HumanPlayer){
+						playClip("PlayerDeath");
+					}
+					else{
+						playClip("PlayerCapture");
+					}
 				}
 				else if(nextPosition>39){
 					playClip("Goal");

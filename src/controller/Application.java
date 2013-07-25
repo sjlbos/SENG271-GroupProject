@@ -76,7 +76,7 @@ public class Application {
 	
 	private void loadSoundResourcesIntoController(){
 		
-		String[] audioFiles = new String[]{"Capture.wav","Dice.wav","Victory.wav","Move.wav","Goal.wav"};
+		String[] audioFiles = new String[]{"PlayerCapture.wav","Dice.wav","Victory.wav","Move.wav","Goal.wav","PlayerDeath.wav","GameOver.wav"};
 		HashMap<String,Clip> audioClips = new HashMap<String,Clip>();
 		
 		for(String fileName: audioFiles){
