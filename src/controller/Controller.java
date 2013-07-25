@@ -140,7 +140,7 @@ public class Controller {
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
 		if(currentPlayer == board.getPlayer(1)){
-			currentRoll = 39;
+			currentRoll = 2;
 		}else{
 			currentRoll = 5;
 		}
@@ -270,7 +270,7 @@ public class Controller {
 			currentPosition = nextPosition;
 			
 			if(move.pawn.getPosition()>39){
-				if(move.startPosition>39){
+				if(currentPosition>39){
 					nextPosition++;
 				}
 				else if(currentPosition==player.getStartPosition()-1){
@@ -344,14 +344,14 @@ public class Controller {
 					if (destination < 40){
 						viewPanel.setActiveDestinationOnBoard(destination, true);
 					} else {
-						viewPanel.setActiveDestinationAtGoalForPlayer(currentPlayer.getPlayerNumber(), destination, true);
+						viewPanel.setActiveDestinationAtGoalForPlayer(currentPlayer.getPlayerNumber(), destination-40, true);
 					}
 				} else if (e.getActionCommand().equals(FieldTile.EXIT_EVENT)){
 					// turn off
 					if (destination < 40){
 						viewPanel.setActiveDestinationOnBoard(destination, false);
 					} else {
-						viewPanel.setActiveDestinationAtGoalForPlayer(currentPlayer.getPlayerNumber(), destination, false);
+						viewPanel.setActiveDestinationAtGoalForPlayer(currentPlayer.getPlayerNumber(), destination-40, false);
 					}
 				}
 			}

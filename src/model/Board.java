@@ -235,18 +235,19 @@ public class Board {
 			for(int i=1;i<=currentRoll;i++){
 				if(currentpos >= 40){
 					Field[] EndMap = this.playerEndMap.get(pawn.getOwner());
-					EndMap[currentpos].setOccupant(null);
-					EndMap[currentpos].setPawnOwner(null);
-					EndMap[currentpos + currentRoll].setOccupant(pawn);
-					EndMap[currentpos + currentRoll].setPawnOwner(pawn.getOwner());
+					EndMap[currentpos - 40].setOccupant(null);
+					EndMap[currentpos - 40].setPawnOwner(null);
+					EndMap[currentpos + currentRoll - 40].setOccupant(pawn);
+					EndMap[currentpos + currentRoll - 40].setPawnOwner(pawn.getOwner());
+					break;
 					
 					
 				}
 				if(gameBoard[(currentpos + i) % 40].getForkOwner() == pawn.getOwner()){
 					updateField(currentpos,null);
 					Field[] EndMap = playerEndMap.get(pawn.getOwner());
-					EndMap[currentRoll-i-1].setOccupant(pawn);
-					EndMap[currentRoll-i-1].setPawnOwner(pawn.getOwner());
+					EndMap[currentRoll-i].setOccupant(pawn);
+					EndMap[currentRoll-i].setPawnOwner(pawn.getOwner());
 					
 					pawn.setPosition(40 + (currentRoll-i));
 					return move;
