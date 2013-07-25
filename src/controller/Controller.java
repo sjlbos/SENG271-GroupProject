@@ -122,6 +122,7 @@ public class Controller {
 		this.currentPlayer = board.getPlayer(1);
 		titlePanel.setTurnForPlayerNumber(1,currentPlayer.getName());
 		this.viewPanel.toggleDieIsActive();
+		board.reset();
 		
 		timer = new Timer(15, new ActionListener(){
 			public void actionPerformed(ActionEvent e){
