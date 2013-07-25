@@ -14,7 +14,7 @@ public class Controller {
 	/*===================================
  	CONSTANTS
  	===================================*/
-	private static final double SPEED_FACTOR = 1;
+	private static final double SPEED_FACTOR = 3;
 	
 	private static final long DIE_INTERVAL = (long) (500/SPEED_FACTOR);
 	private static final long MOVE_INTERVAL = (long) (300/SPEED_FACTOR);
@@ -157,7 +157,12 @@ public class Controller {
 	public void rollDie(){
 		(new AudioThread(this.getAudioClip("Dice"))).start();
 		Random rand = new Random();
-		this.currentRoll = rand.nextInt(6) + 1;
+		//this.currentRoll = rand.nextInt(6) + 1;
+		if (currentPlayer instanceof HumanPlayer){
+			currentRoll = 39;
+		} else {
+			currentRoll = 5;
+		}
 		rolledSix = currentRoll == 6 ? true : false;
 		this.viewPanel.setDieRoll(currentRoll);
 		this.animateDieRoll(currentRoll);
@@ -278,6 +283,8 @@ public class Controller {
 		}
 		else if(currentPosition==player.getStartPosition()-1){
 			nextPosition = 40;
+		} else if (currentPosition > 39){
+			nextPosition = currentPosition + 1;
 		}
 		else{
 			nextPosition = (currentPosition+1)%40;
