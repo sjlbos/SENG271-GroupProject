@@ -15,20 +15,18 @@ public class MoveFirstStrategy implements Strategy {
 		//go through movable pawns
 		for(Pawn temp : moveablePawns){
 			//if pawn to return has not be set and the pawn is movable, replace the pawn with the current one
-			Integer value = startPos - temp.getPosition();
+			Integer value = temp.getPosition() - startPos;
 			if(pawn == null){
 				pawn = temp;
 				currentVal = value;
+				continue;
 			}
-			if(value == 0 || temp.getPosition() >= 40){
-				return temp;
-			}
-			if(value > 0 && currentVal > 0){
+			if(value >= 0 && currentVal >= 0){
 				if(value > currentVal){
 					currentVal = value;
 					pawn = temp;
 				}
-			}else if(value > 0 && currentVal < 0){
+			}else if(value <= 0 && currentVal > 0){
 				currentVal = value;
 				pawn = temp;
 			}else if(value < 0 && currentVal < 0){

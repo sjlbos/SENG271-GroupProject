@@ -24,8 +24,8 @@ public class Board {
 			players[i] = new HumanPlayer(i+1);
 		}*/
 		players[0] = new HumanPlayer(1);
-		players[1] = new ComputerPlayer(2, new CaptureStrategy());
-		players[2] = new ComputerPlayer(3, new RandomStrategy());
+		players[1] = new ComputerPlayer(2, new MoveFirstStrategy());
+		players[2] = new ComputerPlayer(3, new MoveFirstStrategy());
 		players[3] = new ComputerPlayer(4, new MoveFirstStrategy());
 		
 		
