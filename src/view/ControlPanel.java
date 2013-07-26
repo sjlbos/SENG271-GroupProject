@@ -1,6 +1,11 @@
 package view;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import controller.Controller;
 
@@ -20,26 +25,43 @@ public class ControlPanel extends JPanel{
 		this.setBackground(Color.GRAY);
 		this.setLayout(new BoxLayout(this,BoxLayout.LINE_AXIS));
 		
+		// Create the new game button
 		JButton newGameButton = new JButton("New Game");
 		newGameButton.addActionListener(controller.getStartNewGameListener());
 		
-		JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,75);
+		// Load, scale, and add the volume icon
+		try {
+			BufferedImage volumePNG = ImageIO.read(getClass().getResource("/resources/volume.png"));
+			Image icon = volumePNG.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+			JLabel volumeLabel = new JLabel(new ImageIcon(icon));
+			this.add(volumeLabel);
+			
+		} catch (IOException e) {
+			e.toString();
+		}
+		
+		// Create the volume slider
+		JSlider slider = new JSlider(JSlider.HORIZONTAL,-5,15,10);
 		Dimension sliderSize = new Dimension(75,newGameButton.getPreferredSize().height);
 		slider.setPreferredSize(sliderSize);
 		slider.setSize(sliderSize);
 		slider.setPaintTicks(false);
 		slider.setPaintLabels(false);
+		slider.addChangeListener(controller.getSliderListener());
 		
-		String[] difficulties = {"Over 9000!","Hard","Normal","Easy"};
-		JComboBox difficultySelector = new JComboBox(difficulties);
+		// Create the difficulty combo box
+		JLabel difficultyLabel = new JLabel("Difficulty:");	
+		JComboBox difficultySelector = new JComboBox(Controller.DIFFICULTIES);
 		difficultySelector.setSelectedIndex(2);
 		Dimension selectorSize = new Dimension(75,newGameButton.getPreferredSize().height);
 		difficultySelector.setPreferredSize(selectorSize);
 		difficultySelector.setSize(selectorSize);
+		difficultySelector.addActionListener(controller.getDifficultyListener());
 		
+		// Add the components to the panel
 		this.add(slider);
-		//this.add(Box.createRigidArea(new Dimension(20,1)));
 		this.add(Box.createHorizontalGlue());
+		this.add(difficultyLabel);
 		this.add(difficultySelector);
 		this.add(Box.createHorizontalGlue());
 		this.add(newGameButton);

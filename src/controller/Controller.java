@@ -4,7 +4,12 @@ import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import model.*;
 import view.*;
 import javax.sound.sampled.*;
@@ -14,11 +19,13 @@ public class Controller {
 	/*===================================
  	CONSTANTS
  	===================================*/
-	private static final double SPEED_FACTOR = 1;
 	
+	private static final double SPEED_FACTOR = 1;	
 	private static final long DIE_INTERVAL = (long) (500/SPEED_FACTOR);
 	private static final long MOVE_INTERVAL = (long) (350/SPEED_FACTOR);
 	private static final long TURN_PAUSE = (long) (2000/SPEED_FACTOR);
+	
+	public static final String[] DIFFICULTIES = {"Over 9000!","Hard","Normal","Easy"};
 	
 	/*===================================
  	FIELDS
@@ -32,9 +39,34 @@ public class Controller {
 	private StartNewGameListener startNewGameListener;
 	private FieldTileListener fieldTileListener;
 	private DiceListener diceListener;
+	private SliderListener sliderListener;
+	private DifficultyListener difficultyListener;
 	private TitlePanel titlePanel;
 	private Timer timer;
 	private HashMap<String,Clip> audioClips;
+	private float audioGain;
+	private boolean isMuted;
+	
+	/*===================================
+ 	CONSTRUCTOR
+ 	===================================*/
+	
+	public Controller(){
+		this.audioGain = 10;
+		this.isMuted = false;
+		this.timer = new Timer(15, new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				viewPanel.repaint();
+			}
+		});
+		this.rolledSix = false;
+		
+		this.startNewGameListener = new StartNewGameListener();
+		this.fieldTileListener = new FieldTileListener();
+		this.diceListener = new DiceListener();
+		this.sliderListener = new SliderListener();
+		this.difficultyListener = new DifficultyListener();
+	}
 	
 	/*===================================
 	 GETTERS & SETTERS
@@ -73,41 +105,25 @@ public class Controller {
 			return null;
 		}
 	}
-	
-	/**
-	 * Factory method for a StartNewGameListener object.
-	 * <p>
-	 * @return Returns the default StartNewGameListener
-	 */
+
 	public ActionListener getStartNewGameListener(){
-		if(this.startNewGameListener==null){
-			this.startNewGameListener = new StartNewGameListener();
-		}
 		return this.startNewGameListener;
 	}
 	
-	/**
-	 * Factory method for a FieldPanelListener object.
-	 * <p>
-	 * @return Returns the default FieldPanelListener
-	 */
 	public ActionListener getFieldTileListener(){
-		if(this.fieldTileListener==null){
-			this.fieldTileListener = new FieldTileListener();
-		}
 		return this.fieldTileListener;
 	}
 	
-	/**
-	 * Factory method for a DiceListener object.
-	 * <p>
-	 * @return Returns the default DiceListener
-	 */
 	public ActionListener getDiceListener(){
-		if(this.diceListener==null){
-			this.diceListener = new DiceListener();
-		}
 		return this.diceListener;
+	}
+	
+	public ChangeListener getSliderListener(){
+		return this.sliderListener;
+	}
+	
+	public ActionListener getDifficultyListener(){
+		return this.difficultyListener;
 	}
 	
 	/*===================================
@@ -124,12 +140,27 @@ public class Controller {
 		this.viewPanel.toggleDieIsActive();
 		board.reset();
 		
-		timer = new Timer(15, new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				viewPanel.repaint();
-			}
-		});
-		timer.start();
+		this.timer.start();
+	}
+	
+	/**
+	 * Changes the game difficulty. Accepts and integer value between 0 and 3 as a difficulty,
+	 * with 0 being the most difficult and 3 being the least difficult.
+	 * @param newDifficulty
+	 */
+	private void changeDifficulty(int newDifficulty){
+		switch(newDifficulty){
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		default:
+			//default to normal
+		}
 	}
 	
 	/**
@@ -272,7 +303,9 @@ public class Controller {
 	private void playClip(String clipName){
 		Clip clip = this.getAudioClip(clipName);
 		
-		if(clip!=null){
+		if(clip!=null && !isMuted){
+			FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			volume.setValue(this.audioGain);
 			if(clip.isRunning()){
 				clip.stop();
 			}
@@ -427,6 +460,28 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			(new DieEventThread()).start();
 		}	
+	}
+	
+	// Nested action listener for volume slider
+	private class SliderListener implements ChangeListener{
+		public void stateChanged(ChangeEvent e) {
+			JSlider slider = (JSlider)e.getSource();
+			if(slider.getValue()==slider.getMinimum()){
+				Controller.this.isMuted = true;
+			}
+			else{
+				Controller.this.isMuted = false;
+				Controller.this.audioGain = slider.getValue();
+			}
+		}	
+	}
+	
+	// Nested action listener for the difficulty selector
+	private class DifficultyListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			JComboBox sender = (JComboBox)e.getSource();
+			Controller.this.changeDifficulty(sender.getSelectedIndex());
+		}
 	}
 	
 	/*===================================
