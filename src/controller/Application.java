@@ -1,9 +1,10 @@
 package controller;
 import java.awt.BorderLayout;
 import java.awt.Color;
-
+import java.io.*;
+import java.util.HashMap;
 import javax.swing.*;
-
+import javax.sound.sampled.*;
 import view.ControlPanel;
 import view.TitlePanel;
 import view.ViewPanel;
@@ -30,13 +31,13 @@ public class Application {
 		// Initialize the controller
 		this.controller = new Controller();
 		
-		// Initialize the model
-		Board gameBoard = new Board();
-		
 		// Initialize the game panels
 		ViewPanel viewPanel = new ViewPanel(this.controller);
 		ControlPanel controlPanel = new ControlPanel(this.controller);
 		TitlePanel titlePanel = new TitlePanel();
+		
+		// Load audio resources while board is being built
+				loadSoundResourcesIntoController();
 		
 		// Set up the JFrame
 		this.applicationFrame = new JFrame("Ludo");
@@ -57,6 +58,9 @@ public class Application {
 		this.applicationFrame.add(backPanel);
 		this.applicationFrame.pack();
 		
+		// Initialize the model
+		Board gameBoard = new Board();
+		
 		// Add components to the controller
 		this.controller.setBoard(gameBoard);
 		this.controller.setViewPanel(viewPanel);
@@ -68,6 +72,29 @@ public class Application {
 	 */
 	public void run(){
 		this.applicationFrame.setVisible(true);
+	}
+	
+	private void loadSoundResourcesIntoController(){
+		
+		String[] audioFiles = new String[]{"PlayerCapture.wav","Dice.wav","Victory.wav","Move.wav","Goal.wav","PlayerDeath.wav","GameOver.wav"};
+		HashMap<String,Clip> audioClips = new HashMap<String,Clip>();
+		
+		for(String fileName: audioFiles){
+			try{
+				Clip clip = AudioSystem.getClip();
+				InputStream audioFile = Application.class.getResourceAsStream("/resources/"+fileName);
+				AudioInputStream inputStream = AudioSystem.getAudioInputStream(audioFile);
+				String[] tokens = fileName.split("\\.");
+				clip.open(inputStream);
+				audioClips.put(tokens[0], clip);
+			}
+			catch(Exception e){
+				System.out.println(e.toString());
+				System.out.println("Audio load failed.");
+			}	
+		}
+		
+		this.controller.setAudioClips(audioClips);
 	}
 	
 	// Main

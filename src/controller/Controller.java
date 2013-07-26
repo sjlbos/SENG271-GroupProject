@@ -3,9 +3,11 @@ package controller;
 import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.Timer;
 import model.*;
 import view.*;
+import javax.sound.sampled.*;
 
 public class Controller {
 	
@@ -15,7 +17,7 @@ public class Controller {
 	private static final double SPEED_FACTOR = 1;
 	
 	private static final long DIE_INTERVAL = (long) (500/SPEED_FACTOR);
-	private static final long MOVE_INTERVAL = (long) (300/SPEED_FACTOR);
+	private static final long MOVE_INTERVAL = (long) (350/SPEED_FACTOR);
 	private static final long TURN_PAUSE = (long) (2000/SPEED_FACTOR);
 	
 	/*===================================
@@ -26,11 +28,13 @@ public class Controller {
 	private Player currentPlayer;
 	private ViewPanel viewPanel;
 	private int currentRoll;
+	private boolean rolledSix;
 	private StartNewGameListener startNewGameListener;
 	private FieldTileListener fieldTileListener;
 	private DiceListener diceListener;
 	private TitlePanel titlePanel;
 	private Timer timer;
+	private HashMap<String,Clip> audioClips;
 	
 	/*===================================
 	 GETTERS & SETTERS
@@ -50,11 +54,24 @@ public class Controller {
 	
 	public void setCurrentPlayer(Player player){
 		this.currentPlayer = player;
-		this.titlePanel.setTurnForPlayerNumber(this.currentPlayer.getPlayerNumber());
+		this.titlePanel.setTurnForPlayerNumber(this.currentPlayer.getPlayerNumber(), this.currentPlayer.getName());
 	}
 	
 	public int getCurrentRoll(){
 		return this.currentRoll;
+	}
+	
+	public void setAudioClips(HashMap<String,Clip> audioClips){
+		this.audioClips = audioClips;
+	}
+	
+	public synchronized Clip getAudioClip(String streamName){
+		if(this.audioClips!=null){
+			return audioClips.get(streamName);
+		}
+		else{
+			return null;
+		}
 	}
 	
 	/**
@@ -100,11 +117,12 @@ public class Controller {
 	/**
 	 * Resets the game board and begins a new game.
 	 */
-	public void startNewGame(){
+	private void startNewGame(){
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
-		titlePanel.setTurnForPlayerNumber(1);
+		titlePanel.setTurnForPlayerNumber(1,currentPlayer.getName());
 		this.viewPanel.toggleDieIsActive();
+		board.reset();
 		
 		timer = new Timer(15, new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -136,13 +154,14 @@ public class Controller {
 	 * Simulates rolling the die <br> 
 	 * Updates currentRoll using a pseudo-random number generator
 	 */
-	public void rollDie(){
+	private void rollDie(){
+		this.playClip("Dice");
 		Random rand = new Random();
 		this.currentRoll = rand.nextInt(6) + 1;
+		rolledSix = currentRoll == 6 ? true : false;
 		this.viewPanel.setDieRoll(currentRoll);
 		this.animateDieRoll(currentRoll);
 	}
-	
 	
 	/**
 	 * Parses a FieldTile's ID attribute and returns the pawn object at that tile
@@ -168,8 +187,9 @@ public class Controller {
 	 */
 	private void makeComputerMove(){
 		rollDie();
-		Move move = board.makeMove(currentRoll, currentPlayer);	
+		Move move = board.makeMove(currentRoll, currentPlayer);
 		if (move != null) {
+			try { Thread.sleep(1500);} catch (Exception e) { e.printStackTrace();}
 			animatePlayerMove(currentPlayer,move);
 		}
 	}
@@ -181,6 +201,11 @@ public class Controller {
 		for (int i=2; i<=4; i++){
 			this.setCurrentPlayer(board.getPlayer(i));
 			makeComputerMove();
+			if (board.HasWon(currentPlayer)){
+				setVictory();
+				return;
+			}
+			if (rolledSix) i--;
 			try{Thread.sleep(TURN_PAUSE);}catch(Exception e){};
 		}
 		this.setCurrentPlayer(board.getPlayer(1));
@@ -192,7 +217,7 @@ public class Controller {
 	 * This information is used to communicate to the board which pawn to move
 	 * @param id
 	 */
-	public void makeHumanMove(String id){
+	private void makeHumanMove(String id){
 		Pawn pawn = getPawnFromTileId(id);
 		Move move=board.makeMove(pawn, currentRoll);
 		animatePlayerMove(currentPlayer,move);
@@ -231,6 +256,33 @@ public class Controller {
 	}
 	
 	/**
+	 * Disables all tiles and displays a message that the current player has won
+	 */
+	private void setVictory(){
+		viewPanel.setTilesInactive();
+		if (currentPlayer instanceof HumanPlayer) playClip("Victory");
+		else playClip("GameOver");
+		titlePanel.setVictoryForPlayer(currentPlayer.getPlayerNumber());
+	}
+	
+	/**
+	 * Plays an audio clip.
+	 * @param clipName - The name of the audio clip (without file suffix)
+	 */
+	private void playClip(String clipName){
+		Clip clip = this.getAudioClip(clipName);
+		
+		if(clip!=null){
+			if(clip.isRunning()){
+				clip.stop();
+			}
+			clip.setFramePosition(0);
+			clip.start();
+			return;
+		}
+	}
+	
+	/**
 	 * Animates a complete pawn move from start to end position.
 	 * @param player - the player to be moved.
 	 * @param move - the move object representing the moved to be made.
@@ -244,6 +296,8 @@ public class Controller {
 		}
 		else if(currentPosition==player.getStartPosition()-1){
 			nextPosition = 40;
+		} else if (currentPosition > 39){
+			nextPosition = currentPosition + 1;
 		}
 		else{
 			nextPosition = (currentPosition+1)%40;
@@ -252,6 +306,28 @@ public class Controller {
 		int moveNumber=1;
 		Pawn overridenPawn = null;
 		do{
+			
+			// Play appropriate sound
+			if(moveNumber == numberOfMoves){
+				if(move.collision!=null){
+					if(move.collision instanceof HumanPlayer){
+						playClip("PlayerDeath");
+					}
+					else{
+						playClip("PlayerCapture");
+					}
+				}
+				else if(nextPosition>39){
+					playClip("Goal");
+				}
+				else{
+					playClip("Move");
+				}
+			}
+			else{
+				playClip("Move");
+			}
+			
 			if(overridenPawn!=null){
 				setTileAtPosition(overridenPawn.getOwner(), currentPosition,false);
 			}
@@ -283,13 +359,6 @@ public class Controller {
 			
 			moveNumber++;
 		}while(moveNumber<=numberOfMoves);
-		
-		if(overridenPawn!=null){
-			setTileAtPosition(overridenPawn.getOwner(), currentPosition,false);
-		}
-		else{
-			setTileAtPosition(player,currentPosition,true);
-		}
 		
 		if(move.collision!=null){
 			setTileAtPosition(move.collision,-1,false);
@@ -376,8 +445,12 @@ public class Controller {
 			viewPanel.toggleDieIsActive();
 			Controller.this.rollDie();
 			updateActiveStatuses();
+			ArrayList<Pawn> moveable = board.getMoveablePawns(currentRoll, currentPlayer);
 			// If the player is unable to move, perform a round of play.
-			if (board.getMoveablePawns(currentRoll, currentPlayer).size() == 0){
+			if (moveable.size() == 0 && rolledSix){
+				viewPanel.toggleDieIsActive();
+			} else if (moveable.size() == 0) {
+				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
 				makeComputerMoves();
 			}
 		}
@@ -391,7 +464,7 @@ public class Controller {
 	 */
 	private class TileEventThread extends Thread{
 		
-		ActionEvent event;
+		private ActionEvent event;
 		
 		// This thread requires the event that triggered this thread's execution in its constructor.
 		public TileEventThread(ActionEvent event){
@@ -402,7 +475,16 @@ public class Controller {
 			viewPanel.setTilesInactive();
 			FieldTile ft = (FieldTile)event.getSource();
 			makeHumanMove(ft.getId());
-			makeComputerMoves();
+			if (board.HasWon(currentPlayer)){
+				setVictory();
+				return;
+			}
+			if ( rolledSix ){
+				viewPanel.toggleDieIsActive();
+			} else {
+				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
+				makeComputerMoves();
+			}
 		}
 	}
 }

@@ -46,12 +46,12 @@ public class FieldTile extends JComponent implements MouseListener{
 	/*===================================
 	 FIELDS
 	 ===================================*/
-	private boolean isActive;
+	private volatile boolean isActive;
 	private boolean mouseEntered;
 	private boolean mousePressed;
 	private boolean isActiveDestination;
 	private Shape circle;
-	private Color fieldColor;
+	private volatile Color fieldColor;
 	private Color borderColor;
 	private ArrayList<ActionListener> actionListeners;
 	private String id;

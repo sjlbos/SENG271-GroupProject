@@ -24,8 +24,8 @@ public class Board {
 			players[i] = new HumanPlayer(i+1);
 		}*/
 		players[0] = new HumanPlayer(1);
-		players[1] = new ComputerPlayer(2, new CaptureStrategy());
-		players[2] = new ComputerPlayer(3, new RandomStrategy());
+		players[1] = new ComputerPlayer(2, new MoveFirstStrategy());
+		players[2] = new ComputerPlayer(3, new MoveFirstStrategy());
 		players[3] = new ComputerPlayer(4, new MoveFirstStrategy());
 		
 		
@@ -84,6 +84,25 @@ public class Board {
 		return this.players;
 	}
 	
+	public void reset(){
+		for(Player player: this.players){
+			Pawn[] pawns = player.getPawns();
+			Field[] EndMap = this.playerEndMap.get(player);
+			for(Pawn pawn:pawns){
+				int pos = pawn.getPosition();
+				if(pos >= 40){
+					EndMap[pos-40].setOccupant(null);
+					EndMap[pos-40].setPawnOwner(null);
+				}else if(pos == -1){
+					continue;
+				}else{
+					updateField(pos,null);
+				}
+				pawn.setPosition(-1);
+			}
+		}
+	}
+	
 	/**
 	 * @return Returns an array containing all the Pawn objects on the game board
 	 * 
@@ -105,7 +124,7 @@ public class Board {
 	 * @return Returns integer of closest pawn to the s
 	 */
 	private int getClosestPawnInGoal(Player owner, Pawn pawn){
-		int standard = 45;
+		int standard = 44;
 		for(Pawn temp:owner.getPawns()){
 			if(temp.getPosition() < standard && temp.getPosition() > pawn.getPosition() && temp.getPosition() >= 40){
 				standard = temp.getPosition();
@@ -164,7 +183,7 @@ public class Board {
 				}
 				if(gameBoard[(currentpos + i) % 40] instanceof StartTile && gameBoard[(currentpos + i) % 40].getForkOwner() == owner){
 					int remainingMoves = currentRoll - i;
-					if(remainingMoves > 4){
+					if(remainingMoves >= 4){
 						//pawn.setIsMoveable(false);
 						break;
 					}
@@ -239,6 +258,7 @@ public class Board {
 					EndMap[currentpos - 40].setPawnOwner(null);
 					EndMap[currentpos + currentRoll - 40].setOccupant(pawn);
 					EndMap[currentpos + currentRoll - 40].setPawnOwner(pawn.getOwner());
+					pawn.setPosition(currentpos + currentRoll);
 					break;
 					
 					
