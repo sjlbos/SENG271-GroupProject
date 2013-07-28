@@ -137,10 +137,16 @@ public class Controller {
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
 		titlePanel.setTurnForPlayerNumber(1,currentPlayer.getName());
-		this.viewPanel.toggleDieIsActive();
 		board.reset();
 		
 		this.timer.start();
+
+		if (currentPlayer instanceof HumanPlayer){
+			viewPanel.toggleDieIsActive();
+		}
+		else {
+			(new ComputerPlayerThread()).start();
+		}
 	}
 	
 	/**
@@ -159,7 +165,7 @@ public class Controller {
 		case 3:
 			break;
 		default:
-			//default to normal
+			break;
 		}
 	}
 	
@@ -220,33 +226,44 @@ public class Controller {
 		rollDie();
 		Move move = board.makeMove(currentRoll, currentPlayer);
 		if (move != null) {
-			try { Thread.sleep(1500);} catch (Exception e) { e.printStackTrace();}
+			try { Thread.sleep(TURN_PAUSE);} catch (Exception e) { e.printStackTrace();}
 			animatePlayerMove(currentPlayer,move);
 		}
 	}
 	
 	/**
-	 * Cycles through all of the computer players, performing each player's move in turn.
+	 * Sets the current player attribute to the next player
+	 * Updates the title panel to display the player's name whose turn it is
+	 */
+	private void setNextPlayer(){
+		int current = currentPlayer.getPlayerNumber();
+		int next = current == 4 ? 1 : current + 1;
+		currentPlayer = board.getPlayer(next);
+		titlePanel.setTurnForPlayerNumber(currentPlayer.getPlayerNumber(), "Player " + currentPlayer.getPlayerNumber());
+	}
+	
+	/**
+	 * Cycles through computer players until a human player is reached
+	 * Calls the appropriate strategy to make each player's move
 	 */
 	private void makeComputerMoves(){
-		for (int i=2; i<=4; i++){
-			this.setCurrentPlayer(board.getPlayer(i));
+		while (currentPlayer instanceof ComputerPlayer){
 			makeComputerMove();
 			if (board.HasWon(currentPlayer)){
 				setVictory();
 				return;
 			}
-			if (rolledSix) i--;
+			if (rolledSix) continue;
 			try{Thread.sleep(TURN_PAUSE);}catch(Exception e){};
+			setNextPlayer();
 		}
-		this.setCurrentPlayer(board.getPlayer(1));
 		viewPanel.toggleDieIsActive();
 	}
 	
 	/**
 	 * Used for parsing the id string of the tile a player selects when moving a pawn
 	 * This information is used to communicate to the board which pawn to move
-	 * @param id
+	 * @param The ID string that is used to identify game tiles
 	 */
 	private void makeHumanMove(String id){
 		Pawn pawn = getPawnFromTileId(id);
@@ -506,7 +523,12 @@ public class Controller {
 				viewPanel.toggleDieIsActive();
 			} else if (moveable.size() == 0) {
 				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
-				makeComputerMoves();
+				setNextPlayer();
+				if (currentPlayer instanceof HumanPlayer){
+					viewPanel.toggleDieIsActive();
+				} else {
+					makeComputerMoves();
+				}
 			}
 		}
 	}
@@ -538,8 +560,25 @@ public class Controller {
 				viewPanel.toggleDieIsActive();
 			} else {
 				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
-				makeComputerMoves();
+				setNextPlayer();
+				if (currentPlayer instanceof HumanPlayer){
+					viewPanel.toggleDieIsActive();
+				} else {
+					makeComputerMoves();
+				}
 			}
+		}
+	}
+	
+	/**
+	 * This class defines a thread that will only run the first time a game is started and
+	 * only if the first player is a computer player. If the first player is a computer
+	 * player, the above thread classes are never created and the game execution hogs the
+	 * main thread so that the view cannot be updated properly.
+	 */
+	private class ComputerPlayerThread extends Thread {
+		public void run(){
+			makeComputerMoves();
 		}
 	}
 }

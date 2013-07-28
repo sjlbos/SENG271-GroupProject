@@ -19,10 +19,8 @@ public class Board {
 		// Create board and player arrays
 		gameBoard = new Field[40];
 		players = new Player[4];
-		// Fake player generator for testing
-		/*for(int i=0; i<4; i++){
-			players[i] = new HumanPlayer(i+1);
-		}*/
+
+		// generate some players for testing (should be implemented using a GUI)
 		players[0] = new HumanPlayer(1);
 		players[1] = new ComputerPlayer(2, new MoveFirstStrategy());
 		players[2] = new ComputerPlayer(3, new MoveFirstStrategy());
@@ -86,18 +84,19 @@ public class Board {
 	
 	public void reset(){
 		for(Player player: this.players){
+			player.setPawnsAtHome(4);
 			Pawn[] pawns = player.getPawns();
 			Field[] EndMap = this.playerEndMap.get(player);
+			for(int i=0;i<40;i++){
+				this.gameBoard[i].setOccupant(null);
+				this.gameBoard[i].setPawnOwner(null);
+			}
+			for(int i=0;i<4;i++){
+				EndMap[i].setOccupant(null);
+				EndMap[i].setPawnOwner(null);
+			}
 			for(Pawn pawn:pawns){
-				int pos = pawn.getPosition();
-				if(pos >= 40){
-					EndMap[pos-40].setOccupant(null);
-					EndMap[pos-40].setPawnOwner(null);
-				}else if(pos == -1){
-					continue;
-				}else{
-					updateField(pos,null);
-				}
+				pawn.setTilesMoved(0);
 				pawn.setPosition(-1);
 			}
 		}
@@ -141,6 +140,7 @@ public class Board {
 		Pawn temp = gameBoard[pos].getOccupant();
 		temp.setPosition(-1);
 		temp.getOwner().incrementPawnsAtHome();
+		temp.setTilesMoved(0);
 		return temp.getOwner();
 	}
 	
@@ -249,6 +249,7 @@ public class Board {
 			updateField(startpos, pawn);
 			pawn.getOwner().decrementPawnsAtHome();
 			pawn.setPosition(pawn.getOwner().getStartPosition());
+			pawn.incrementTilesMoved(1);
 		}else{
 			//move the pawn the given number of slots, all error handling is done by the getMovablePawns method
 			for(int i=1;i<=currentRoll;i++){
@@ -259,6 +260,7 @@ public class Board {
 					EndMap[currentpos + currentRoll - 40].setOccupant(pawn);
 					EndMap[currentpos + currentRoll - 40].setPawnOwner(pawn.getOwner());
 					pawn.setPosition(currentpos + currentRoll);
+					pawn.incrementTilesMoved(currentRoll);
 					break;
 					
 					
@@ -268,8 +270,8 @@ public class Board {
 					Field[] EndMap = playerEndMap.get(pawn.getOwner());
 					EndMap[currentRoll-i].setOccupant(pawn);
 					EndMap[currentRoll-i].setPawnOwner(pawn.getOwner());
-					
 					pawn.setPosition(40 + (currentRoll-i));
+					pawn.incrementTilesMoved(currentRoll);
 					return move;
 				}
 				if(i == currentRoll){
@@ -279,6 +281,7 @@ public class Board {
 					updateField(currentpos, null);
 					updateField((currentpos + i) % 40, pawn);
 					pawn.setPosition((currentpos + i) % 40);
+					pawn.incrementTilesMoved(currentRoll);
 				}
 			}
 		}
