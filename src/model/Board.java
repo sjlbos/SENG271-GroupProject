@@ -84,18 +84,19 @@ public class Board {
 	
 	public void reset(){
 		for(Player player: this.players){
+			player.setPawnsAtHome(4);
 			Pawn[] pawns = player.getPawns();
 			Field[] EndMap = this.playerEndMap.get(player);
+			for(int i=0;i<40;i++){
+				this.gameBoard[i].setOccupant(null);
+				this.gameBoard[i].setPawnOwner(null);
+			}
+			for(int i=0;i<4;i++){
+				EndMap[i].setOccupant(null);
+				EndMap[i].setPawnOwner(null);
+			}
 			for(Pawn pawn:pawns){
-				int pos = pawn.getPosition();
-				if(pos >= 40){
-					EndMap[pos-40].setOccupant(null);
-					EndMap[pos-40].setPawnOwner(null);
-				}else if(pos == -1){
-					continue;
-				}else{
-					updateField(pos,null);
-				}
+				pawn.setTilesMoved(0);
 				pawn.setPosition(-1);
 			}
 		}
