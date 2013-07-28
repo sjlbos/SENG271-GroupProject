@@ -123,7 +123,6 @@ public class Controller {
 		titlePanel.setTurnForPlayerNumber(1,currentPlayer.getName());
 		this.viewPanel.toggleDieIsActive();
 		board.reset();
-		
 		timer = new Timer(15, new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				viewPanel.repaint();
@@ -195,27 +194,38 @@ public class Controller {
 	}
 	
 	/**
-	 * Cycles through all of the computer players, performing each player's move in turn.
+	 * Sets the current player attribute to the next player
+	 * Updates the title panel to display the player's name whose turn it is
+	 */
+	private void setNextPlayer(){
+		int current = currentPlayer.getPlayerNumber();
+		int next = current == 4 ? 1 : current + 1;
+		currentPlayer = board.getPlayer(next);
+		titlePanel.setTurnForPlayerNumber(currentPlayer.getPlayerNumber(), "Player " + currentPlayer.getPlayerNumber());
+	}
+	
+	/**
+	 * Cycles through computer players until a human player is reached
+	 * Calls the appropriate strategy to make each player's move
 	 */
 	private void makeComputerMoves(){
-		for (int i=2; i<=4; i++){
-			this.setCurrentPlayer(board.getPlayer(i));
+		while (currentPlayer instanceof ComputerPlayer){
 			makeComputerMove();
 			if (board.HasWon(currentPlayer)){
 				setVictory();
 				return;
 			}
-			if (rolledSix) i--;
+			if (rolledSix) continue;
+			setNextPlayer();
 			try{Thread.sleep(TURN_PAUSE);}catch(Exception e){};
 		}
-		this.setCurrentPlayer(board.getPlayer(1));
 		viewPanel.toggleDieIsActive();
 	}
 	
 	/**
 	 * Used for parsing the id string of the tile a player selects when moving a pawn
 	 * This information is used to communicate to the board which pawn to move
-	 * @param id
+	 * @param The ID string that is used to identify game tiles
 	 */
 	private void makeHumanMove(String id){
 		Pawn pawn = getPawnFromTileId(id);
@@ -451,7 +461,12 @@ public class Controller {
 				viewPanel.toggleDieIsActive();
 			} else if (moveable.size() == 0) {
 				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
-				makeComputerMoves();
+				setNextPlayer();
+				if (currentPlayer instanceof HumanPlayer){
+					viewPanel.toggleDieIsActive();
+				} else {
+					makeComputerMoves();
+				}
 			}
 		}
 	}
@@ -483,7 +498,12 @@ public class Controller {
 				viewPanel.toggleDieIsActive();
 			} else {
 				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
-				makeComputerMoves();
+				setNextPlayer();
+				if (currentPlayer instanceof HumanPlayer){
+					viewPanel.toggleDieIsActive();
+				} else {
+					makeComputerMoves();
+				}
 			}
 		}
 	}
