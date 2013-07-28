@@ -19,14 +19,11 @@ public class Board {
 		// Create board and player arrays
 		gameBoard = new Field[40];
 		players = new Player[4];
-		// Fake player generator for testing
-		/*for(int i=0; i<4; i++){
-			players[i] = new HumanPlayer(i+1);
-		}*/
+
+		// generate some players for testing (should be implemented using a GUI)
 		players[0] = new HumanPlayer(1);
 		players[1] = new ComputerPlayer(2, new MoveFirstStrategy());
-		players[2] = new HumanPlayer(3);
-		//players[2] = new ComputerPlayer(3, new MoveFirstStrategy());
+		players[2] = new ComputerPlayer(3, new MoveFirstStrategy());
 		players[3] = new ComputerPlayer(4, new MoveFirstStrategy());
 		
 		

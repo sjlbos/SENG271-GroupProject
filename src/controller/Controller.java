@@ -121,7 +121,6 @@ public class Controller {
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
 		titlePanel.setTurnForPlayerNumber(1,currentPlayer.getName());
-		this.viewPanel.toggleDieIsActive();
 		board.reset();
 		timer = new Timer(15, new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -129,6 +128,12 @@ public class Controller {
 			}
 		});
 		timer.start();
+		if (currentPlayer instanceof HumanPlayer){
+			viewPanel.toggleDieIsActive();
+		}
+		else {
+			(new ComputerPlayerThread()).start();
+		}
 	}
 	
 	/**
@@ -216,8 +221,8 @@ public class Controller {
 				return;
 			}
 			if (rolledSix) continue;
-			setNextPlayer();
 			try{Thread.sleep(TURN_PAUSE);}catch(Exception e){};
+			setNextPlayer();
 		}
 		viewPanel.toggleDieIsActive();
 	}
@@ -505,6 +510,18 @@ public class Controller {
 					makeComputerMoves();
 				}
 			}
+		}
+	}
+	
+	/**
+	 * This class defines a thread that will only run the first time a game is started and
+	 * only if the first player is a computer player. If the first player is a computer
+	 * player, the above thread classes are never created and the game execution hogs the
+	 * main thread so that the view cannot be updated properly.
+	 */
+	private class ComputerPlayerThread extends Thread {
+		public void run(){
+			makeComputerMoves();
 		}
 	}
 }
