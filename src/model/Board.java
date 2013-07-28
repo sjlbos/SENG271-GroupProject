@@ -139,6 +139,7 @@ public class Board {
 		Pawn temp = gameBoard[pos].getOccupant();
 		temp.setPosition(-1);
 		temp.getOwner().incrementPawnsAtHome();
+		temp.setTilesMoved(0);
 		return temp.getOwner();
 	}
 	
@@ -247,6 +248,7 @@ public class Board {
 			updateField(startpos, pawn);
 			pawn.getOwner().decrementPawnsAtHome();
 			pawn.setPosition(pawn.getOwner().getStartPosition());
+			pawn.incrementTilesMoved(1);
 		}else{
 			//move the pawn the given number of slots, all error handling is done by the getMovablePawns method
 			for(int i=1;i<=currentRoll;i++){
@@ -257,6 +259,7 @@ public class Board {
 					EndMap[currentpos + currentRoll - 40].setOccupant(pawn);
 					EndMap[currentpos + currentRoll - 40].setPawnOwner(pawn.getOwner());
 					pawn.setPosition(currentpos + currentRoll);
+					pawn.incrementTilesMoved(currentRoll);
 					break;
 					
 					
@@ -266,8 +269,8 @@ public class Board {
 					Field[] EndMap = playerEndMap.get(pawn.getOwner());
 					EndMap[currentRoll-i].setOccupant(pawn);
 					EndMap[currentRoll-i].setPawnOwner(pawn.getOwner());
-					
 					pawn.setPosition(40 + (currentRoll-i));
+					pawn.incrementTilesMoved(currentRoll);
 					return move;
 				}
 				if(i == currentRoll){
@@ -277,6 +280,7 @@ public class Board {
 					updateField(currentpos, null);
 					updateField((currentpos + i) % 40, pawn);
 					pawn.setPosition((currentpos + i) % 40);
+					pawn.incrementTilesMoved(currentRoll);
 				}
 			}
 		}

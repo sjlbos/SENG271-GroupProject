@@ -6,50 +6,20 @@ public class MoveFirstStrategy implements Strategy {
 
 	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		//normalize pawn position based on home
+		Pawn temp = null;
 		if(moveablePawns.isEmpty()){
-			return null;
+			return temp;
+		}else{
+			for(Pawn pawn: moveablePawns){
+				if(temp == null){
+					temp = pawn;
+				}
+				if(pawn.getTilesMoved() > temp.getTilesMoved()){
+					temp = pawn;
+				}
+			}
 		}
-		int startPos = moveablePawns.get(0).getOwner().getStartPosition();
-		Pawn pawn = null;
-		Integer currentVal = null;
-		//go through movable pawns
-		for(Pawn temp : moveablePawns){
-			//if pawn to return has not be set and the pawn is movable, replace the pawn with the current one
-			Integer value = temp.getPosition() - startPos;
-			if(pawn == null){
-				pawn = temp;
-				currentVal = value;
-				continue;
-			}
-			if(temp.getPosition() >= 40){
-				if(pawn.getPosition() >= 40){
-					if(temp.getPosition() > pawn.getPosition()){
-						return pawn;
-					}
-				}else{
-					pawn = temp;
-				}
-			}
-			if(value >= 0 && currentVal >= 0){
-				if(value > currentVal){
-					currentVal = value;
-					pawn = temp;
-				}
-			}else if(value <= 0 && currentVal > 0){
-				currentVal = value;
-				pawn = temp;
-			}else if(value < 0 && currentVal < 0){
-				if(value < currentVal){
-					currentVal = value;
-					pawn = temp;
-				}
-			}
-			
-			
-		}
-		
-		
-		return pawn;
+		return temp;
 	}
 	
 	public String toString(){
