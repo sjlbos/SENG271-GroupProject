@@ -193,7 +193,7 @@ public class Controller {
 		rollDie();
 		Move move = board.makeMove(currentRoll, currentPlayer);
 		if (move != null) {
-			try { Thread.sleep(1500);} catch (Exception e) { e.printStackTrace();}
+			try { Thread.sleep(TURN_PAUSE);} catch (Exception e) { e.printStackTrace();}
 			animatePlayerMove(currentPlayer,move);
 		}
 	}
