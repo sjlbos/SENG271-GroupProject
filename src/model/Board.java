@@ -22,9 +22,9 @@ public class Board {
 
 		// generate some players for testing (should be implemented using a GUI)
 		players[0] = new HumanPlayer(1);
-		players[1] = new ComputerPlayer(2, new MoveFirstStrategy());
-		players[2] = new ComputerPlayer(3, new MoveFirstStrategy());
-		players[3] = new ComputerPlayer(4, new MoveFirstStrategy());
+		players[1] = new ComputerPlayer(2, new CaptureStrategy());
+		players[2] = new ComputerPlayer(3, new MoveLastStrategy());
+		players[3] = new ComputerPlayer(4, new RandomStrategy());
 		
 		
 		for(int i=0;i<40;i++){
