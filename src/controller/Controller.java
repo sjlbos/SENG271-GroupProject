@@ -25,8 +25,6 @@ public class Controller {
 	private static final long MOVE_INTERVAL = (long) (350/SPEED_FACTOR);
 	private static final long TURN_PAUSE = (long) (2000/SPEED_FACTOR);
 	
-	public static final String[] DIFFICULTIES = {"Over 9000!","Hard","Normal","Easy"};
-	
 	/*===================================
  	FIELDS
  	===================================*/
@@ -39,13 +37,14 @@ public class Controller {
 	private StartNewGameListener startNewGameListener;
 	private FieldTileListener fieldTileListener;
 	private DiceListener diceListener;
-	private SliderListener sliderListener;
-	private DifficultyListener difficultyListener;
+	private SoundSliderListener soundSliderListener;
+	private SpeedSliderListener speedSliderListener;
 	private TitlePanel titlePanel;
 	private Timer timer;
 	private HashMap<String,Clip> audioClips;
 	private float audioGain;
 	private boolean isMuted;
+	private int speedMultiplier;
 	
 	/*===================================
  	CONSTRUCTOR
@@ -64,8 +63,8 @@ public class Controller {
 		this.startNewGameListener = new StartNewGameListener();
 		this.fieldTileListener = new FieldTileListener();
 		this.diceListener = new DiceListener();
-		this.sliderListener = new SliderListener();
-		this.difficultyListener = new DifficultyListener();
+		this.soundSliderListener = new SoundSliderListener();
+		this.speedSliderListener = new SpeedSliderListener();
 	}
 	
 	/*===================================
@@ -118,12 +117,8 @@ public class Controller {
 		return this.diceListener;
 	}
 	
-	public ChangeListener getSliderListener(){
-		return this.sliderListener;
-	}
-	
-	public ActionListener getDifficultyListener(){
-		return this.difficultyListener;
+	public ChangeListener getSoundSliderListener(){
+		return this.soundSliderListener;
 	}
 	
 	/*===================================
@@ -146,26 +141,6 @@ public class Controller {
 		}
 		else {
 			(new ComputerPlayerThread()).start();
-		}
-	}
-	
-	/**
-	 * Changes the game difficulty. Accepts and integer value between 0 and 3 as a difficulty,
-	 * with 0 being the most difficult and 3 being the least difficult.
-	 * @param newDifficulty
-	 */
-	private void changeDifficulty(int newDifficulty){
-		switch(newDifficulty){
-		case 0:
-			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		default:
-			break;
 		}
 	}
 	
@@ -480,9 +455,11 @@ public class Controller {
 	}
 	
 	// Nested action listener for volume slider
-	private class SliderListener implements ChangeListener{
+	private class SoundSliderListener implements ChangeListener{
 		public void stateChanged(ChangeEvent e) {
 			JSlider slider = (JSlider)e.getSource();
+			slider.setMaximum(6);
+			slider.setMinimum(0);
 			if(slider.getValue()==slider.getMinimum()){
 				Controller.this.isMuted = true;
 			}
@@ -493,12 +470,13 @@ public class Controller {
 		}	
 	}
 	
-	// Nested action listener for the difficulty selector
-	private class DifficultyListener implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			JComboBox sender = (JComboBox)e.getSource();
-			Controller.this.changeDifficulty(sender.getSelectedIndex());
-		}
+	
+	// Nested action listener for volume slider
+	private class SpeedSliderListener implements ChangeListener{
+		public void stateChanged(ChangeEvent e) {
+			JSlider slider = (JSlider)e.getSource();
+			Controller.this.speedMultiplier = slider.getValue();
+		}	
 	}
 	
 	/*===================================

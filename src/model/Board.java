@@ -21,7 +21,8 @@ public class Board {
 		players = new Player[4];
 
 		// generate some players for testing (should be implemented using a GUI)
-		players[0] = new HumanPlayer(1);
+		//players[0] = new HumanPlayer(1);
+		players[0] = new ComputerPlayer(1, new MoveFirstStrategy());
 		players[1] = new ComputerPlayer(2, new CaptureStrategy());
 		players[2] = new ComputerPlayer(3, new MoveLastStrategy());
 		players[3] = new ComputerPlayer(4, new RandomStrategy());
@@ -49,25 +50,43 @@ public class Board {
 	}
 	
 	//Constructor for given players
-//	public Board(Player[] newPlayers){
-//		gameBoard = new Field[40];
-//		for(int i=0;i<40;i++){
-//			gameBoard[i] = new Field();
-//		}
-//		this.players = newPlayers;
-//		for(Player player: players){
-//			gameBoard[player.getStartPosition()] = new StartTile(player);
-//		}
-//		playerEndMap = new HashMap<Player, Field[]>();
-//		for (Player player: players){
-//			playerEndMap.put(player, new Field[4]);
-//			Field[] EndMap = playerEndMap.get(player);
-//			for(int i=0;i<4;i++){
-//				EndMap[i] = new Field();
-//			}
-//		}
-//		
-//	}
+	public Board(String[] name, String[] strategy){
+		gameBoard = new Field[40];
+		players = new Player[4];
+		for(int i=0;i<40;i++){
+			gameBoard[i] = new Field();
+		}
+		for(int i=0;i<4;i++){
+			if(strategy[i].equals("Human")){
+					players[i] = new HumanPlayer(i,name[i]);
+			}else{
+				if(strategy[i].equals("MoveFirst")){
+					players[i] = new ComputerPlayer(i, new MoveFirstStrategy());
+				}else if(strategy[i].equals("MoveLast")){
+					players[i] = new ComputerPlayer(i, new MoveLastStrategy());
+				}else if(strategy[i].equals("Capture")){
+					players[i] = new ComputerPlayer(i, new CaptureStrategy());
+				}else if(strategy[i].equals("Cautious")){
+					players[i] = new ComputerPlayer(i, new CautiousStrategy());
+				}else{
+					players[i] = new ComputerPlayer(i, new RandomStrategy());
+				}
+			}
+			
+		}
+		for(Player player: players){
+			gameBoard[player.getStartPosition()] = new StartTile(player);
+		}
+		playerEndMap = new HashMap<Player, Field[]>();
+		for (Player player: players){
+			playerEndMap.put(player, new Field[4]);
+			Field[] EndMap = playerEndMap.get(player);
+			for(int i=0;i<4;i++){
+				EndMap[i] = new Field();
+			}
+		}
+		
+	}
 	
 	/**
 	 * Get a player object given their player number

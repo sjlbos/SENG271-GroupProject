@@ -47,22 +47,11 @@ public class ControlPanel extends JPanel{
 		slider.setSize(sliderSize);
 		slider.setPaintTicks(false);
 		slider.setPaintLabels(false);
-		slider.addChangeListener(controller.getSliderListener());
-		
-		// Create the difficulty combo box
-		JLabel difficultyLabel = new JLabel("Difficulty:");	
-		JComboBox difficultySelector = new JComboBox(Controller.DIFFICULTIES);
-		difficultySelector.setSelectedIndex(2);
-		Dimension selectorSize = new Dimension(75,newGameButton.getPreferredSize().height);
-		difficultySelector.setPreferredSize(selectorSize);
-		difficultySelector.setSize(selectorSize);
-		difficultySelector.addActionListener(controller.getDifficultyListener());
+		slider.addChangeListener(controller.getSoundSliderListener());
 		
 		// Add the components to the panel
 		this.add(slider);
 		this.add(Box.createHorizontalGlue());
-		this.add(difficultyLabel);
-		this.add(difficultySelector);
 		this.add(Box.createHorizontalGlue());
 		this.add(newGameButton);
 	}
