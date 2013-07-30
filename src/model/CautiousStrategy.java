@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class CautiousStrategy implements Strategy{
 
@@ -22,7 +23,16 @@ public class CautiousStrategy implements Strategy{
 				}
 			}
 		}
-		return null;
+		return moveRandom(currentRoll, moveablePawns, gameBoard);
+	}
+	
+	public Pawn moveRandom(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard){
+		Random rand = new Random();
+		if(moveablePawns.isEmpty()){
+			return null;
+		}
+		int random = rand.nextInt(moveablePawns.size());
+		return moveablePawns.get(random);
 	}
 	
 	public String toString(){
