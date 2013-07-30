@@ -51,7 +51,7 @@ public class Controller {
  	===================================*/
 	
 	public Controller(){
-		this.audioGain = 10;
+		this.audioGain = 3;
 		this.isMuted = false;
 		this.timer = new Timer(15, new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -458,6 +458,8 @@ public class Controller {
 	private class SoundSliderListener implements ChangeListener{
 		public void stateChanged(ChangeEvent e) {
 			JSlider slider = (JSlider)e.getSource();
+			slider.setMaximum(6);
+			slider.setMinimum(0);
 			if(slider.getValue()==slider.getMinimum()){
 				Controller.this.isMuted = true;
 			}
