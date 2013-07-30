@@ -52,7 +52,7 @@ public class Controller {
  	===================================*/
 	
 	public Controller(){
-		this.audioGain = 10;
+		this.audioGain = 5;
 		this.isMuted = false;
 		this.timer = new Timer(15, new ActionListener(){
 			public void actionPerformed(ActionEvent e){

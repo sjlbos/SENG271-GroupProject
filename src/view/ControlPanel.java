@@ -41,7 +41,7 @@ public class ControlPanel extends JPanel{
 		}
 		
 		// Create the volume slider
-		JSlider slider = new JSlider(JSlider.HORIZONTAL,-5,15,10);
+		JSlider slider = new JSlider(JSlider.HORIZONTAL,-5,6,5);
 		Dimension sliderSize = new Dimension(75,newGameButton.getPreferredSize().height);
 		slider.setPreferredSize(sliderSize);
 		slider.setSize(sliderSize);
