@@ -19,4 +19,7 @@ public class StartTile extends Field{
 		return this.owner;
 	}
 	
+	public String toString(){
+		return "" + owner.getPlayerNumber();
+	}
 }

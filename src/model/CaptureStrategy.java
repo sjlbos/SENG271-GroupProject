@@ -8,14 +8,25 @@ public class CaptureStrategy implements Strategy{
 	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		//go through each pawn and check the ones that can be moved
 		for(Pawn pawn: moveablePawns){
+			Boolean passed = false;
 			//return a pawn if it would catch a pawn
 			int pos = pawn.getPosition();
-			int finalPos = pos+currentRoll;
-			if(finalPos >= 40){
-				finalPos = finalPos - 40;
-			}
-			if(gameBoard[finalPos].getOccupant() != null){
-				return pawn;
+			for(int i=1;i<=currentRoll;i++){
+				if(gameBoard[(pos+i)%40] instanceof StartTile){
+					if(gameBoard[(pos+i)%40].getForkOwner().equals(pawn.getOwner())){
+						continue;
+					}
+				}
+				if(i == currentRoll){
+					if(gameBoard[(pos+i)].getOccupant().equals(null)){
+						return pawn;
+					}else if(passed == true){
+						continue;
+					}
+				}
+				if(!gameBoard[(pos+i)%40].getOccupant().equals(null)){
+					passed = true;
+				}
 			}
 		}
 		//if no suitable moves, move random

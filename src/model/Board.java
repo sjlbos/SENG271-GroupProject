@@ -58,22 +58,20 @@ public class Board {
 		}
 		for(int i=0;i<4;i++){
 			if(strategy[i].equals("Human")){
-					players[i] = new HumanPlayer(i,name[i]);
+				players[i] = new HumanPlayer(i+1,name[i]);
+			}else if(strategy[i].equals("MoveFirst")){
+				players[i] = new ComputerPlayer(i+1, new MoveFirstStrategy());
+			}else if(strategy[i].equals("MoveLast")){
+				players[i] = new ComputerPlayer(i+1, new MoveLastStrategy());
+			}else if(strategy[i].equals("Capture")){
+				players[i] = new ComputerPlayer(i+1, new CaptureStrategy());
+			}else if(strategy[i].equals("Cautious")){
+				players[i] = new ComputerPlayer(i+1, new CautiousStrategy());
 			}else{
-				if(strategy[i].equals("MoveFirst")){
-					players[i] = new ComputerPlayer(i, new MoveFirstStrategy());
-				}else if(strategy[i].equals("MoveLast")){
-					players[i] = new ComputerPlayer(i, new MoveLastStrategy());
-				}else if(strategy[i].equals("Capture")){
-					players[i] = new ComputerPlayer(i, new CaptureStrategy());
-				}else if(strategy[i].equals("Cautious")){
-					players[i] = new ComputerPlayer(i, new CautiousStrategy());
-				}else{
-					players[i] = new ComputerPlayer(i, new RandomStrategy());
-				}
+				players[i] = new ComputerPlayer(i+1, new RandomStrategy());
 			}
-			
-		}
+		}	
+		
 		for(Player player: players){
 			gameBoard[player.getStartPosition()] = new StartTile(player);
 		}
