@@ -29,6 +29,7 @@ public class Controller {
  	FIELDS
  	===================================*/
 	
+	private NewGameMenu newGameMenu;
 	private Board board;
 	private Player currentPlayer;
 	private ViewPanel viewPanel;
@@ -51,6 +52,8 @@ public class Controller {
  	===================================*/
 	
 	public Controller(){
+		this.newGameMenu = new NewGameMenu(this);
+		
 		this.audioGain = 5;
 		this.isMuted = false;
 		this.timer = new Timer(15, new ActionListener(){
@@ -77,6 +80,7 @@ public class Controller {
 	
 	public void setViewPanel(ViewPanel viewPanel){
 		this.viewPanel=viewPanel;
+		newGameMenu.setLocation(this.viewPanel.getLocation().x+ViewPanel.WIDTH+20, this.viewPanel.getLocation().y);
 	}
 	
 	public void setTitlePanel(TitlePanel titlePanel){
@@ -124,6 +128,15 @@ public class Controller {
 	/*===================================
 	 METHODS
 	 ===================================*/
+	
+	/**
+	 * This method is called by the new game menu when the user wishes to start a new game.
+	 * @param options - a 4X2 array of strings, specifying the player type of players 1-4 and their respective strategy (for computer players).
+	 */
+	public void requestNewGame(String[][] options){
+		this.board = new Board();
+		this.startNewGame();
+	}
 	
 	/**
 	 * Resets the game board and begins a new game.
@@ -414,7 +427,7 @@ public class Controller {
 	// Nested action lister class for the "New Game" button.
 	private class StartNewGameListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			Controller.this.startNewGame();
+			Controller.this.newGameMenu.setVisible(true);
 		}	
 	}
 	

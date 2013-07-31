@@ -8,7 +8,6 @@ import javax.sound.sampled.*;
 import view.ControlPanel;
 import view.TitlePanel;
 import view.ViewPanel;
-import model.Board;
 
 public class Application {
 	
@@ -58,11 +57,7 @@ public class Application {
 		this.applicationFrame.add(backPanel);
 		this.applicationFrame.pack();
 		
-		// Initialize the model
-		Board gameBoard = new Board();
-		
 		// Add components to the controller
-		this.controller.setBoard(gameBoard);
 		this.controller.setViewPanel(viewPanel);
 		this.controller.setTitlePanel(titlePanel);
 	}
