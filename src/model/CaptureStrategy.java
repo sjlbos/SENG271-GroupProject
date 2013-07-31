@@ -18,13 +18,13 @@ public class CaptureStrategy implements Strategy{
 					}
 				}
 				if(i == currentRoll){
-					if(gameBoard[(pos+i)].getOccupant().equals(null)){
+					if(gameBoard[(pos+i)%40].getOccupant() == null){
 						return pawn;
 					}else if(passed == true){
 						continue;
 					}
 				}
-				if(!gameBoard[(pos+i)%40].getOccupant().equals(null)){
+				if(gameBoard[(pos+i)%40].getOccupant() != null){
 					passed = true;
 				}
 			}
