@@ -76,7 +76,7 @@ public class NewGameMenu extends JFrame{
 		
 		// Load the component arrays and set the initial properties of the combo boxes
 		for(int i=0;i<4;i++){
-			playerLabels[i] = new JLabel("Player "+i);
+			playerLabels[i] = new JLabel("Player "+(i+1));
 			playerLabels[i].setForeground(Color.WHITE);
 			playerSelectors[i] = new JComboBox(Players);
 			playerSelectors[i].setSelectedIndex(1);
