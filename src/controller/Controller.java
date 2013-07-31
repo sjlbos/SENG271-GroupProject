@@ -17,11 +17,6 @@ import javax.sound.sampled.*;
 public class Controller {
 	
 	/*===================================
- 	CONSTANTS
- 	===================================*/
-	
-	
-	/*===================================
  	FIELDS
  	===================================*/
 	
@@ -45,6 +40,7 @@ public class Controller {
 	private long dieInterval;
 	private long moveInterval;
 	private long turnPause;
+	private JButton startGameButton;
 	
 	/*===================================
  	CONSTRUCTOR
@@ -77,8 +73,8 @@ public class Controller {
 	 GETTERS & SETTERS
 	 ===================================*/
 	
-	public void setBoard(Board board){
-		this.board=board;
+	public void setStartButton(JButton startButton){
+		this.startGameButton = startButton;
 	}
 	
 	public void setViewPanel(ViewPanel viewPanel){
@@ -137,6 +133,7 @@ public class Controller {
 	 */
 	public void requestNewGame(String[][] options){
 		this.board = new Board(options);
+		this.startGameButton.setEnabled(true);
 		this.startNewGame();
 	}
 	
@@ -430,6 +427,7 @@ public class Controller {
 	private class StartNewGameListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			Controller.this.newGameMenu.setVisible(true);
+			Controller.this.startGameButton.setEnabled(false);
 		}	
 	}
 	
