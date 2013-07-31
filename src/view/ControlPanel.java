@@ -11,7 +11,7 @@ import controller.Controller;
 
 /**
  * 
- * @author Stephen Box
+ * @author Stephen Bos
  * June, 2013
  * 
  * This panel rests on the bottom of the game screen and contains the start 
