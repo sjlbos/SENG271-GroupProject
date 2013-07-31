@@ -13,7 +13,7 @@ public class CaptureStrategy implements Strategy{
 			int pos = pawn.getPosition();
 			for(int i=1;i<=currentRoll;i++){
 				if(gameBoard[(pos+i)%40] instanceof StartTile){
-					if(gameBoard[(pos+i)%40].getForkOwner().equals(pawn.getOwner())){
+					if(gameBoard[(pos+i)%40].getForkOwner() == pawn.getOwner()){
 						continue;
 					}
 				}
