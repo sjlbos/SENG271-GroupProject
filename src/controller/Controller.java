@@ -136,7 +136,7 @@ public class Controller {
 	 * @param options - a 4X2 array of strings, specifying the player type of players 1-4 and their respective strategy (for computer players).
 	 */
 	public void requestNewGame(String[][] options){
-		this.board = new Board();
+		this.board = new Board(options);
 		this.startNewGame();
 	}
 	
