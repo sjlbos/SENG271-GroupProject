@@ -14,42 +14,7 @@ public class Board {
 	private Field[] gameBoard;
 	private HashMap<Player, Field[]> playerEndMap;
 	
-	//Constructor
-	public Board(){
-		// Create board and player arrays
-		gameBoard = new Field[40];
-		players = new Player[4];
-
-		// generate some players for testing (should be implemented using a GUI)
-		//players[0] = new HumanPlayer(1);
-		players[0] = new ComputerPlayer(1, new MoveFirstStrategy());
-		players[1] = new ComputerPlayer(2, new CaptureStrategy());
-		players[2] = new ComputerPlayer(3, new MoveLastStrategy());
-		players[3] = new ComputerPlayer(4, new RandomStrategy());
-		
-		
-		for(int i=0;i<40;i++){
-			gameBoard[i] = new Field();
-		}
-		//add a fork for each player
-		for(Player player: players){
-			gameBoard[player.getStartPosition()] = new StartTile(player);
-		}
-		
-		// Map the players to their corresponding home and end fields
-		//playerHomeMap = new HashMap<Player, Field[]>();
-		playerEndMap = new HashMap<Player, Field[]>();
-		for (Player player: players){
-			playerEndMap.put(player, new Field[4]);
-			Field[] EndMap = playerEndMap.get(player);
-			for(int i=0;i<4;i++){
-				EndMap[i] = new Field();
-			}
-		}
-		
-	}
-	
-	// constructor for given players
+	// Constructor that takes a 2D array of player types and strategies
 	public Board(String[][] options){
 		gameBoard = new Field[40];
 		players = new Player[4];
