@@ -20,10 +20,6 @@ public class Controller {
  	CONSTANTS
  	===================================*/
 	
-	private static final double SPEED_FACTOR = 1;	
-	private static final long DIE_INTERVAL = (long) (500/SPEED_FACTOR);
-	private static final long MOVE_INTERVAL = (long) (350/SPEED_FACTOR);
-	private static final long TURN_PAUSE = (long) (2000/SPEED_FACTOR);
 	
 	/*===================================
  	FIELDS
@@ -45,7 +41,10 @@ public class Controller {
 	private HashMap<String,Clip> audioClips;
 	private float audioGain;
 	private boolean isMuted;
-	private int speedMultiplier;
+	private int speedFactor;
+	private long dieInterval;
+	private long moveInterval;
+	private long turnPause;
 	
 	/*===================================
  	CONSTRUCTOR
@@ -55,6 +54,10 @@ public class Controller {
 		this.newGameMenu = new NewGameMenu(this);
 		
 		this.audioGain = 5;
+		this.speedFactor = 1;
+		this.dieInterval = 500;
+		this.moveInterval = 350;
+		this.turnPause = 2000;
 		this.isMuted = false;
 		this.timer = new Timer(15, new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -123,6 +126,10 @@ public class Controller {
 	
 	public ChangeListener getSoundSliderListener(){
 		return this.soundSliderListener;
+	}
+	
+	public SpeedSliderListener getSpeedSliderListener(){
+		return this.speedSliderListener;
 	}
 	
 	/*===================================
@@ -214,7 +221,7 @@ public class Controller {
 		rollDie();
 		Move move = board.makeMove(currentRoll, currentPlayer);
 		if (move != null) {
-			try { Thread.sleep(TURN_PAUSE);} catch (Exception e) { e.printStackTrace();}
+			try { Thread.sleep(turnPause);} catch (Exception e) { e.printStackTrace();}
 			animatePlayerMove(currentPlayer,move);
 		}
 	}
@@ -242,7 +249,7 @@ public class Controller {
 				return;
 			}
 			if (rolledSix) continue;
-			try{Thread.sleep(TURN_PAUSE);}catch(Exception e){};
+			try{Thread.sleep(turnPause);}catch(Exception e){};
 			setNextPlayer();
 		}
 		viewPanel.toggleDieIsActive();
@@ -393,7 +400,7 @@ public class Controller {
 				nextPosition=(nextPosition+1)%40;
 			}
 			
-			try{Thread.sleep(MOVE_INTERVAL);}catch(Exception e){};
+			try{Thread.sleep(moveInterval);}catch(Exception e){};
 			
 			moveNumber++;
 		}while(moveNumber<=numberOfMoves);
@@ -414,7 +421,7 @@ public class Controller {
 		
 		for(int i=0;i<6;i++){
 			viewPanel.setDieRoll(r.nextInt(6)+1);
-			try{Thread.sleep(DIE_INTERVAL);}catch(Exception e){}
+			try{Thread.sleep(dieInterval);}catch(Exception e){}
 		}
 
 		viewPanel.setDieRoll(toNumber);
@@ -471,8 +478,6 @@ public class Controller {
 	private class SoundSliderListener implements ChangeListener{
 		public void stateChanged(ChangeEvent e) {
 			JSlider slider = (JSlider)e.getSource();
-			slider.setMaximum(6);
-			slider.setMinimum(0);
 			if(slider.getValue()==slider.getMinimum()){
 				Controller.this.isMuted = true;
 			}
@@ -488,7 +493,10 @@ public class Controller {
 	private class SpeedSliderListener implements ChangeListener{
 		public void stateChanged(ChangeEvent e) {
 			JSlider slider = (JSlider)e.getSource();
-			Controller.this.speedMultiplier = slider.getValue();
+			Controller.this.speedFactor = slider.getValue();
+			Controller.this.dieInterval = 500/speedFactor;
+			Controller.this.moveInterval = 350/speedFactor;
+			Controller.this.turnPause = 2000/speedFactor;
 		}	
 	}
 	
@@ -513,7 +521,7 @@ public class Controller {
 			if (moveable.size() == 0 && rolledSix){
 				viewPanel.toggleDieIsActive();
 			} else if (moveable.size() == 0) {
-				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
+				try {Thread.sleep(turnPause);} catch (Exception e) {e.printStackTrace();}
 				setNextPlayer();
 				if (currentPlayer instanceof HumanPlayer){
 					viewPanel.toggleDieIsActive();
@@ -550,7 +558,7 @@ public class Controller {
 			if ( rolledSix ){
 				viewPanel.toggleDieIsActive();
 			} else {
-				try {Thread.sleep(TURN_PAUSE);} catch (Exception e) {e.printStackTrace();}
+				try {Thread.sleep(turnPause);} catch (Exception e) {e.printStackTrace();}
 				setNextPlayer();
 				if (currentPlayer instanceof HumanPlayer){
 					viewPanel.toggleDieIsActive();
