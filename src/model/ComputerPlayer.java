@@ -8,13 +8,11 @@ public class ComputerPlayer implements Player {
 	private int pawnsAtHome;
 	private int startPosition;
 	private Pawn[] pawns;
-	private String name;
 	private Strategy strategy;
 	
 	// Constructor
 	public ComputerPlayer(int playerNumber, Strategy strategy){
 		this.playerNumber = playerNumber;
-		this.name = "Player " + playerNumber;
 		this.startPosition = determineStartPosition(playerNumber);
 		this.pawnsAtHome = 4;
 		this.strategy = strategy;
@@ -56,10 +54,6 @@ public class ComputerPlayer implements Player {
 	@Override
 	public int getPawnsAtHome(){
 		return this.pawnsAtHome;
-	}
-	
-	public String getName(){
-		return this.name;
 	}
 	
 	@Override

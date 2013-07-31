@@ -49,29 +49,35 @@ public class Board {
 		
 	}
 	
-	//Constructor for given players
-	public Board(String[] name, String[] strategy){
+	// constructor for given players
+	public Board(String[][] options){
 		gameBoard = new Field[40];
 		players = new Player[4];
-		for(int i=0;i<40;i++){
+		for(int i=0; i<40; i++){
 			gameBoard[i] = new Field();
 		}
-		for(int i=0;i<4;i++){
-			if(strategy[i].equals("Human")){
-				players[i] = new HumanPlayer(i+1,name[i]);
-			}else if(strategy[i].equals("MoveFirst")){
-				players[i] = new ComputerPlayer(i+1, new MoveFirstStrategy());
-			}else if(strategy[i].equals("MoveLast")){
-				players[i] = new ComputerPlayer(i+1, new MoveLastStrategy());
-			}else if(strategy[i].equals("Capture")){
-				players[i] = new ComputerPlayer(i+1, new CaptureStrategy());
-			}else if(strategy[i].equals("Cautious")){
-				players[i] = new ComputerPlayer(i+1, new CautiousStrategy());
-			}else{
-				players[i] = new ComputerPlayer(i+1, new RandomStrategy());
+		for(int i=0; i<4 ; i++){
+			if ("Human".equals(options[i][0])){
+				players[i] = new HumanPlayer(i+1);
 			}
-		}	
-		
+			else {
+				if ("Move First".equals(options[i][1])){
+					players[i] = new ComputerPlayer(i+1, new MoveFirstStrategy());
+				}
+				else if ("Move Last".equals(options[i][1])){
+					players[i] = new ComputerPlayer(i+1, new MoveLastStrategy());
+				}
+				else if ("Capture".equals(options[i][1])){
+					players[i] = new ComputerPlayer(i+1, new CaptureStrategy());
+				}
+				else if ("Cautious".equals(options[i][1])){
+					players[i] = new ComputerPlayer(i+1, new CautiousStrategy());
+				}
+				else {
+					players[i] = new ComputerPlayer(i+1, new RandomStrategy());
+				}
+			}
+		}
 		for(Player player: players){
 			gameBoard[player.getStartPosition()] = new StartTile(player);
 		}
@@ -83,7 +89,6 @@ public class Board {
 				EndMap[i] = new Field();
 			}
 		}
-		
 	}
 	
 	/**
