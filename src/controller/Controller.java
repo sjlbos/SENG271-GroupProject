@@ -90,11 +90,6 @@ public class Controller {
 		this.titlePanel = titlePanel;
 	}
 	
-	public void setCurrentPlayer(Player player){
-		this.currentPlayer = player;
-		this.titlePanel.setTurnForPlayerNumber(this.currentPlayer.getPlayerNumber(), this.currentPlayer.getName());
-	}
-	
 	public int getCurrentRoll(){
 		return this.currentRoll;
 	}
@@ -151,7 +146,7 @@ public class Controller {
 	private void startNewGame(){
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
-		titlePanel.setTurnForPlayerNumber(1,currentPlayer.getName());
+		titlePanel.setTurnForPlayerNumber(1);
 		board.reset();
 		
 		this.timer.start();
@@ -234,7 +229,7 @@ public class Controller {
 		int current = currentPlayer.getPlayerNumber();
 		int next = current == 4 ? 1 : current + 1;
 		currentPlayer = board.getPlayer(next);
-		titlePanel.setTurnForPlayerNumber(currentPlayer.getPlayerNumber(), "Player " + currentPlayer.getPlayerNumber());
+		titlePanel.setTurnForPlayerNumber(next);
 	}
 	
 	/**

@@ -71,23 +71,23 @@ public class TitlePanel extends JPanel {
 	 * Sets the label to display the current turn.
 	 * @param playerNumber - The player number. Must be an integer between 1 and 4. 
 	 */
-	public void setTurnForPlayerNumber(int playerNumber, String playerName){
+	public void setTurnForPlayerNumber(int playerNumber){
 		switch(playerNumber){
 		case 1:
 			this.textColor = ViewPanel.PLAYER_1_COLOR;
-			this.labelText = playerName + "'s Turn";
+			this.labelText = "Player 1 Turn";
 			break;
 		case 2:
 			this.textColor = ViewPanel.PLAYER_2_COLOR;
-			this.labelText = playerName + "'s Turn";
+			this.labelText = "Player 2 Turn";
 			break;
 		case 3:
 			this.textColor = ViewPanel.PLAYER_3_COLOR;
-			this.labelText = playerName + "'s Turn";
+			this.labelText = "Player 3 Turn";
 			break;
 		case 4:
 			this.textColor = ViewPanel.PLAYER_4_COLOR;
-			this.labelText = playerName + "'s Turn";
+			this.labelText = "Player 4 Turn";
 			break;
 		default:
 			System.out.println("Invalid player number passed to TitlePanel.");
