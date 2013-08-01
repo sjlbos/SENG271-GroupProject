@@ -11,11 +11,11 @@ public class CautiousStrategy implements Strategy{
 			Player passedHomeOwner = null;
 			for(int i=1;i<6;i++){
 				startPos = startPos-1 < 0 ? 39 : startPos-1;
-				if(gameBoard[startPos] instanceof StartTile){
-					passedHomeOwner = gameBoard[startPos].getForkOwner();
+				if(gameBoard[startPos%40] instanceof StartTile){
+					passedHomeOwner = gameBoard[startPos%40].getForkOwner();
 				}
-				if(!gameBoard[startPos].getOccupant().equals(null) && !gameBoard[startPos].getOccupant().equals(passedHomeOwner)){
-					if(!gameBoard[startPos].getOccupant().equals(pawn.getOwner())){
+				if(gameBoard[startPos%40].getOccupant() != null && gameBoard[startPos%40].getOccupant() != (passedHomeOwner)){
+					if(gameBoard[startPos%40].getOccupant() == pawn.getOwner()){
 						return pawn;
 					}
 				}else{

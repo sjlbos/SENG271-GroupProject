@@ -7,19 +7,28 @@ import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.sound.sampled.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import model.*;
 import view.*;
-import javax.sound.sampled.*;
+
+/**
+ * @author Luuk Veenis, Stephen Bos
+ * July 2013
+ * 
+ * This class acts as a mediator between the model and the view, following the MVC pattern.
+ * All game logic is handled by this class:
+ * - looping through player turns
+ * - checking win conditions
+ * - translating moves performed in the model to the view to display them
+ * - translating input in the view such as mouse clicks to the model
+ * This class creates multiple threads to handle the game flow. This avoids issues
+ * with GUI updates not happening immediately because the main thread is busy.
+ */
 
 public class Controller {
-	
-	/*===================================
- 	CONSTANTS
- 	===================================*/
-	
 	
 	/*===================================
  	FIELDS
@@ -45,6 +54,7 @@ public class Controller {
 	private long dieInterval;
 	private long moveInterval;
 	private long turnPause;
+	private JButton startGameButton;
 	
 	/*===================================
  	CONSTRUCTOR
@@ -77,8 +87,8 @@ public class Controller {
 	 GETTERS & SETTERS
 	 ===================================*/
 	
-	public void setBoard(Board board){
-		this.board=board;
+	public void setStartButton(JButton startButton){
+		this.startGameButton = startButton;
 	}
 	
 	public void setViewPanel(ViewPanel viewPanel){
@@ -137,6 +147,7 @@ public class Controller {
 	 */
 	public void requestNewGame(String[][] options){
 		this.board = new Board(options);
+		this.startGameButton.setEnabled(true);
 		this.startNewGame();
 	}
 	
@@ -150,7 +161,7 @@ public class Controller {
 		board.reset();
 		
 		this.timer.start();
-
+		// if player is human simply turn on die and wait for user input
 		if (currentPlayer instanceof HumanPlayer){
 			viewPanel.toggleDieIsActive();
 		}
@@ -160,7 +171,7 @@ public class Controller {
 	}
 	
 	/**
-	 * Updates the active statuses of field tiles so that only movable pawns are active.
+	 * Updates the active statuses of field tiles so that only movable pawns are active (clickable).
 	 */
 	private void updateActiveStatuses(){
 		ArrayList<Pawn> activePawns = board.getMoveablePawns(currentRoll, currentPlayer);
@@ -227,7 +238,7 @@ public class Controller {
 	 */
 	private void setNextPlayer(){
 		int current = currentPlayer.getPlayerNumber();
-		int next = current == 4 ? 1 : current + 1;
+		int next = current == 4 ? 1 : current + 1; //loop back to 1 after player 4
 		currentPlayer = board.getPlayer(next);
 		titlePanel.setTurnForPlayerNumber(next);
 	}
@@ -239,15 +250,15 @@ public class Controller {
 	private void makeComputerMoves(){
 		while (currentPlayer instanceof ComputerPlayer){
 			makeComputerMove();
-			if (board.HasWon(currentPlayer)){
+			if (board.HasWon(currentPlayer)){ //Check if player has all pawns in their goal
 				setVictory();
 				return;
 			}
-			if (rolledSix) continue;
+			if (rolledSix) continue; //Player goes again if they rolled 6
 			try{Thread.sleep(turnPause);}catch(Exception e){};
 			setNextPlayer();
 		}
-		viewPanel.toggleDieIsActive();
+		viewPanel.toggleDieIsActive(); //We know the next player is human to set die to active and wait for input
 	}
 	
 	/**
@@ -297,7 +308,7 @@ public class Controller {
 	 * Disables all tiles and displays a message that the current player has won
 	 */
 	private void setVictory(){
-		viewPanel.setTilesInactive();
+		viewPanel.setTilesInactive(); //Don't allow any more input
 		if (currentPlayer instanceof HumanPlayer) playClip("Victory");
 		else playClip("GameOver");
 		titlePanel.setVictoryForPlayer(currentPlayer.getPlayerNumber());
@@ -332,15 +343,16 @@ public class Controller {
 		int currentPosition = move.startPosition;
 		int nextPosition;
 		if(currentPosition==-1){
-			nextPosition = player.getStartPosition();
+			nextPosition = player.getStartPosition(); //Move onto the board
 		}
 		else if(currentPosition==player.getStartPosition()-1){
-			nextPosition = 40;
-		} else if (currentPosition > 39){
-			nextPosition = currentPosition + 1;
+			nextPosition = 40; //Move into the goal
+		} 
+		else if (currentPosition > 39){
+			nextPosition = currentPosition + 1; //Moving while in goal
 		}
 		else{
-			nextPosition = (currentPosition+1)%40;
+			nextPosition = (currentPosition+1)%40; //Regular move on the board
 		}
 		
 		int moveNumber=1;
@@ -418,7 +430,6 @@ public class Controller {
 			viewPanel.setDieRoll(r.nextInt(6)+1);
 			try{Thread.sleep(dieInterval);}catch(Exception e){}
 		}
-
 		viewPanel.setDieRoll(toNumber);
 	}
 	
@@ -430,6 +441,7 @@ public class Controller {
 	private class StartNewGameListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			Controller.this.newGameMenu.setVisible(true);
+			Controller.this.startGameButton.setEnabled(false);
 		}	
 	}
 	
@@ -444,14 +456,14 @@ public class Controller {
 				Pawn pawn = getPawnFromTileId(id);
 				int destination = board.getMoveDestination(pawn, currentRoll);
 				if (e.getActionCommand().equals(FieldTile.ENTER_EVENT)){
-					// turn on
+					// turn on highlighting
 					if (destination < 40){
 						viewPanel.setActiveDestinationOnBoard(destination, true);
 					} else {
 						viewPanel.setActiveDestinationAtGoalForPlayer(currentPlayer.getPlayerNumber(), destination-40, true);
 					}
 				} else if (e.getActionCommand().equals(FieldTile.EXIT_EVENT)){
-					// turn off
+					// turn off highlighting
 					if (destination < 40){
 						viewPanel.setActiveDestinationOnBoard(destination, false);
 					} else {
@@ -512,12 +524,11 @@ public class Controller {
 			Controller.this.rollDie();
 			updateActiveStatuses();
 			ArrayList<Pawn> moveable = board.getMoveablePawns(currentRoll, currentPlayer);
-			// If the player is unable to move, perform a round of play.
 			if (moveable.size() == 0 && rolledSix){
-				viewPanel.toggleDieIsActive();
+				viewPanel.toggleDieIsActive(); //If player rolled six and can't move let them roll again
 			} else if (moveable.size() == 0) {
 				try {Thread.sleep(turnPause);} catch (Exception e) {e.printStackTrace();}
-				setNextPlayer();
+				setNextPlayer(); //If player can't move, go to the next player
 				if (currentPlayer instanceof HumanPlayer){
 					viewPanel.toggleDieIsActive();
 				} else {

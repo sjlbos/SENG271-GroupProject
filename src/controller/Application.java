@@ -36,7 +36,7 @@ public class Application {
 		TitlePanel titlePanel = new TitlePanel();
 		
 		// Load audio resources while board is being built
-				loadSoundResourcesIntoController();
+		loadSoundResourcesIntoController();
 		
 		// Set up the JFrame
 		this.applicationFrame = new JFrame("Ludo");

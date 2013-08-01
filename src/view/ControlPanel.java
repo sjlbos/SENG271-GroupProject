@@ -29,6 +29,7 @@ public class ControlPanel extends JPanel{
 		// Create the new game button
 		JButton newGameButton = new JButton("New Game");
 		newGameButton.addActionListener(controller.getStartNewGameListener());
+		controller.setStartButton(newGameButton);
 		
 		// Load, scale, and add the volume icon
 		try {
