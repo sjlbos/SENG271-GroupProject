@@ -92,7 +92,7 @@ public class Board {
 	
 	/**
 	 * @param owner of the EndMap you want to check
-	 * @return Returns integer of closest pawn to the standard
+	 * @return Returns position of pawn closest to front of goal array
 	 */
 	private int getClosestPawnInGoal(Player owner, Pawn pawn){
 		int standard = 44;
