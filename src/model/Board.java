@@ -153,6 +153,7 @@ public class Board {
 					}
 				}
 				if( i == currentRoll){
+					//if reached end point and there is not a pawn from the owner there add the pawn to movable
 					if(gameBoard[(currentpos + i) % 40].getPawnOwner() == pawn.getOwner()){
 						continue;
 					}else{
@@ -162,30 +163,6 @@ public class Board {
 			}
 		}
 		return MoveablePawns;
-	}
-	
-	/**
-	 * Resets the game board, pawns, players, etc.
-	 * Called when selecting start new game
-	 */
-	public void reset(){
-		for(Player player: this.players){
-			player.setPawnsAtHome(4);
-			Pawn[] pawns = player.getPawns();
-			Field[] EndMap = this.playerEndMap.get(player);
-			for(int i=0;i<40;i++){
-				this.gameBoard[i].setOccupant(null);
-				this.gameBoard[i].setPawnOwner(null);
-			}
-			for(int i=0;i<4;i++){
-				EndMap[i].setOccupant(null);
-				EndMap[i].setPawnOwner(null);
-			}
-			for(Pawn pawn:pawns){
-				pawn.setTilesMoved(0);
-				pawn.setPosition(-1);
-			}
-		}
 	}
 	
 	/**

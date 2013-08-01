@@ -160,7 +160,6 @@ public class Controller {
 		viewPanel.resetBoard();
 		this.currentPlayer = board.getPlayer(1);
 		titlePanel.setTurnForPlayerNumber(1);
-		board.reset();
 		
 		this.timer.start();
 		// if player is human simply turn on die and wait for user input
