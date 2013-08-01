@@ -1,9 +1,15 @@
 package view;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
-import java.awt.*;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.JComponent;
 
 /**
  * @author Stephen Bos

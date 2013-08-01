@@ -1,9 +1,11 @@
 package view;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.Box;
+import javax.swing.JPanel;
 import controller.Controller;
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author Stephen Bos

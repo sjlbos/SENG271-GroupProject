@@ -9,16 +9,30 @@ import view.ControlPanel;
 import view.TitlePanel;
 import view.ViewPanel;
 
+/** 
+ * @author Stephen Bos
+ * Date: June 2013
+ *
+ * This class is responsible for initializing the game, creating and linking all of its components.
+ */
 public class Application {
 	
-	// Properties
+	/*===================================
+ 	FIELDS
+ 	===================================*/
 	private Controller controller;
 	private JFrame applicationFrame;
 	
-	// Constructor
+	/*===================================
+ 	CONSTRUCTOR
+ 	===================================*/
 	public Application(){
 		this.initialize();
 	}
+	
+	/*===================================
+	 METHODS
+	 ===================================*/
 	
 	/**
 	 * Initializes the application. Creates the base JFrame container,
@@ -63,12 +77,16 @@ public class Application {
 	}
 	
 	/**
-	 * Sets the application visible and passes control to the controller.
+	 * Sets the application visible, passing control to the controller.
 	 */
 	public void run(){
 		this.applicationFrame.setVisible(true);
 	}
 	
+	/**
+	 * Loads the required sound files into the application. The sound files are converted into Clip objects and put into
+	 * a hashmap which is subsequently loaded into the controller.
+	 */
 	private void loadSoundResourcesIntoController(){
 		
 		String[] audioFiles = new String[]{"PlayerCapture.wav","Dice.wav","Victory.wav","Move.wav","Goal.wav","PlayerDeath.wav","GameOver.wav"};
@@ -92,7 +110,9 @@ public class Application {
 		this.controller.setAudioClips(audioClips);
 	}
 	
-	// Main
+	/*===================================
+	 MAIN
+	 ===================================*/
 	public static void main(String args[]){
 		Application app = new Application();
 		app.run();

@@ -4,13 +4,11 @@ import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.sound.sampled.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import model.*;
 import view.*;
 
@@ -89,6 +87,10 @@ public class Controller {
 	
 	public void setStartButton(JButton startButton){
 		this.startGameButton = startButton;
+	}
+	
+	public JButton getStartButton(){
+		return this.startGameButton;
 	}
 	
 	public void setViewPanel(ViewPanel viewPanel){
@@ -318,7 +320,7 @@ public class Controller {
 	 * Plays an audio clip.
 	 * @param clipName - The name of the audio clip (without file suffix)
 	 */
-	private void playClip(String clipName){
+	private synchronized void playClip(String clipName){
 		Clip clip = this.getAudioClip(clipName);
 		
 		if(clip!=null && !isMuted){
