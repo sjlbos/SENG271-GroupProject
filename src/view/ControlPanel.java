@@ -51,7 +51,7 @@ public class ControlPanel extends JPanel{
 		slider.addChangeListener(controller.getSoundSliderListener());
 		
 		// Create the speed slider
-		JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 1,50,1);
+		JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 1,20,1);
 		Dimension speedSliderSize = new Dimension(75, newGameButton.getPreferredSize().height);
 		speedSlider.setPreferredSize(speedSliderSize);
 		speedSlider.setSize(speedSliderSize);

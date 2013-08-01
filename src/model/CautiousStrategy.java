@@ -10,7 +10,7 @@ public class CautiousStrategy implements Strategy{
 			int startPos = pawn.getPosition();
 			Player passedHomeOwner = null;
 			for(int i=1;i<6;i++){
-				startPos = startPos-1 < 0 ? 40 : startPos-1;
+				startPos = startPos-1 < 0 ? 39 : startPos-1;
 				if(gameBoard[startPos] instanceof StartTile){
 					passedHomeOwner = gameBoard[startPos].getForkOwner();
 				}
