@@ -4,8 +4,12 @@ import controller.Controller;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.*;
-
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  * @author Stephen Bos
