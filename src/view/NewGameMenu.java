@@ -134,8 +134,9 @@ public class NewGameMenu extends JFrame{
 	private void startGame(){
 		String[][] selectedOptions = new String[4][2];
 		for(int i=0; i<4; i++){
-			selectedOptions[i][0]=Players[this.playerSelectors[i].getSelectedIndex()];
-			selectedOptions[i][1]=Strategies[this.strategySelectors[i].getSelectedIndex()];
+			int playerIndex=this.playerSelectors[i].getSelectedIndex();
+			selectedOptions[i][0]=Players[playerIndex];
+			selectedOptions[i][1]=playerIndex == 0?null:Strategies[this.strategySelectors[i].getSelectedIndex()];
 		}
 		
 		this.controller.requestNewGame(selectedOptions);
