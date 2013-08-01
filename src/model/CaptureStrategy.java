@@ -5,6 +5,12 @@ import java.util.ArrayList;
 
 public class CaptureStrategy implements Strategy{
 
+	/**
+	 * @param Current Roll of die
+	 * @param ArrayList of movable pawns
+	 * @param Field[] array for the gameboard
+	 * @return Pawn most likely to capture a pawn in the next two turns
+	 */
 	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		//go through each pawn and check the ones that can be moved
 		for(Pawn pawn: moveablePawns){
@@ -30,18 +36,15 @@ public class CaptureStrategy implements Strategy{
 			}
 		}
 		//if no suitable moves, move random
-		return moveRandom(currentRoll, moveablePawns, gameBoard);
+		return moveRandom(moveablePawns);
 		
 	}
 	
 	/**
-	 * Returns a random pawn, of movable ones
-	 * @param currentRoll
-	 * @param moveablePawns
-	 * @param gameBoard
-	 * @return
+	 * @param a arrayList of moveable Pawns
+	 * @return a  random pawn
 	 */
-	public Pawn moveRandom(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard){
+	public Pawn moveRandom(ArrayList<Pawn> moveablePawns){
 		Random rand = new Random();
 		if(moveablePawns.isEmpty()){
 			return null;

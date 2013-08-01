@@ -5,6 +5,12 @@ import java.util.Random;
 
 public class CautiousStrategy implements Strategy{
 
+	/**
+	 * @param Current Roll of die
+	 * @param ArrayList of movable pawns
+	 * @param Field[] array for the gameboard
+	 * @return Pawn that is in the most danger between this turn and the next
+	 */
 	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		for(Pawn pawn: moveablePawns){
 			int startPos = pawn.getPosition();
@@ -23,10 +29,14 @@ public class CautiousStrategy implements Strategy{
 				}
 			}
 		}
-		return moveRandom(currentRoll, moveablePawns, gameBoard);
+		return moveRandom(moveablePawns);
 	}
 	
-	public Pawn moveRandom(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard){
+	/**
+	 * @param a arrayList of moveable Pawns
+	 * @return a  random pawn
+	 */
+	public Pawn moveRandom(ArrayList<Pawn> moveablePawns){
 		Random rand = new Random();
 		if(moveablePawns.isEmpty()){
 			return null;

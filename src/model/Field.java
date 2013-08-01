@@ -41,7 +41,9 @@ public class Field {
 	}
 	
 	
-	
+	/*===========================================
+	 *                TOSTRING
+	 *==========================================*/
 	public String toString(){
 		return pawnOwner + " : " + occupant;
 	}

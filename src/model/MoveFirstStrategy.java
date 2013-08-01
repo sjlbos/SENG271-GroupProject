@@ -3,9 +3,15 @@ package model;
 import java.util.ArrayList;
 
 public class MoveFirstStrategy implements Strategy {
-
+	
+	/**
+	 * @param Current Roll of die
+	 * @param ArrayList of movable pawns
+	 * @param Field[] array for the gameboard
+	 * @return Pawn that is the farthest away from the start
+	 */
+	@Override
 	public Pawn getNextMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
-		//normalize pawn position based on home
 		Pawn temp = null;
 		if(moveablePawns.isEmpty()){
 			return temp;
@@ -22,6 +28,10 @@ public class MoveFirstStrategy implements Strategy {
 		return temp;
 	}
 	
+	
+	/**
+	 * @return String for strategy
+	 */
 	public String toString(){
 		return "Move First";
 	}
