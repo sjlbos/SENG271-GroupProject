@@ -7,15 +7,17 @@ public class Field {
 	private Pawn occupant;
 	private Player pawnOwner;
 	
-	//default Constructor
+	/*==========================
+	 * DEFAULT CONSTRUCTOR
+	 *==========================*/
 	public Field(){
 		this.occupant = null;
 		this.pawnOwner = null;
 	}
 	
 	/*=================================
-	Getters and Setters
-	=================================*/
+	 * GETTERS AND SETTERS
+	 *===============================*/
 	
 	public Pawn getOccupant(){
 		return this.occupant;

@@ -6,7 +6,9 @@ public class Move {
 	public Player collision;
 	
 	
-	//Constructors
+	/*===================
+	 * CONSTRUCTOR
+	 *===================*/
 	public Move(){
 		this.pawn = null;
 		this.collision = null;

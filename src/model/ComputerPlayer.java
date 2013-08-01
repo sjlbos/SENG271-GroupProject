@@ -10,7 +10,9 @@ public class ComputerPlayer implements Player {
 	private Pawn[] pawns;
 	private Strategy strategy;
 	
-	// Constructor
+	/*====================
+	 *  CONSTRUCTOR
+	 *====================*/
 	public ComputerPlayer(int playerNumber, Strategy strategy){
 		this.playerNumber = playerNumber;
 		this.startPosition = determineStartPosition(playerNumber);
@@ -93,13 +95,13 @@ public class ComputerPlayer implements Player {
 		
 	}
 
-	
 	@Override
 	public void decrementPawnsAtHome() {
 		this.pawnsAtHome--;
 		
 	}
 
+	// Delegates the call to the appropriate strategy
 	public Pawn makeMove(int currentRoll, ArrayList<Pawn> moveablePawns, Field[] gameBoard) {
 		Pawn pawn = this.strategy.getNextMove(currentRoll,moveablePawns,gameBoard);
 		return pawn;

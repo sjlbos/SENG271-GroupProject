@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Class to model the game board. <br>
  * Contains accessors for the players, pawns, dice rolls, etc.
- * @author Luuk
+ * @author Luuk, Dustin
  *
  */
 public class Board {
@@ -56,11 +56,10 @@ public class Board {
 		}
 	}
 	
-	/**
-	 * Get a player object given their player number
-	 * @param the number of the player to return
-	 * @return the player object, assuming players are stored in sequential order
-	 */
+	/*==========================
+	 *   GETTERS AND SETTERS
+	 *==========================*/
+	
 	public Player getPlayer(int playerNumber){
 		return this.players[playerNumber - 1];
 	}
@@ -69,6 +68,106 @@ public class Board {
 		return this.players;
 	}
 	
+	public Field[] getBoard() {
+		return this.gameBoard;
+	}
+	
+	/**
+	 * @return Returns an array containing all the Pawn objects on the game board
+	 */
+	public Pawn[] getPawns(){
+		int count = 0;
+		Pawn[] allPawns = new Pawn[players.length*4];
+		for(Player player: players){
+			for(Pawn pawn: player.getPawns()){
+				allPawns[count++] = pawn;
+			}
+		}
+		return allPawns;
+	}
+	
+	/*===============
+	 *  METHODS
+	 *===============*/
+	
+	/**
+	 * @param owner of the EndMap you want to check
+	 * @return Returns integer of closest pawn to the standard
+	 */
+	private int getClosestPawnInGoal(Player owner, Pawn pawn){
+		int standard = 44;
+		for(Pawn temp:owner.getPawns()){
+			if(temp.getPosition() < standard && temp.getPosition() > pawn.getPosition() && temp.getPosition() >= 40){
+				standard = temp.getPosition();
+			}
+		}
+		return standard;
+	}
+	
+	/**
+	 * Checks the given player's pawns for any pawns that are able to be moved based on the die roll
+	 * @return Returns all pawns that can be moved
+	 */
+	public ArrayList<Pawn> getMoveablePawns(int currentRoll, Player owner){
+		int startpos = owner.getStartPosition();
+		ArrayList<Pawn> MoveablePawns = new ArrayList<Pawn>();
+		//if a six is rolled and the spot in front of the home is not alreadyt occupied by one of the owners
+		//pawns, if possible move a pawn out from home
+		if(currentRoll == 6 && gameBoard[startpos].getPawnOwner() != owner && owner.getPawnsAtHome() != 0){
+			for(Pawn pawn: owner.getPawns()){
+				if(pawn.getPosition() == -1){
+					MoveablePawns.add(pawn); //pawn.setIsMoveable(true);
+				}else{
+					continue;
+				}
+			}
+			return MoveablePawns;
+		}
+		for(Pawn pawn: owner.getPawns()){
+			if(pawn.getPosition() == -1){
+				continue;
+			}
+			int currentpos = pawn.getPosition();
+			//if pawn is in end goal
+			//check each spot to make sure it doesnt pass the goal fork
+			for(int i=1;i<=currentRoll;i++){
+				if(currentpos >= 40){
+					if(getClosestPawnInGoal(owner,pawn) > currentRoll + currentpos && currentRoll + currentpos < 45){
+						MoveablePawns.add(pawn);
+						break;
+					}else{
+						break;
+					}
+				}
+				if(gameBoard[(currentpos + i) % 40] instanceof StartTile && gameBoard[(currentpos + i) % 40].getForkOwner() == owner){
+					int remainingMoves = currentRoll - i;
+					if(remainingMoves >= 4){
+						break;
+					}
+					//make sure the pawn doesnt pass another in the goal area
+					if(getClosestPawnInGoal(owner,pawn) > remainingMoves + 40){
+						MoveablePawns.add(pawn);
+						break;
+					}else{
+						break;
+					}
+				}
+				if( i == currentRoll){
+					if(gameBoard[(currentpos + i) % 40].getPawnOwner() == pawn.getOwner()){
+						continue;
+					}else{
+						MoveablePawns.add(pawn);
+					}
+				}
+			}
+		}
+		return MoveablePawns;
+	}
+	
+	/**
+	 * Resets the game board, pawns, players, etc.
+	 * Called when selecting start new game
+	 */
 	public void reset(){
 		for(Player player: this.players){
 			player.setPawnsAtHome(4);
@@ -90,38 +189,8 @@ public class Board {
 	}
 	
 	/**
-	 * @return Returns an array containing all the Pawn objects on the game board
-	 * 
-	 */
-	public Pawn[] getPawns(){
-		int count = 0;
-		Pawn[] allPawns = new Pawn[players.length*4];
-		for(Player player: players){
-			for(Pawn pawn: player.getPawns()){
-				allPawns[count++] = pawn;
-			}
-		}
-		return allPawns;
-	}
-	
-	/**
-	 * 
-	 * @param owner of the EndMap you want to check
-	 * @return Returns integer of closest pawn to the s
-	 */
-	private int getClosestPawnInGoal(Player owner, Pawn pawn){
-		int standard = 44;
-		for(Pawn temp:owner.getPawns()){
-			if(temp.getPosition() < standard && temp.getPosition() > pawn.getPosition() && temp.getPosition() >= 40){
-				standard = temp.getPosition();
-			}
-		}
-		return standard;
-	}
-	
-	/**
-	 * 
-	 * @param sends the pawn at the given position back to the owners home
+	 * Sends the pawn at the given position back to the owner's home
+	 * @param integer position of the pawn
 	 */
 	private Player sendPawnHome(int pos){
 		Pawn temp = gameBoard[pos].getOccupant();
@@ -132,73 +201,9 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @return Returns all pawns that can be moved
-	 */
-	public ArrayList<Pawn> getMoveablePawns(int currentRoll, Player owner){
-		int startpos = owner.getStartPosition();
-		ArrayList<Pawn> MoveablePawns = new ArrayList<Pawn>();
-		//if a six is rolled and the spot in front of the home is not alreadyt occupied by one of the owners
-		//pawns, if possible move a pawn out from home
-		if(currentRoll == 6 && gameBoard[startpos].getPawnOwner() != owner && owner.getPawnsAtHome() != 0){
-			for(Pawn pawn: owner.getPawns()){
-				if(pawn.getPosition() == -1){
-					MoveablePawns.add(pawn); //pawn.setIsMoveable(true);
-				}else{
-					//pawn.setIsMoveable(false);
-					continue;
-				}
-			}
-			return MoveablePawns;
-		}
-		for(Pawn pawn: owner.getPawns()){
-			if(pawn.getPosition() == -1){
-				//pawn.setIsMoveable(false);
-				continue;
-			}
-			int currentpos = pawn.getPosition();
-			//if pawn is in end goal
-			//check each spot to make sure it doesnt pass the goal fork
-			for(int i=1;i<=currentRoll;i++){
-				if(currentpos >= 40){
-					if(getClosestPawnInGoal(owner,pawn) > currentRoll + currentpos && currentRoll + currentpos < 45){
-						MoveablePawns.add(pawn);
-						break;
-					}else{
-						break;
-					}
-				}
-				if(gameBoard[(currentpos + i) % 40] instanceof StartTile && gameBoard[(currentpos + i) % 40].getForkOwner() == owner){
-					int remainingMoves = currentRoll - i;
-					if(remainingMoves >= 4){
-						//pawn.setIsMoveable(false);
-						break;
-					}
-					//make sure the pawn doesnt pass another in the goal area
-					if(getClosestPawnInGoal(owner,pawn) > remainingMoves + 40){
-						MoveablePawns.add(pawn); //pawn.setIsMoveable(true);
-						break;
-					}else{
-						//pawn.setIsMoveable(false);
-						break;
-					}
-				}
-				if( i == currentRoll){
-					if(gameBoard[(currentpos + i) % 40].getPawnOwner() == pawn.getOwner()){
-						continue;
-						//pawn.setIsMoveable(false);
-					}else{
-						MoveablePawns.add(pawn); // pawn.setIsMoveable(true);
-					}
-				}
-			}
-			
-		}
-		return MoveablePawns;
-	}
-	
-	/**
 	 * Makes a move for a computer player based on its strategy
+	 * @param The current die roll
+	 * @param The current player object
 	 */
 	public Move makeMove(int currentRoll, Player player){
 		Move move = null;
@@ -220,6 +225,7 @@ public class Board {
 	/**
 	 * Moves the pawn selected by the player "currentRoll" number of spaces
 	 * @param Pawn object to be moved
+	 * @param The current die roll
 	 */
 	public Move makeMove(Pawn pawn, int currentRoll){
 		Move move = new Move();
@@ -248,9 +254,7 @@ public class Board {
 					EndMap[currentpos + currentRoll - 40].setPawnOwner(pawn.getOwner());
 					pawn.setPosition(currentpos + currentRoll);
 					pawn.incrementTilesMoved(currentRoll);
-					break;
-					
-					
+					break;	
 				}
 				if(gameBoard[(currentpos + i) % 40].getForkOwner() == pawn.getOwner()){
 					updateField(currentpos,null);
@@ -272,14 +276,13 @@ public class Board {
 				}
 			}
 		}
-		return move;
-			
+		return move;	
 	}
 	
 	/**
-	 * 
+	 * Checks if the given player has all their pawns in their goal fields
 	 * @param player to be checked for winning condition
-	 * @return Returns whether or not the player has won the game
+	 * @return Returns true if the player has won the game, false otherwise
 	 */
 	public Boolean HasWon(Player player){
 		for(Field field:playerEndMap.get(player)){
@@ -290,8 +293,13 @@ public class Board {
 		return true;
 	}
 	
+	/**
+	 * Updates both the field tile the given pawn is moved onto and the pawn object
+	 * Each has a reference to the other, so they must both be updated
+	 * @param The position on the game board
+	 * @param The pawn object now occupying the field
+	 */
 	private void updateField(int pos, Pawn pawn){
-		
 		if(pawn != null){
 			this.gameBoard[pos].setOccupant(pawn);
 			this.gameBoard[pos].setPawnOwner(pawn.getOwner());
@@ -302,13 +310,11 @@ public class Board {
 	}
 	
 	/**
-	 * 
-	 * @param player to set all their pawn to non movable at the end of a round
+	 * Searches for a pawn at a given position on the board
+	 * @param The player object whose pawns to search (called with current player)
+	 * @param The position on the game board (can be -1 for home, 0-39 for board, 40-43 for goal
+	 * @return The pawn object at the provided position
 	 */
-	public Field[] getBoard() {
-		return this.gameBoard;
-	}
-	 
 	public Pawn getPawnAtPosition(Player player, int pos){
 		Pawn[] pawns = player.getPawns();
 		for(Pawn pawn: pawns){
@@ -319,15 +325,27 @@ public class Board {
 		return null;
 	}
 	
-	
+	/**
+	 * Searches for a pawn at the given position on the game board
+	 * Pawn must be on the board and not in the goal or home
+	 * @param Integer position on the game board (must be between 0-39 otherwise returns null)
+	 * @return The pawn object at the given position
+	 */
 	public Pawn getPawnAtPosition(int pos){
-		if(pos>39){
+		if(pos>39 || pos<0){
 			return null;
 		}else{
 			return this.gameBoard[pos].getOccupant();
 		}
 	}
 	
+	/**
+	 * Finds the final position where a pawn would land based on the dieRoll
+	 * Takes into account moving out of home or into the goal
+	 * @param The pawn object which is to be moved
+	 * @param The current die roll
+	 * @return The integer position where the pawn will land
+	 */
 	public int getMoveDestination(Pawn pawn, int dieRoll){
 		Player owner = pawn.getOwner();
 		int startPos = pawn.getPosition();
@@ -347,6 +365,9 @@ public class Board {
 		return (startPos + dieRoll)%40;
 	}
 	
+	/**
+	 * Prints the pawns and their associated players on the game board
+	 */
 	public String toString(){
 		String s = "";
 		for(Field field: this.gameBoard){

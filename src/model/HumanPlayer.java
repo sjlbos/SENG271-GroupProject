@@ -8,7 +8,9 @@ public class HumanPlayer implements Player {
 	private Strategy strategy;
 	private Pawn[] pawns;
 	
-	//Constructor
+	/*====================
+	 * CONSTRUCTOR
+	 *====================*/
 	public HumanPlayer(int playerNumber){
 		this.playerNumber = playerNumber;
 		this.startPosition = determineStartPosition(playerNumber);

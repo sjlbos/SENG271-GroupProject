@@ -22,7 +22,7 @@ public class Application {
 	
 	/**
 	 * Initializes the application. Creates the base JFrame container,
-	 * instantiates the view and model classes, and creates the a controller,
+	 * instantiates the view and model classes, and creates the controller,
 	 * ensuring the controller has the proper references to the view and model.  
 	 */
 	private void initialize(){

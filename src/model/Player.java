@@ -15,7 +15,6 @@ public interface Player {
 	public void incrementPawnsAtHome();
 	public void decrementPawnsAtHome();
 	
-	
 	public int getStartPosition();
 	public int determineStartPosition(int player);
 }

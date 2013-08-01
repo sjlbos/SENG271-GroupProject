@@ -11,7 +11,7 @@ public class StartTile extends Field{
 	
 	
 	/*==================================
-	 * Getters And Setters
+	 * GETTERS AND SETTERS
 	===================================*/
 	
 	@Override

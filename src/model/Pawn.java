@@ -12,8 +12,8 @@ public class Pawn {
 	}
 	
 	/*=================================
-	Getters and Setters
-	=================================*/
+	 * GETTERS AND SETTERS
+	 *===============================*/
 	
 	public void setTilesMoved(int moves){
 		this.tilesMoved = moves;
