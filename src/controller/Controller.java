@@ -89,6 +89,10 @@ public class Controller {
 		this.startGameButton = startButton;
 	}
 	
+	public JButton getStartButton(){
+		return this.startGameButton;
+	}
+	
 	public void setViewPanel(ViewPanel viewPanel){
 		this.viewPanel=viewPanel;
 		newGameMenu.setLocation(this.viewPanel.getLocation().x+ViewPanel.WIDTH+20, this.viewPanel.getLocation().y);

@@ -160,6 +160,7 @@ public class NewGameMenu extends JFrame{
 	private class CancelButtonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			NewGameMenu.this.setVisible(false);
+			NewGameMenu.this.controller.getStartButton().setEnabled(true);
 		}
 	}
 	
